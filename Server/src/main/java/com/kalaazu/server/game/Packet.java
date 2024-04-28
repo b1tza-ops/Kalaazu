@@ -17,7 +17,7 @@ public interface Packet {
      * @return Empty game version packet.
      */
     static Packet empty() {
-        return GameServer.INSTANCE.getEmptyPacket();
+        return GameServer.getInstance().getEmptyPacket();
     }
 
     @SneakyThrows

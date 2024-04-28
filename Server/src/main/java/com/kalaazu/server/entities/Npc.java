@@ -3,7 +3,7 @@ package com.kalaazu.server.entities;
 import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.persistence.entity.NpcsEntity;
-import com.kalaazu.server.game.OutCommand;
+import com.kalaazu.server.game.command.OutCommand;
 import com.kalaazu.server.game.v10.commands.out.map.CreateShipCommand;
 import com.kalaazu.server.game.v10.commands.out.map.MinimapEntityDiplomacyStatusCommand;
 import com.kalaazu.server.game.v10.commands.out.unknown.class_387;

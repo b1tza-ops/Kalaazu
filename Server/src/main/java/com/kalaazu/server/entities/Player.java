@@ -2,7 +2,7 @@ package com.kalaazu.server.entities;
 
 import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
-import com.kalaazu.server.game.OutCommand;
+import com.kalaazu.server.game.command.OutCommand;
 import com.kalaazu.server.game.netty.GameSession;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

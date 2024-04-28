@@ -1,4 +1,6 @@
-package com.kalaazu.server.game;
+package com.kalaazu.server.game.command;
+
+import com.kalaazu.server.game.Packet;
 
 /**
  * In Command.

@@ -1,6 +1,6 @@
 package com.kalaazu.server.event;
 
-import com.kalaazu.server.game.OutCommand;
+import com.kalaazu.server.game.command.OutCommand;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

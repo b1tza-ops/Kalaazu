@@ -20,7 +20,15 @@ import org.springframework.beans.factory.annotation.Value;
  */
 @Slf4j
 public abstract class GameServer extends Thread {
-    public static GameServer INSTANCE;
+    private static GameServer INSTANCE;
+
+    public static GameServer getInstance() {
+        if (INSTANCE == null) {
+            throw new IllegalStateException("GameServer has not been initialized");
+        }
+
+        return INSTANCE;
+    }
 
     private final NioEventLoopGroup bossGroup = new NioEventLoopGroup();
     private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
