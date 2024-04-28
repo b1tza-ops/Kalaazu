@@ -2,7 +2,6 @@ package com.kalaazu.server.entities;
 
 import com.kalaazu.math.Vector;
 import com.kalaazu.server.game.v10.commands.out.map.MoveEntityCommand;
-import org.springframework.context.ApplicationContext;
 
 /**
  * Movable map entity.
@@ -15,12 +14,12 @@ import org.springframework.context.ApplicationContext;
  * @author manulaiko <manulaiko@gmail.com>
  */
 public interface MovableMapEntity extends MapEntity {
-    ApplicationContext getCtx();
-
     Vector getDestination();
+
     void setDestination(Vector v);
 
     Vector getInitialPosition();
+
     void setInitialPosition(Vector v);
 
     short getSpeed();
@@ -30,6 +29,7 @@ public interface MovableMapEntity extends MapEntity {
     void setMoving(boolean moving);
 
     long getEndMovementTime();
+
     void setEndMovementTime(long l);
 
     int getTotalMovementTime();

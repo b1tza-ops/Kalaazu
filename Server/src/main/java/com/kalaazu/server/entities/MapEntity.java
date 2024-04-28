@@ -2,6 +2,8 @@ package com.kalaazu.server.entities;
 
 import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
+import com.kalaazu.server.game.command.CommandBuilder;
+import com.kalaazu.server.game.command.CommandType;
 import com.kalaazu.server.game.command.OutCommand;
 
 /**
@@ -18,9 +20,12 @@ public interface MapEntity {
     int getId();
 
     Vector getPosition();
+
     void setPosition(Vector position);
 
     MapsEntity getMap();
 
-    OutCommand getEntityCreationCommand();
+    default OutCommand getEntityCreationCommand() {
+        return CommandBuilder.getInstance().buildCommands(CommandType.EntityCreationCommand, this).getFirst();
+    }
 }

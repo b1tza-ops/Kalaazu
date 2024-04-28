@@ -60,8 +60,8 @@ public class CommandBuilder {
      *
      * @return All the commands built by the given command type builders.
      */
-    public List<Command> buildCommands(CommandType type, Object... arguments) {
-        var cmds = new ArrayList<Command>();
+    public List<OutCommand> buildCommands(CommandType type, Object... arguments) {
+        var cmds = new ArrayList<OutCommand>();
 
         builders.getOrDefault(type, Collections.emptyList())
                 .forEach(b -> cmds.addAll(b.build(arguments)));
