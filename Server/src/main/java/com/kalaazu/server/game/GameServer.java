@@ -7,6 +7,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -37,6 +38,8 @@ public abstract class GameServer extends Thread {
     private int port;
 
     public void run() {
+        INSTANCE = this;
+
         log.info("Starting emulator server on port {}...", port);
         try {
             var b = new ServerBootstrap();

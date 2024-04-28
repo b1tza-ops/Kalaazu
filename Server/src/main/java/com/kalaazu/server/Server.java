@@ -43,7 +43,6 @@ public class Server implements ApplicationListener<ApplicationReadyEvent> {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Game sever for version " + version + " not found!"));
 
-        GameServer.INSTANCE = server;
         server.start();
 
         policyServer.start();
