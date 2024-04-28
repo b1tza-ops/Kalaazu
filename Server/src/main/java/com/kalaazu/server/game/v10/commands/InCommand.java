@@ -10,7 +10,7 @@ import com.kalaazu.server.game.Version;
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
-public abstract class InCommand extends com.kalaazu.server.game.command.InCommand {
+public abstract class InCommand extends com.kalaazu.server.game.commands.InCommand {
     public Version getGameVersion() {
         return Version.V10;
     }

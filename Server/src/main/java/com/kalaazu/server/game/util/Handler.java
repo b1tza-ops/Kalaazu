@@ -1,6 +1,6 @@
 package com.kalaazu.server.game.util;
 
-import com.kalaazu.server.game.command.InCommand;
+import com.kalaazu.server.game.commands.InCommand;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.Packet;
 import lombok.SneakyThrows;

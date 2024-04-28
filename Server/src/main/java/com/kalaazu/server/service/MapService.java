@@ -3,7 +3,7 @@ package com.kalaazu.server.service;
 import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.persistence.service.MapsService;
-import com.kalaazu.server.game.command.OutCommand;
+import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.entities.*;
 import com.kalaazu.server.event.GameSessionStartedEvent;
 import com.kalaazu.server.event.SendCommandsEvent;

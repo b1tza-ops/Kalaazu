@@ -1,4 +1,4 @@
-package com.kalaazu.server.game.command;
+package com.kalaazu.server.game.commands;
 
 /**
  * Command type.
@@ -9,5 +9,5 @@ package com.kalaazu.server.game.command;
  * @author manulaiko <manulaiko@gmail.com>
  */
 public enum CommandType {
-    EntityCreationCommand
+    SettingsCommand, EntityCreationCommand
 }

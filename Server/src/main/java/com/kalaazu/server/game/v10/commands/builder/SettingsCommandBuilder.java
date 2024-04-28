@@ -1,4 +1,4 @@
-package com.kalaazu.server.service;
+package com.kalaazu.server.game.v10.commands.builder;
 
 import com.google.gson.Gson;
 import com.kalaazu.persistence.entity.AccountsSettingsEntity;
@@ -6,29 +6,31 @@ import com.kalaazu.persistence.entity.ItemCategory;
 import com.kalaazu.persistence.entity.ItemType;
 import com.kalaazu.persistence.entity.ItemsEntity;
 import com.kalaazu.persistence.service.ItemsService;
-import com.kalaazu.server.game.v10.commands.OutCommand;
+import com.kalaazu.server.game.Version;
+import com.kalaazu.server.game.commands.CommandBuilderInterface;
+import com.kalaazu.server.game.commands.CommandType;
+import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.v10.commands.out.settings.*;
 import com.kalaazu.server.game.v10.commands.out.ui.*;
-import com.kalaazu.server.game.netty.GameSession;
-import com.kalaazu.server.event.SendCommandsEvent;
 import com.kalaazu.service.DefaultGameSettingsService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 /**
- * Game Settings service.
- * ======================
- * <p>
- * Service for game settings.
+ * Settings command builder.
+ * =========================
+ *
+ * Command builder for all the settings command.
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
-@Service
+@Data
 @RequiredArgsConstructor
-public class GameSettingsService {
+@Component
+public class SettingsCommandBuilder implements CommandBuilderInterface {
     public static final boolean hideAllWindows = false;
     public static final int scale = 6;
     public static final String barState = "24,1|23,1|100,1|25,1|35,0|34,0|39,0|";
@@ -48,11 +50,6 @@ public class GameSettingsService {
     public static final String PREMIUM_SLOT_BAR = "premiumSlotBar";
     public static final String PRO_ACTION_BAR = "proActionBar";
 
-    private final Gson mapper;
-    private final ApplicationContext context;
-    private final ItemsService items;
-    private final DefaultGameSettingsService defaultGameSettingsService;
-
     private static ClientUiTooltipCommand buildTooltip(short formatType, String tooltip, String replacementValue, String replacementWildcard) {
         var textReplacements = new ArrayList<ClientUiTextReplacementCommand>();
 
@@ -68,13 +65,26 @@ public class GameSettingsService {
         return new ClientUiTooltipCommand(ClientUiTooltipCommand.STANDARD, formatLocalized, textReplacements, tooltip);
     }
 
+    private final Version gameVersion = Version.V10;
+    private final CommandType commandType = CommandType.SettingsCommand;
+
+    private final Gson mapper;
+    private final ItemsService items;
+    private final DefaultGameSettingsService defaultGameSettingsService;
+
     /**
-     * Builds and sends the game settings packets.
+     * Builds the necessary commands for the given arguments.
+     * <p>
+     * Since there's no way to ensure type safety on the arguments
+     * be careful of how you use it.
      *
-     * @param accountsSettings Account's settings.
-     * @param session          Game session.
+     * @param arguments Command arguments.
+     * @return Command for the given arguments.
      */
-    public void sendSettings(Collection<AccountsSettingsEntity> accountsSettings, GameSession session) {
+    @Override
+    public List<OutCommand> build(Object[] arguments) {
+        var accountsSettings = (Collection<AccountsSettingsEntity>) arguments[0];
+
         var keybindings = new ArrayList<KeybindingCommand>();
         var commands = new HashMap<Integer, OutCommand>();
         var slotbars = new HashMap<String, List<ClientUiSlotBarItemCommand>>();
@@ -93,13 +103,13 @@ public class GameSettingsService {
             }
         });
 
-        var commandsToSend = new ArrayList<OutCommand>();
-        commandsToSend.add(buildKeybindingSettings(keybindings));
-        commandsToSend.add(buildUserSettings(commands));
-        commandsToSend.add(buildMenuBar());
-        commandsToSend.add(buildSlotBar(slotbars));
+        var cmds = new ArrayList<OutCommand>();
+        cmds.add(buildKeybindingSettings(keybindings));
+        cmds.add(buildUserSettings(commands));
+        cmds.add(buildMenuBar());
+        cmds.add(buildSlotBar(slotbars));
 
-        context.publishEvent(new SendCommandsEvent(session, commandsToSend, this));
+        return cmds;
     }
 
     private UpdateUserKeybindingsCommand buildKeybindingSettings(List<KeybindingCommand> keybindings) {

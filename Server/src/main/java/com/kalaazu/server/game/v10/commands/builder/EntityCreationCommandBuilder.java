@@ -2,9 +2,9 @@ package com.kalaazu.server.game.v10.commands.builder;
 
 import com.kalaazu.server.entities.*;
 import com.kalaazu.server.game.Version;
-import com.kalaazu.server.game.command.CommandBuilderInterface;
-import com.kalaazu.server.game.command.CommandType;
-import com.kalaazu.server.game.command.OutCommand;
+import com.kalaazu.server.game.commands.CommandBuilderInterface;
+import com.kalaazu.server.game.commands.CommandType;
+import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.v10.commands.out.map.CreateShipCommand;
 import com.kalaazu.server.game.v10.commands.out.map.MinimapEntityDiplomacyStatusCommand;
 import com.kalaazu.server.game.v10.commands.out.unknown.class_387;

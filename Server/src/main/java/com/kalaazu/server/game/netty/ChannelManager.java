@@ -1,6 +1,6 @@
 package com.kalaazu.server.game.netty;
 
-import com.kalaazu.server.game.command.OutCommand;
+import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.event.*;
 import com.kalaazu.server.game.util.Handler;
 import com.kalaazu.server.game.Packet;

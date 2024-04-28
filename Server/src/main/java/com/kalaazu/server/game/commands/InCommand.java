@@ -1,4 +1,4 @@
-package com.kalaazu.server.game.command;
+package com.kalaazu.server.game.commands;
 
 import com.kalaazu.server.game.Packet;
 

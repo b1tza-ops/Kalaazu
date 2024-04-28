@@ -2,6 +2,16 @@ package com.kalaazu.server.game.v10.handler;
 
 import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.service.UsersService;
+import com.kalaazu.server.event.EndGameSessionEvent;
+import com.kalaazu.server.event.EndGameSessionIfEvent;
+import com.kalaazu.server.event.GameSessionStartedEvent;
+import com.kalaazu.server.event.SendCommandsEvent;
+import com.kalaazu.server.game.commands.CommandBuilder;
+import com.kalaazu.server.game.commands.CommandType;
+import com.kalaazu.server.game.netty.GameSession;
+import com.kalaazu.server.game.util.Handler;
+import com.kalaazu.server.game.util.ServerCommands;
+import com.kalaazu.server.game.v10.commands.LegacyPacket;
 import com.kalaazu.server.game.v10.commands.OutCommand;
 import com.kalaazu.server.game.v10.commands.in.LoginRequest;
 import com.kalaazu.server.game.v10.commands.out.map.ShipInitializationCommand;
@@ -9,12 +19,6 @@ import com.kalaazu.server.game.v10.commands.out.player.BeaconCommand;
 import com.kalaazu.server.game.v10.commands.out.player.SetHealthPointsCommand;
 import com.kalaazu.server.game.v10.commands.out.player.SetShieldPointsCommand;
 import com.kalaazu.server.game.v10.commands.out.player.SetSpeedCommand;
-import com.kalaazu.server.event.*;
-import com.kalaazu.server.game.netty.GameSession;
-import com.kalaazu.server.service.GameSettingsService;
-import com.kalaazu.server.game.util.Handler;
-import com.kalaazu.server.game.v10.commands.LegacyPacket;
-import com.kalaazu.server.game.util.ServerCommands;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +49,7 @@ public class LoginRequestHandler extends Handler<LoginRequest> {
 
     private final ApplicationContext ctx;
     private final UsersService users;
-    private final GameSettingsService gameSettingsService;
+    private final CommandBuilder commandBuilder;
 
     private static CalculatedItems getCalculatedItems(AccountsEntity account) {
         // Stats
@@ -233,7 +237,8 @@ public class LoginRequestHandler extends Handler<LoginRequest> {
     }
 
     private void sendInitialPackets(AccountsEntity account, GameSession session) {
-        gameSettingsService.sendSettings(account.getAccountsSettings(), session);
+        var settings = commandBuilder.buildCommands(CommandType.SettingsCommand, account.getAccountsSettings());
+        ctx.publishEvent(new SendCommandsEvent(session, settings, this));
 
         var commands = new ArrayList<OutCommand>();
 

@@ -2,9 +2,9 @@ package com.kalaazu.server.entities;
 
 import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
-import com.kalaazu.server.game.command.CommandBuilder;
-import com.kalaazu.server.game.command.CommandType;
-import com.kalaazu.server.game.command.OutCommand;
+import com.kalaazu.server.game.commands.CommandBuilder;
+import com.kalaazu.server.game.commands.CommandType;
+import com.kalaazu.server.game.commands.OutCommand;
 
 /**
  * Map entity.
