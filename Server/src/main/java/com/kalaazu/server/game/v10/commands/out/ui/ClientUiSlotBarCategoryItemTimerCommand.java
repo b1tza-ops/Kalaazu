@@ -1,0 +1,36 @@
+package com.kalaazu.server.game.v10.commands.out.ui;
+
+import com.kalaazu.server.game.v10.commands.OutCommand;
+import com.kalaazu.server.game.Packet;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+/**
+ * @author manulaiko <manulaiko@gmail.com>
+ */
+@EqualsAndHashCode(callSuper = true)
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ClientUiSlotBarCategoryItemTimerCommand extends OutCommand {
+    private final short id = 31208;
+
+    public ClientUiSlotBarCategoryItemTimerStatusCommand timerState;
+    public String lootId;
+    public boolean activatable;
+    public double time;
+    public double maxTime;
+
+    @Override
+    public void write(Packet packet) {
+        packet.writeShort(id);
+
+        packet.writeDouble(this.time);
+        packet.writeString(this.lootId);
+        packet.writeBoolean(this.activatable);
+        packet.writeDouble(this.maxTime);
+        timerState.write(packet);
+    }
+}

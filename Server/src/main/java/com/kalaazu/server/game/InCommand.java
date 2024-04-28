@@ -1,0 +1,13 @@
+package com.kalaazu.server.game;
+
+/**
+ * In Command.
+ * ===========
+ * <p>
+ * Base class for all incoming game commands.
+ *
+ * @author manulaiko <manulaiko@gmail.com>
+ */
+public abstract class InCommand extends Command {
+    public abstract void read(Packet packet);
+}

@@ -1,6 +1,6 @@
 package com.kalaazu.server.event;
 
-import com.kalaazu.server.netty.GameSession;
+import com.kalaazu.server.game.netty.GameSession;
 import io.netty.channel.ChannelId;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

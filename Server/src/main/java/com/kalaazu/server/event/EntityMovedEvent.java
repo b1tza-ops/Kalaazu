@@ -1,7 +1,6 @@
 package com.kalaazu.server.event;
 
 import com.kalaazu.server.entities.MovableMapEntity;
-import com.kalaazu.server.entities.Player;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

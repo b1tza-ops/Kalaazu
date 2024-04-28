@@ -1,7 +1,7 @@
 package com.kalaazu.server.event;
 
-import com.kalaazu.server.commands.OutCommand;
-import com.kalaazu.server.netty.GameSession;
+import com.kalaazu.server.game.OutCommand;
+import com.kalaazu.server.game.netty.GameSession;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -18,9 +18,9 @@ import java.util.List;
 @Getter
 public class SendCommandsEvent extends ApplicationEvent {
     private final GameSession session;
-    private final List<OutCommand> commands;
+    private final List<? extends OutCommand> commands;
 
-    public SendCommandsEvent(GameSession session, List<OutCommand> commands, Object source) {
+    public SendCommandsEvent(GameSession session, List<? extends OutCommand> commands, Object source) {
         super(source);
 
         this.session = session;

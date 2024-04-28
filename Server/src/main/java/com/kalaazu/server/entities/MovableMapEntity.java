@@ -1,8 +1,7 @@
 package com.kalaazu.server.entities;
 
 import com.kalaazu.math.Vector;
-import com.kalaazu.server.commands.out.map.MoveEntityCommand;
-import com.kalaazu.server.event.BroadcastCommandEvent;
+import com.kalaazu.server.game.v10.commands.out.map.MoveEntityCommand;
 import org.springframework.context.ApplicationContext;
 
 /**

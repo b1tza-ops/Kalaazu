@@ -1,6 +1,6 @@
 package com.kalaazu.server.event;
 
-import com.kalaazu.server.commands.OutCommand;
+import com.kalaazu.server.game.OutCommand;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
@@ -16,9 +16,9 @@ import java.util.List;
  */
 @Getter
 public class BroadcastCommandsEvent extends ApplicationEvent {
-    private final List<OutCommand> commands;
+    private final List<? extends OutCommand> commands;
 
-    public BroadcastCommandsEvent(List<OutCommand> commands, Object source) {
+    public BroadcastCommandsEvent(List<? extends OutCommand> commands, Object source) {
         super(source);
 
         this.commands = commands;
