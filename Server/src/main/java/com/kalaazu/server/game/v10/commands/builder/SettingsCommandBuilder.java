@@ -1,6 +1,6 @@
 package com.kalaazu.server.game.v10.commands.builder;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kalaazu.persistence.entity.AccountsSettingsEntity;
 import com.kalaazu.persistence.entity.ItemCategory;
 import com.kalaazu.persistence.entity.ItemType;
@@ -68,7 +68,7 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
     private final Version gameVersion = Version.V10;
     private final CommandType commandType = CommandType.SettingsCommand;
 
-    private final Gson mapper;
+    private final ObjectMapper mapper;
     private final ItemsService items;
     private final DefaultGameSettingsService defaultGameSettingsService;
 
@@ -91,15 +91,15 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
 
         accountsSettings.forEach(s -> {
             switch (s.getType()) {
-                case 1 -> keybindings.add(mapper.fromJson(s.getValue(), KeybindingCommand.class));
-                case 2 -> commands.put(1, mapper.fromJson(s.getValue(), UpdateQualitySettingsCommand.class));
-                case 3 -> commands.put(2, mapper.fromJson(s.getValue(), UpdateDisplaySettingsCommand.class));
-                case 4 -> commands.put(3, mapper.fromJson(s.getValue(), UpdateQuestsSettingsCommand.class));
-                case 5 -> commands.put(4, mapper.fromJson(s.getValue(), UpdateWindowSettingsCommand.class));
-                case 6 -> commands.put(5, mapper.fromJson(s.getValue(), UpdateGameplaySettingsCommand.class));
-                case 7 -> commands.put(6, mapper.fromJson(s.getValue(), UpdateAudioSettingsCommand.class));
+                case 1 -> keybindings.add(mapper.convertValue(s.getValue(), KeybindingCommand.class));
+                case 2 -> commands.put(1, mapper.convertValue(s.getValue(), UpdateQualitySettingsCommand.class));
+                case 3 -> commands.put(2, mapper.convertValue(s.getValue(), UpdateDisplaySettingsCommand.class));
+                case 4 -> commands.put(3, mapper.convertValue(s.getValue(), UpdateQuestsSettingsCommand.class));
+                case 5 -> commands.put(4, mapper.convertValue(s.getValue(), UpdateWindowSettingsCommand.class));
+                case 6 -> commands.put(5, mapper.convertValue(s.getValue(), UpdateGameplaySettingsCommand.class));
+                case 7 -> commands.put(6, mapper.convertValue(s.getValue(), UpdateAudioSettingsCommand.class));
                 case 8 ->
-                        slotbars.computeIfAbsent(s.getName(), (s1) -> new ArrayList<>()).add(mapper.fromJson(s.getValue(), ClientUiSlotBarItemCommand.class));
+                        slotbars.computeIfAbsent(s.getName(), (s1) -> new ArrayList<>()).add(mapper.convertValue(s.getValue(), ClientUiSlotBarItemCommand.class));
             }
         });
 
