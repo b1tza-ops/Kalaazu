@@ -8,13 +8,13 @@ import lombok.Data;
 public class LoginRequest extends InCommand {
     public static final String ID = "LOGIN";
 
-    private long userId;
+    private int userId;
     private String sessionId;
     private String version;
 
     @Override
     public void read(Packet packet) {
-        this.userId = packet.readLong();
+        this.userId = packet.readInt();
         this.sessionId = packet.readString();
         this.version = packet.readString();
     }

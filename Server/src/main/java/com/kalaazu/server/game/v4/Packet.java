@@ -20,8 +20,6 @@ public class Packet implements com.kalaazu.server.game.Packet {
 
     public Packet(String packet) {
         this.in = Arrays.stream(packet.split("\\|")).toList();
-
-        this.in.size();
     }
 
     public Packet() {

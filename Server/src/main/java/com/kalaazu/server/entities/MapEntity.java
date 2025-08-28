@@ -26,6 +26,8 @@ public interface MapEntity {
     MapsEntity getMap();
 
     default OutCommand getEntityCreationCommand() {
-        return CommandBuilder.getInstance().buildCommands(CommandType.EntityCreationCommand, this).getFirst();
+        return CommandBuilder.getInstance()
+                .buildCommands(CommandType.EntityCreationCommand, this)
+                .getFirst();
     }
 }
