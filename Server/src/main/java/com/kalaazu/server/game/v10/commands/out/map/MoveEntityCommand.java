@@ -1,8 +1,8 @@
 package com.kalaazu.server.game.v10.commands.out.map;
 
 import com.kalaazu.math.Vector;
-import com.kalaazu.server.game.v10.commands.OutCommand;
 import com.kalaazu.server.game.Packet;
+import com.kalaazu.server.game.v10.commands.OutCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,8 +29,8 @@ public class MoveEntityCommand extends OutCommand {
     public void write(Packet packet) {
         packet.writeShort(id);
 
-        var x = (int) destination.getX();
-        var y = (int) destination.getY();
+        var x = destination.getX();
+        var y = destination.getY();
 
         packet.writeShort(0);
         packet.writeInt(y >> 13 | y << 19);

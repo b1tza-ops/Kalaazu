@@ -3,7 +3,7 @@ package com.kalaazu.server.game.commands;
 /**
  * Command type.
  * =============
- *
+ * <p>
  * Enum for the different types a command builder can build.
  *
  * @author manulaiko <manulaiko@gmail.com>

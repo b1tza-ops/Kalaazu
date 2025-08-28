@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 /**
  * Packet interface.
  * =================
- *
+ * <p>
  * Interface for the incoming packets from main.swf.
  *
  * @author manulaiko <manulaiko@gmail.com>

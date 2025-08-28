@@ -1,10 +1,12 @@
 package com.kalaazu.server.game.v10.handler;
 
+import com.kalaazu.server.game.Packet;
+import com.kalaazu.server.game.Version;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.util.Handler;
 import com.kalaazu.server.game.v10.commands.in.LoginRequest;
 import com.kalaazu.server.service.SessionInitializationService;
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,14 +19,13 @@ import org.springframework.stereotype.Component;
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
-@Component
+@Component("v10LoginRequestHandler")
 @Slf4j
 @RequiredArgsConstructor
+@Data
 public class LoginRequestHandler extends Handler<LoginRequest> {
-    @Getter
     private final short id = LoginRequest.ID;
-
-    @Getter
+    private final Version version = Version.V10;
     private final Class<LoginRequest> clazz = LoginRequest.class;
 
     private final SessionInitializationService service;
@@ -32,5 +33,10 @@ public class LoginRequestHandler extends Handler<LoginRequest> {
     @Override
     public void handle(LoginRequest packet, GameSession session) {
         service.initialize(packet.getUserId(), packet.getSessionId(), session);
+    }
+
+    @Override
+    public boolean canHandle(Packet packet) {
+        return packet.readShort() == this.getId();
     }
 }

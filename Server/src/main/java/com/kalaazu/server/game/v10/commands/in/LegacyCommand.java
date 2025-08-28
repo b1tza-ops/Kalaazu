@@ -1,15 +1,15 @@
 package com.kalaazu.server.game.v10.commands.in;
 
+import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.v10.commands.InCommand;
 import com.kalaazu.server.game.v10.commands.LegacyPacket;
-import com.kalaazu.server.game.Packet;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * Legacy command.
  * ===============
- *
+ * <p>
  * Command that uses the legacy string pipe-based format.
  *
  * @author manulaiko <manulaiko@gmail.com>

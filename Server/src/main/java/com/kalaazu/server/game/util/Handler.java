@@ -1,8 +1,9 @@
 package com.kalaazu.server.game.util;
 
+import com.kalaazu.server.game.Packet;
+import com.kalaazu.server.game.Version;
 import com.kalaazu.server.game.commands.InCommand;
 import com.kalaazu.server.game.netty.GameSession;
-import com.kalaazu.server.game.Packet;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 public abstract class Handler<T extends InCommand> {
     @Value("${app.game.packets.printIn}")
     private boolean printPackets;
-
-    public abstract short getId();
 
     @SneakyThrows
     public void handle(Packet packet, GameSession session) {
@@ -39,4 +38,8 @@ public abstract class Handler<T extends InCommand> {
     public abstract void handle(T packet, GameSession session);
 
     public abstract Class<T> getClazz();
+
+    public abstract boolean canHandle(Packet packet);
+
+    public abstract Version getVersion();
 }

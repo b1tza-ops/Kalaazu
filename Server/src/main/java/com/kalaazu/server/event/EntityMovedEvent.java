@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationEvent;
 /**
  * Entity moved event.
  * ===================
- *
+ * <p>
  * Fired when a map entity has moved.
  *
  * @author manulaiko <manulaiko@gmail.com>

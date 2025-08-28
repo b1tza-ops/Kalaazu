@@ -17,8 +17,8 @@ import java.io.DataOutputStream;
  * @author manulaiko <manulaiko@gmail.com>
  */
 public class Packet implements com.kalaazu.server.game.Packet {
-    private DataOutputStream out;
-    private ByteArrayOutputStream baos;
+    private final DataOutputStream out;
+    private final ByteArrayOutputStream baos;
 
     private DataInputStream in;
 

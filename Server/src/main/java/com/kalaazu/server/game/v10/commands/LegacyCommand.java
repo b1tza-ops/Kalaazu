@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Legacy command.
  * ===============
- *
+ * <p>
  * Sends a legacy command to the client.
  *
  * @author manulaiko <manulaiko@gmail.com>

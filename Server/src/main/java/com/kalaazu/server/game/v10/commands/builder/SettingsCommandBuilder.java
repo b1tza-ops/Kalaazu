@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * Settings command builder.
  * =========================
- *
+ * <p>
  * Command builder for all the settings command.
  *
  * @author manulaiko <manulaiko@gmail.com>

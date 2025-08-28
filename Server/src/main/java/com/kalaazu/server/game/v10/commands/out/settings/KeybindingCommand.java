@@ -1,7 +1,7 @@
 package com.kalaazu.server.game.v10.commands.out.settings;
 
-import com.kalaazu.server.game.v10.commands.OutCommand;
 import com.kalaazu.server.game.Packet;
+import com.kalaazu.server.game.v10.commands.OutCommand;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

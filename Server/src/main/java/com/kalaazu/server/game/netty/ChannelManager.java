@@ -1,9 +1,10 @@
 package com.kalaazu.server.game.netty;
 
-import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.event.*;
-import com.kalaazu.server.game.util.Handler;
 import com.kalaazu.server.game.Packet;
+import com.kalaazu.server.game.Version;
+import com.kalaazu.server.game.commands.OutCommand;
+import com.kalaazu.server.game.util.Handler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.channel.group.ChannelGroup;
@@ -38,6 +39,9 @@ public class ChannelManager {
 
     @Value("${app.game.packets.printOut}")
     private boolean printPackets;
+
+    @Value("${app.game.version}")
+    private Version version;
 
     private void send(ChannelId channelId, OutCommand command) {
         var channel = channels.find(channelId);
@@ -135,14 +139,13 @@ public class ChannelManager {
             return;
         }
 
-        var packetId = packet.readShort();
-
         packetHandlers.stream()
-                .filter(p -> p.getId() == packetId)
+                .filter(h -> h.getVersion() == this.version)
+                .filter(h -> h.canHandle(packet))
                 .findFirst()
                 .ifPresentOrElse(
                         (h) -> h.handle(packet, connection),
-                        () -> log.info("Received packet with no handler: {}", packetId)
+                        () -> log.info("Received packet with no handler: {}", packet.toString())
                 );
     }
 

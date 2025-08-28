@@ -12,5 +12,4 @@ import com.kalaazu.server.game.Version;
  */
 public abstract class Command {
     public abstract Version getGameVersion();
-    public abstract short getId();
 }

@@ -1,17 +1,22 @@
-package com.kalaazu.server.game.v10;
+package com.kalaazu.server.game.v4;
 
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.Version;
 import com.kalaazu.server.game.netty.InboundHandler;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.Charset;
+
 
 /**
  * Socket server.
@@ -19,19 +24,19 @@ import org.springframework.stereotype.Component;
  * <p>
  * Listens for connections to the game socket server.
  *
- * @author manulaiko <manulaiko@gmail.com>
+ * @author manulaiko
  */
 @Getter
-@Component("v10GameServer")
+@Component("v4GameServer")
 @Slf4j
 @RequiredArgsConstructor
 public class GameServer extends com.kalaazu.server.game.GameServer {
-    private final Version version = Version.V10;
+    private final Version version = Version.V4;
     private final InboundHandler inboundHandler;
 
     @Override
     public Packet getEmptyPacket() {
-        return new com.kalaazu.server.game.v10.Packet();
+        return new com.kalaazu.server.game.v4.Packet();
     }
 
     @Override
@@ -40,8 +45,12 @@ public class GameServer extends com.kalaazu.server.game.GameServer {
             @Override
             public void initChannel(SocketChannel ch) {
                 ch.pipeline().addLast(
-                        new LengthFieldPrepender(2),
-                        new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2),
+                        new DelimiterBasedFrameDecoder(
+                                8192,
+                                Unpooled.wrappedBuffer(new byte[]{'\n', '\0'})
+                        ),
+                        new StringDecoder(Charset.defaultCharset()),
+                        new StringEncoder(Charset.defaultCharset()),
                         new PacketSerializer(),
                         inboundHandler
                 );

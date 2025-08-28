@@ -1,7 +1,7 @@
 package com.kalaazu.server.game.v10.commands.in;
 
-import com.kalaazu.server.game.v10.commands.InCommand;
 import com.kalaazu.server.game.Packet;
+import com.kalaazu.server.game.v10.commands.InCommand;
 import lombok.Data;
 
 /**

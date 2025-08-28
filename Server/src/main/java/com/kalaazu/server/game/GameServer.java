@@ -7,7 +7,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -66,6 +65,8 @@ public abstract class GameServer extends Thread {
     }
 
     public abstract Packet getEmptyPacket();
+
     public abstract Version getVersion();
+
     protected abstract ChannelHandler getChildHandler();
 }

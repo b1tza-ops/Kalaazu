@@ -55,9 +55,8 @@ public class CommandBuilder {
     /**
      * Builds all the commans of the given type.
      *
-     * @param type Command type to build
+     * @param type      Command type to build
      * @param arguments Command builder arguments.
-     *
      * @return All the commands built by the given command type builders.
      */
     public List<OutCommand> buildCommands(CommandType type, Object... arguments) {

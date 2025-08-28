@@ -1,8 +1,8 @@
 package com.kalaazu.server.game.v10.commands.out.map;
 
+import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.v10.commands.OutCommand;
 import com.kalaazu.server.game.v10.commands.out.unknown.class_387;
-import com.kalaazu.server.game.Packet;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

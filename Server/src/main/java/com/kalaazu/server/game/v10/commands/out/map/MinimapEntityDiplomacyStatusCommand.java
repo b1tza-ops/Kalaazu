@@ -1,7 +1,7 @@
 package com.kalaazu.server.game.v10.commands.out.map;
 
-import com.kalaazu.server.game.v10.commands.OutCommand;
 import com.kalaazu.server.game.Packet;
+import com.kalaazu.server.game.v10.commands.OutCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 /**
  * Clan diplomacy command.
  * =======================
- *
+ * <p>
  * Sets the entity diplomacy status.
  *
  * @author manulaiko <manulaiko@gmail.com>
