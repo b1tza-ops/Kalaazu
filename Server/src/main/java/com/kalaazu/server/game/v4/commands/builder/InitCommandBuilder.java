@@ -9,6 +9,7 @@ import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.v4.commands.out.map.ShipInitializationCommand;
+import com.kalaazu.server.game.v4.commands.out.user.PrimaryWeaponInfoCommand;
 import com.kalaazu.server.service.SessionInitializationService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -92,6 +93,14 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 clanTag,
                 0, // TODO account rings
                 false // TODO account cloacked
+        ));
+        cmds.add(new PrimaryWeaponInfoCommand(
+                items.lcb10(),
+                items.mcb25(),
+                items.mcb50(),
+                items.ucb100(),
+                items.sab50(),
+                items.rsb75()
         ));
 
         return cmds;

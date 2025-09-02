@@ -99,16 +99,30 @@ public class SessionInitializationService {
         var hellstorm = 0L;
         var mines = 0L;
 
+        var lcb10 = 0L;
+        var mcb25 = 0L;
+        var mcb50 = 0L;
+        var ucb100 = 0L;
+        var sab50 = 0L;
+        var rsb75 = 0L;
+
         for (var item : account.getAccountsItems()) {
             var i = item.getItemsByItemsId();
             var amount = item.getAmount();
 
-            switch (item.getItemsId()) {
-                case 1 -> cre = amount;
-                case 2 -> uri = amount;
-                case 3 -> jpt = amount;
-                case 4 -> exp = amount;
-                case 5 -> hon = amount;
+            switch (i.getLootId()) {
+                case "currency_credits" -> cre = amount;
+                case "currency_uridium" -> uri = amount;
+                case "currency_jackpot" -> jpt = amount;
+                case "stats_experience" -> exp = amount;
+                case "stats_honor" -> hon = amount;
+                case "ammunition_laser_lcb-10" -> lcb10 = amount;
+                case "ammunition_laser_mcb-25" -> mcb25 = amount;
+                case "ammunition_laser_mcb-50" -> mcb50 = amount;
+                case "ammunition_laser_sab-50" -> sab50 = amount;
+                case "ammunition_laser_ucb-100" -> ucb100 = amount;
+                case "ammunition_laser_rsb-75" -> rsb75 = amount;
+
             }
 
             switch (i.getType()) {
@@ -137,7 +151,13 @@ public class SessionInitializationService {
                 ammo,
                 rockets,
                 hellstorm,
-                mines
+                mines,
+                lcb10,
+                mcb25,
+                mcb50,
+                ucb100,
+                sab50,
+                rsb75
         );
     }
 
@@ -152,7 +172,14 @@ public class SessionInitializationService {
             long ammo,
             long rockets,
             long hellstorm,
-            long mines
+            long mines,
+
+            long lcb10,
+            long mcb25,
+            long mcb50,
+            long ucb100,
+            long sab50,
+            long rsb75
     ) {
     }
 }
