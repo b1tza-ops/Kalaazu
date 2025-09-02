@@ -198,6 +198,11 @@ public class RegisterService {
             settings.setAccountsByAccountsId(account);
             settings.setVersion(version.name());
 
+            switch (version) {
+                case V4 -> settings.setBarState("1");
+                case V10 -> settings.setBarState("24,1|23,1|100,1|25,1|35,0|34,0|39,0|");
+            }
+
             ret.add(settings);
         }
 

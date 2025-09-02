@@ -79,6 +79,14 @@ CREATE TABLE `accounts_settings`
     `quests_unavailable_filter`             TINYINT(1)   DEFAULT 0 NOT NULL,
     `quests_completed_filter`               TINYINT(1)   DEFAULT 0 NOT NULL,
 
+    -- Window settings
+    `resolution_id`                         TINYINT(4)   DEFAULT 1 NOT NULL,
+    `minimap_scale`                         TINYINT(4)   DEFAULT 1 NOT NULL,
+    `window_settings`                       VARCHAR(255) DEFAULT '0,9,4,1,1,232,3,1,3,780,388,1,5,5,5,0,10,5,288,0,13,187,50,0,20,5,402,1,22,347,188,0,23,458,1,1,24,284,25,0"' NOT NULL,
+    `quickbar_slot`                         VARCHAR(255) DEFAULT '-1,-1,-1,-1,-1,-1,-1,-1,-1,-1' NOT NULL,
+    `slot_menu_position`                    VARCHAR(255) DEFAULT '313,451' NOT NULL,
+    `slot_menu_order`                       TINYINT(4)   DEFAULT 0 NOT NULL,
+
     CONSTRAINT
         `accounts_settings_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB

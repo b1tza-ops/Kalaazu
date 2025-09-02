@@ -45,176 +45,166 @@ public class AccountsSettingsEntity {
     private boolean qualityNotSet;
 
     @Column(name = "quality_attack", nullable = false)
-    private byte qualityAttack;
+    private byte qualityAttack = 3;
 
     @Column(name = "quality_background", nullable = false)
-    private byte qualityBackground;
+    private byte qualityBackground = 3;
 
     @Column(name = "quality_presetting", nullable = false)
-    private byte qualityPresetting;
-
-    @Column(name = "quality_poizone", nullable = false)
-    private byte qualityPOIzone;
-
-    @Column(name = "quality_ship", nullable = false)
-    private byte qualityShip;
-
-    @Column(name = "quality_engine", nullable = false)
-    private byte qualityEngine;
-
-    @Column(name = "quality_explosion", nullable = false)
-    private byte qualityExplosion;
-
-    @Column(name = "quality_collectables", nullable = false)
-    private byte qualityCollectables;
-
-    @Column(name = "quality_effect", nullable = false)
-    private byte qualityEffect;
+    private byte qualityPresetting = 3;
 
     @Column(name = "quality_customized", nullable = false)
     private boolean qualityCustomized;
+
+    @Column(name = "quality_poizone", nullable = false)
+    private byte qualityPOIzone = 3;
+
+    @Column(name = "quality_ship", nullable = false)
+    private byte qualityShip = 1;
+
+    @Column(name = "quality_engine", nullable = false)
+    private byte qualityEngine = 1;
+
+    @Column(name = "quality_explosion", nullable = false)
+    private byte qualityExplosion = 1;
+
+    @Column(name = "quality_collectables", nullable = false)
+    private byte qualityCollectables = 1;
+
+    @Column(name = "quality_effect", nullable = false)
+    private byte qualityEffect = 1;
 
     // Display settings
     @Column(name = "display_not_set", nullable = false)
     private boolean displayNotSet;
 
     @Column(name = "display_player_names", nullable = false)
-    private boolean displayPlayerNames;
+    private boolean displayPlayerNames = true;
 
     @Column(name = "display_resources", nullable = false)
-    private boolean displayResources;
+    private boolean displayResources = true;
 
     @Column(name = "display_hitpoint_bubbles", nullable = false)
-    private boolean displayHitpointBubbles;
+    private boolean displayHitpointBubbles = true;
 
     @Column(name = "display_chat", nullable = false)
-    private boolean displayChat;
+    private boolean displayChat = true;
 
     @Column(name = "display_setting_3d_quality_antialias", nullable = false)
-    private byte displaySetting3DqualityAntialias;
+    private byte displaySetting3DqualityAntialias = 4;
 
     @Column(name = "display_setting_3d_quality_effects", nullable = false)
-    private byte displaySetting3DqualityEffects;
+    private byte displaySetting3DqualityEffects = 4;
 
     @Column(name = "display_setting_3d_quality_lights", nullable = false)
-    private byte displaySetting3DqualityLights;
+    private byte displaySetting3DqualityLights = 3;
 
     @Column(name = "display_setting_3d_quality_textures", nullable = false)
-    private byte displaySetting3DqualityTextures;
+    private byte displaySetting3DqualityTextures = 3;
 
     @Column(name = "display_setting_3d_size_textures", nullable = false)
-    private byte displaySetting3DsizeTextures;
+    private byte displaySetting3DsizeTextures = 3;
 
     @Column(name = "display_setting_3d_texture_filtering", nullable = false)
-    private byte displaySetting3DtextureFiltering;
+    private byte displaySetting3DtextureFiltering = -1;
 
     @Column(name = "display_windows_background", nullable = false)
-    private boolean displayWindowsBackground;
+    private boolean displayWindowsBackground = true;
 
     @Column(name = "display_not_free_cargo_boxes", nullable = false)
-    private boolean displayNotFreeCargoBoxes;
+    private boolean displayNotFreeCargoBoxes = true;
 
     @Column(name = "drag_windows_always", nullable = false)
-    private boolean dragWindowsAlways;
+    private boolean dragWindowsAlways = true;
 
     @Column(name = "display_notifications", nullable = false)
-    private boolean displayNotifications;
+    private boolean displayNotifications = true;
 
     @Column(name = "display_drones", nullable = false)
-    private boolean displayDrones;
+    private boolean displayDrones = true;
 
     @Column(name = "display_bonus_boxes", nullable = false)
-    private boolean displayBonusBoxes;
+    private boolean displayBonusBoxes = true;
 
     @Column(name = "display_free_cargo_boxes", nullable = false)
-    private boolean displayFreeCargoBoxes;
+    private boolean displayFreeCargoBoxes = true;
 
     @Column(name = "show_minimap_background", nullable = false)
-    private boolean showMinimapBackground;
+    private boolean showMinimapBackground = true;
 
     @Column(name = "show_not_owned_items", nullable = false)
-    private boolean showNotOwnedItems;
+    private boolean showNotOwnedItems = true;
 
     @Column(name = "show_premium_quickslot_bar", nullable = false)
-    private boolean showPremiumQuickslotBar;
+    private boolean showPremiumQuickslotBar = true;
 
     @Column(name = "hover_ships", nullable = false)
-    private boolean hoverShips;
+    private boolean hoverShips = true;
 
     @Column(name = "hide_all_windows", nullable = false)
     private boolean hideAllWindows;
 
     @Column(name = "preload_user_ships", nullable = false)
-    private boolean preloadUserShips;
-
+    private boolean preloadUserShips = true;
 
     @Column(name = "allow_auto_quality", nullable = false)
-    private boolean allowAutoQuality;
+    private boolean allowAutoQuality = true;
 
     @Column(name = "force_2d", nullable = false)
     private boolean force2D;
 
     @Column(name = "pro_action_bar_enabled", nullable = false)
-    private boolean proActionBarEnabled;
+    private boolean proActionBarEnabled = true;
 
     @Column(name = "pro_action_bar_keyboard_input_enabled", nullable = false)
-    private boolean proActionBarKeyboardInputEnabled;
+    private boolean proActionBarKeyboardInputEnabled = true;
 
     @Column(name = "pro_action_bar_autohide_enabled", nullable = false)
-    private boolean proActionBarAutohideEnabled;
+    private boolean proActionBarAutohideEnabled = true;
 
     @Column(name = "scale", nullable = false)
-    private byte scale;
+    private byte scale = 1;
 
     @Column(name = "bar_state", nullable = false)
-    private String barState;
+    private String barState = "";
 
     //Gameplay settings
     @Column(name = "gameplay_not_set", nullable = false)
     private boolean gameplayNotSet;
 
-
     @Column(name = "auto_refinement", nullable = false)
-    private boolean autoRefinement;
-
+    private boolean autoRefinement = true;
 
     @Column(name = "quick_slot_stop_attack", nullable = false)
-    private boolean quickSlotStopAttack;
-
+    private boolean quickSlotStopAttack = true;
 
     @Column(name = "auto_boost", nullable = false)
-    private boolean autoBoost;
-
+    private boolean autoBoost = true;
 
     @Column(name = "auto_buy_booty_keys", nullable = false)
-    private boolean autoBuyBootyKeys;
-
+    private boolean autoBuyBootyKeys = true;
 
     @Column(name = "double_click_attack_enabled", nullable = false)
-    private boolean doubleClickAttackEnabled;
-
+    private boolean doubleClickAttackEnabled = true;
 
     @Column(name = "auto_change_ammo", nullable = false)
-    private boolean autoChangeAmmo;
-
+    private boolean autoChangeAmmo = true;
 
     @Column(name = "auto_start_enabled", nullable = false)
-    private boolean autoStartEnabled;
-
+    private boolean autoStartEnabled = true;
 
     @Column(name = "show_battleray_notifications", nullable = false)
-    private boolean showBattlerayNotifications;
-
+    private boolean showBattlerayNotifications = true;
 
     @Column(name = "show_low_hp_warn", nullable = false)
-    private boolean showLowHpWarn;
+    private boolean showLowHpWarn = true;
 
     // Audio settings
     @Column(name = "audio_not_set", nullable = false)
     private boolean audioNotSet;
 
     @Column(name = "play_combat_music", nullable = false)
-    private boolean playCombatMusic;
+    private boolean playCombatMusic = true;
 
     @Column(name = "voice", nullable = false)
     private byte voice;
@@ -236,6 +226,25 @@ public class AccountsSettingsEntity {
 
     @Column(name = "quests_completed_filter", nullable = false)
     private boolean questsCompletedFilter;
+
+    // Window settings
+    @Column(name = "resolution_id", nullable = false)
+    private byte resolutionId = 1;
+
+    @Column(name = "minimap_scale", nullable = false)
+    private byte minimapScale = 1;
+
+    @Column(name = "window_settings", nullable = false)
+    private String windowSettings = "0,9,4,1,1,232,3,1,3,780,388,1,5,5,5,0,10,5,288,0,13,187,50,0,20,5,402,1,22,347,188,0,23,458,1,1,24,284,25,0";
+
+    @Column(name = "quickbar_slot", nullable = false)
+    private String quickbarSlot = "-1,-1,-1,-1,-1,-1,-1,-1,-1,-1";
+
+    @Column(name = "slot_menu_position", nullable = false)
+    private String slotMenuPosition = "313,451";
+
+    @Column(name = "slot_menu_order", nullable = false)
+    private byte slotMenuOrder;
 
     @Data
     @AllArgsConstructor
