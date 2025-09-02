@@ -7,7 +7,7 @@ import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.util.ServerCommands;
 import com.kalaazu.server.game.v4.commands.out.settings.ClientSettingsCommand;
-import com.kalaazu.server.game.v4.commands.out.settings.GameplaySettingsCommand;
+import com.kalaazu.server.game.v4.commands.out.attributes.SetFlashSettingsCommand;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
                 .orElseThrow();
 
         return List.of(
-                new GameplaySettingsCommand(
+                new SetFlashSettingsCommand(
                         settings.isAutoBoost(),
                         settings.isDisplayPlayerNames(),
                         settings.isDisplayResources(),

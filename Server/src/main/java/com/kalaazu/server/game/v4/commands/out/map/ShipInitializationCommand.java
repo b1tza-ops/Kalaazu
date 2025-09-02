@@ -1,9 +1,8 @@
 package com.kalaazu.server.game.v4.commands.out.map;
 
-import com.kalaazu.model.Version;
 import com.kalaazu.server.game.Packet;
-import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.util.ServerCommands;
+import com.kalaazu.server.game.v4.OutCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 @Data
 @AllArgsConstructor
 public class ShipInitializationCommand extends OutCommand {
-    private final Version gameVersion = Version.V4;
     private final String id = ServerCommands.HERO_INIT;
 
     private final int userId;

@@ -1,15 +1,14 @@
-package com.kalaazu.server.game.v4.commands.out.settings;
+package com.kalaazu.server.game.v4.commands.out.attributes;
 
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.util.ServerCommands;
-import com.kalaazu.server.game.v4.OutCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GameplaySettingsCommand extends OutCommand {
-    private final static String id = ServerCommands.SET_ATTRIBUTE;
+public class SetFlashSettingsCommand extends SetAttributeCommand {
+    private final String attribute = ServerCommands.SET_FLASH_SETTINGS;
 
     private final boolean autoBoost;
     private final boolean displayPlayerNames;
@@ -25,25 +24,8 @@ public class GameplaySettingsCommand extends OutCommand {
     private final boolean displayNotFreeCargoBoxes;
     private final boolean autoChangeAmmo;
 
-    /*
-         Settings.autoBoost = Boolean(int(param1[0]));
-         Settings.displayPlayerNames = Boolean(int(param1[4]));
-         Settings.displayResources = Boolean(int(param1[7]));
-         Settings.displayBonusBoxes = Boolean(int(param1[8]));
-         Settings.displayHitpointBubbles = Boolean(int(param1[14]));
-         Settings.playSFX = Boolean(int(param1[11]));
-         Settings.playMusic = Boolean(int(param1[12]));
-         Settings.selectedLaser = int(param1[15]);
-         Settings.selectedRocket = int(param1[16]);
-         Settings.displayChat = Boolean(int(param1[18]));
-         Settings.displayFreeCargoBoxes = Boolean(int(param1[21]));
-         Settings.displayNotFreeCargoBoxes = Boolean(int(param1[22]));
-         Settings.autochangeAmmo = Boolean(int(param1[23]));
-     */
     @Override
-    public void write(Packet packet) {
-        packet.writeString(id);
-        packet.writeString(ServerCommands.SET);
+    public void subWrite(Packet packet) {
         packet.writeBoolean(autoBoost);
         packet.writeBoolean(false);
         packet.writeBoolean(false);

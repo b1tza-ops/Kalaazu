@@ -8,6 +8,7 @@ import com.kalaazu.persistence.entity.AccountsShipsEntity;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
+import com.kalaazu.server.game.v4.commands.out.attributes.UpdateConfigurationCountCommand;
 import com.kalaazu.server.game.v4.commands.out.map.ShipInitializationCommand;
 import com.kalaazu.server.game.v4.commands.out.user.PrimaryWeaponInfoCommand;
 import com.kalaazu.server.game.v4.commands.out.user.SecondaryWeaponInfoCommand;
@@ -119,6 +120,7 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 items.mine_sab(),
                 items.mine_ddm()
         ));
+        cmds.add(new UpdateConfigurationCountCommand(config.getConfigurationId()));
 
         return cmds;
     }
