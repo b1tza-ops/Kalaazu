@@ -1,4 +1,4 @@
-package com.kalaazu.server.game;
+package com.kalaazu.model;
 
 /**
  * Version enum.

@@ -1,6 +1,6 @@
 package com.kalaazu.server.game.v10.commands;
 
-import com.kalaazu.server.game.Version;
+import com.kalaazu.model.Version;
 
 /**
  * Out Command.

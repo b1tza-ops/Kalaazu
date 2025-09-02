@@ -1,7 +1,7 @@
 package com.kalaazu.server.game.v10.handler;
 
 import com.kalaazu.server.game.Packet;
-import com.kalaazu.server.game.Version;
+import com.kalaazu.model.Version;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.util.Handler;
 import com.kalaazu.server.game.v10.commands.LegacyHandler;

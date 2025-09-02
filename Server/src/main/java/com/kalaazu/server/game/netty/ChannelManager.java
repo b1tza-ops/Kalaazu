@@ -2,7 +2,7 @@ package com.kalaazu.server.game.netty;
 
 import com.kalaazu.server.event.*;
 import com.kalaazu.server.game.Packet;
-import com.kalaazu.server.game.Version;
+import com.kalaazu.model.Version;
 import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.util.Handler;
 import io.netty.channel.Channel;

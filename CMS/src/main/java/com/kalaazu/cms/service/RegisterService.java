@@ -1,9 +1,9 @@
 package com.kalaazu.cms.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kalaazu.model.Version;
 import com.kalaazu.persistence.entity.*;
 import com.kalaazu.persistence.service.*;
-import com.kalaazu.service.DefaultGameSettingsService;
 import com.kalaazu.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,6 @@ public class RegisterService {
     private final AccountsConfigurationsAccountsItemsService accountsConfigItems;
     private final RanksService ranks;
 
-    private final DefaultGameSettingsService defaultGameSettingsService;
     private final com.kalaazu.service.ItemsService itemsService;
     private final ObjectMapper mapper;
 
@@ -194,33 +193,15 @@ public class RegisterService {
     private List<AccountsSettingsEntity> createSettings(AccountsEntity account) {
         var ret = new ArrayList<AccountsSettingsEntity>();
 
-        var keybindings = defaultGameSettingsService.getKeybindings();
-        keybindings.forEach(k -> ret.add(saveSetting(1, k.actionType() + "_" + k.parameter(), account, k)));
+        for (Version version : Version.values()) {
+            var settings = new AccountsSettingsEntity();
+            settings.setAccountsByAccountsId(account);
+            settings.setVersion(version.name());
 
-        ret.add(saveSetting(2, "quality", account, defaultGameSettingsService.getQualitySettings()));
-        ret.add(saveSetting(3, "display", account, defaultGameSettingsService.getDisplaySettings()));
-        ret.add(saveSetting(4, "quest", account, defaultGameSettingsService.getQuestSettings()));
-        ret.add(saveSetting(5, "window", account, defaultGameSettingsService.getWindowSettings()));
-        ret.add(saveSetting(6, "gameplay", account, defaultGameSettingsService.getGameplaySettings()));
-        ret.add(saveSetting(7, "audio", account, defaultGameSettingsService.getAudioSettings()));
-
-        return ret;
-    }
-
-    private AccountsSettingsEntity saveSetting(int type, String name, AccountsEntity account, Object setting) {
-        try {
-            var set = new AccountsSettingsEntity();
-            set.setType(type);
-            set.setName(name);
-            set.setValue(mapper.writeValueAsString(setting));
-            set.setAccountsByAccountsId(account);
-
-            return this.accountsSettings.create(set);
-        } catch (Exception e) {
-            log.warn("Couldn't create keybinding!", e);
+            ret.add(settings);
         }
 
-        return null;
+        return ret;
     }
 
     /**

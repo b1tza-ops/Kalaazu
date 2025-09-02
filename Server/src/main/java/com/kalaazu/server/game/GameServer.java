@@ -1,5 +1,6 @@
 package com.kalaazu.server.game;
 
+import com.kalaazu.model.Version;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;

@@ -1,6 +1,6 @@
 package com.kalaazu.server.game.commands;
 
-import com.kalaazu.server.game.Version;
+import com.kalaazu.model.Version;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

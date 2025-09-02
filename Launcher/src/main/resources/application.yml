@@ -20,7 +20,7 @@ spring:
 
 app:
   game:
-    version: ${GAME_VERSION:V4} # Game server version, see com.kalaazu.server.game.Version
+    version: ${GAME_VERSION:V4} # Game server version, see com.kalaazu.model.Version
     packets:
       printOut: true
       printIn: true

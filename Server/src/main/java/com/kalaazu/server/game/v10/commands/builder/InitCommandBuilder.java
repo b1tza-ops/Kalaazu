@@ -4,7 +4,7 @@ import com.kalaazu.persistence.entity.AccountsConfigurationsEntity;
 import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.entity.AccountsHangarsEntity;
 import com.kalaazu.persistence.entity.AccountsShipsEntity;
-import com.kalaazu.server.game.Version;
+import com.kalaazu.model.Version;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
