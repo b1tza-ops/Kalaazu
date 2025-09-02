@@ -16,7 +16,7 @@ import java.util.List;
 public class PacketSerializer extends MessageToMessageCodec<String, Packet> {
     @Override
     protected void encode(ChannelHandlerContext ctx, Packet packet, List<Object> out) {
-        out.add(packet.toString() + "\n");
+        out.add(packet.toString() + "\n\u0000");
     }
 
     @Override

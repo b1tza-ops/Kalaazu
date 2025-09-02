@@ -40,7 +40,7 @@ public class AccountsItemsEntity {
     @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "items_id", referencedColumnName = "id", nullable = false)
     private ItemsEntity itemsByItemsId;
 

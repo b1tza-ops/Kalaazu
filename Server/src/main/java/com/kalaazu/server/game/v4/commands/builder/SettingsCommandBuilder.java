@@ -52,16 +52,19 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
 
         return List.of(
                 new GameplaySettingsCommand(
-                        settings.isGameplayNotSet(),
-                        settings.isAutoRefinement(),
-                        settings.isQuickSlotStopAttack(),
                         settings.isAutoBoost(),
-                        settings.isAutoBuyBootyKeys(),
-                        settings.isDoubleClickAttackEnabled(),
-                        settings.isAutoChangeAmmo(),
-                        settings.isAutoStartEnabled(),
-                        settings.isShowBattlerayNotifications(),
-                        settings.isShowLowHpWarn()
+                        settings.isDisplayPlayerNames(),
+                        settings.isDisplayResources(),
+                        settings.isDisplayBonusBoxes(),
+                        settings.getSound() > 0,
+                        settings.getMusic() > 0,
+                        settings.isDisplayHitpointBubbles(),
+                        1, // TODO selected laser
+                        1, // TODO selected rocket
+                        settings.isDisplayChat(),
+                        settings.isDisplayFreeCargoBoxes(),
+                        settings.isDisplayNotFreeCargoBoxes(),
+                        settings.isAutoChangeAmmo()
                 ),
                 new ClientSettingsCommand(ServerCommands.SET_MINIMAP_SCALE + ServerCommands.SETTING_KEY_SEPERATOR + settings.getResolutionId(), String.valueOf(settings.getMinimapScale())),
                 new ClientSettingsCommand(ServerCommands.SET_DISPLAY_PLAYER_NAMES, settings.isDisplayPlayerNames() ? 1 : 0),

@@ -81,7 +81,7 @@ public class Packet implements com.kalaazu.server.game.Packet {
 
     @Override
     public void writeBoolean(boolean b) {
-        this.out.add(Boolean.toString(b));
+        this.out.add(b ? "1" : "0");
     }
 
     @Override
