@@ -91,7 +91,6 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 account.getRanksId(),
                 clanTag,
                 0, // TODO account rings
-                false,
                 false // TODO account cloacked
         ));
 
