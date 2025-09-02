@@ -149,13 +149,10 @@ public class Packet implements com.kalaazu.server.game.Packet {
 
     @Override
     public String toString() {
-        var out = "0|" + String.join("|", this.out);
-        var in = String.join("|", this.in);
-
-        if (out.isBlank()) {
-            return in;
+        if (!this.out.isEmpty()) {
+            return "0|" + String.join("|", this.out);
         }
 
-        return out;
+        return String.join("|", this.in);
     }
 }

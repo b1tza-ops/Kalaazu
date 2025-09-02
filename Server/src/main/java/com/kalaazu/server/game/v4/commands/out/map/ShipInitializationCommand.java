@@ -43,7 +43,6 @@ public class ShipInitializationCommand extends OutCommand {
     private final int rank;
     private final String clanTag;
     private final int rings;
-    private final boolean isNpc;
     private final boolean isCloacked;
 
     @Override
@@ -73,10 +72,11 @@ public class ShipInitializationCommand extends OutCommand {
         packet.writeInt(level);
         packet.writeLong(credits);
         packet.writeLong(uridium);
+        packet.writeInt(jackpot);
         packet.writeInt(rank);
         packet.writeString(clanTag);
         packet.writeInt(rings);
-        packet.writeBoolean(isNpc);
+        packet.writeBoolean(false);
         packet.writeBoolean(isCloacked);
     }
 }
