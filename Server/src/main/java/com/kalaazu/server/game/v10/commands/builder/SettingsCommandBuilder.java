@@ -1,18 +1,17 @@
 package com.kalaazu.server.game.v10.commands.builder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kalaazu.model.Version;
 import com.kalaazu.persistence.entity.AccountsSettingsEntity;
 import com.kalaazu.persistence.entity.ItemCategory;
 import com.kalaazu.persistence.entity.ItemType;
 import com.kalaazu.persistence.entity.ItemsEntity;
 import com.kalaazu.persistence.service.ItemsService;
-import com.kalaazu.server.game.Version;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.v10.commands.out.settings.*;
 import com.kalaazu.server.game.v10.commands.out.ui.*;
-import com.kalaazu.service.DefaultGameSettingsService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -50,6 +49,11 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
     public static final String PREMIUM_SLOT_BAR = "premiumSlotBar";
     public static final String PRO_ACTION_BAR = "proActionBar";
 
+    private final Version gameVersion = Version.V10;
+    private final CommandType commandType = CommandType.SettingsCommand;
+    private final ObjectMapper mapper;
+    private final ItemsService items;
+
     private static ClientUiTooltipCommand buildTooltip(short formatType, String tooltip, String replacementValue, String replacementWildcard) {
         var textReplacements = new ArrayList<ClientUiTextReplacementCommand>();
 
@@ -65,13 +69,6 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
         return new ClientUiTooltipCommand(ClientUiTooltipCommand.STANDARD, formatLocalized, textReplacements, tooltip);
     }
 
-    private final Version gameVersion = Version.V10;
-    private final CommandType commandType = CommandType.SettingsCommand;
-
-    private final ObjectMapper mapper;
-    private final ItemsService items;
-    private final DefaultGameSettingsService defaultGameSettingsService;
-
     /**
      * Builds the necessary commands for the given arguments.
      * <p>
@@ -81,56 +78,135 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
      * @param arguments Command arguments.
      * @return Command for the given arguments.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<OutCommand> build(Object[] arguments) {
-        var accountsSettings = (Collection<AccountsSettingsEntity>) arguments[0];
-
-        var keybindings = new ArrayList<KeybindingCommand>();
-        var commands = new HashMap<Integer, OutCommand>();
-        var slotbars = new HashMap<String, List<ClientUiSlotBarItemCommand>>();
-
-        accountsSettings.forEach(s -> {
-            switch (s.getType()) {
-                case 1 -> keybindings.add(mapper.convertValue(s.getValue(), KeybindingCommand.class));
-                case 2 -> commands.put(1, mapper.convertValue(s.getValue(), UpdateQualitySettingsCommand.class));
-                case 3 -> commands.put(2, mapper.convertValue(s.getValue(), UpdateDisplaySettingsCommand.class));
-                case 4 -> commands.put(3, mapper.convertValue(s.getValue(), UpdateQuestsSettingsCommand.class));
-                case 5 -> commands.put(4, mapper.convertValue(s.getValue(), UpdateWindowSettingsCommand.class));
-                case 6 -> commands.put(5, mapper.convertValue(s.getValue(), UpdateGameplaySettingsCommand.class));
-                case 7 -> commands.put(6, mapper.convertValue(s.getValue(), UpdateAudioSettingsCommand.class));
-                case 8 ->
-                        slotbars.computeIfAbsent(s.getName(), (s1) -> new ArrayList<>()).add(mapper.convertValue(s.getValue(), ClientUiSlotBarItemCommand.class));
-            }
-        });
+        var settings = ((Collection<AccountsSettingsEntity>) arguments[0])
+                .stream()
+                .filter(s -> gameVersion.name().equalsIgnoreCase(s.getVersion()))
+                .findFirst()
+                .orElseThrow();
 
         var cmds = new ArrayList<OutCommand>();
-        cmds.add(buildKeybindingSettings(keybindings));
-        cmds.add(buildUserSettings(commands));
+        cmds.add(buildKeybindingSettings(settings.getKeybindings()));
+        cmds.add(buildUserSettings(settings));
         cmds.add(buildMenuBar());
-        cmds.add(buildSlotBar(slotbars));
 
         return cmds;
     }
 
-    private UpdateUserKeybindingsCommand buildKeybindingSettings(List<KeybindingCommand> keybindings) {
-        return new UpdateUserKeybindingsCommand(false, keybindings);
+    private UpdateUserKeybindingsCommand buildKeybindingSettings(List<AccountsSettingsEntity.Keybinding> keybindings) {
+        var commands = keybindings.stream()
+                .map(k -> {
+                    var cmd = new KeybindingCommand();
+                    cmd.setActionType(k.getActionType());
+                    cmd.setParameter(k.getParameter());
+                    cmd.setCharCode(k.getCharCode());
+                    cmd.setKeys(k.getKeys());
+
+                    return cmd;
+                })
+                .toList();
+
+        return new UpdateUserKeybindingsCommand(false, commands);
     }
 
-    private UpdateUserSettingsCommand buildUserSettings(Map<Integer, OutCommand> commands) {
+    private UpdateUserSettingsCommand buildUserSettings(AccountsSettingsEntity settings) {
+        var qualitySettings = new UpdateQualitySettingsCommand(
+                settings.isQualityNotSet(),
+                settings.getQualityAttack(),
+                settings.getQualityBackground(),
+                settings.getQualityPresetting(),
+                settings.isQualityCustomized(),
+                settings.getQualityPOIzone(),
+                settings.getQualityShip(),
+                settings.getQualityEngine(),
+                settings.getQualityExplosion(),
+                settings.getQualityCollectables(),
+                settings.getQualityEffect()
+        );
+
+        var questsSettings = new UpdateQuestsSettingsCommand(
+                settings.isQuestsLevelOrderDescending(),
+                settings.isQuestsAvailableFilter(),
+                settings.isQuestsUnavailableFilter(),
+                settings.isQuestsCompletedFilter()
+        );
+
+        var displaySettings = new UpdateDisplaySettingsCommand(
+                settings.isDisplayNotSet(),
+                settings.isDisplayPlayerNames(),
+                settings.isDisplayResources(),
+                settings.isShowPremiumQuickslotBar(),
+                settings.isAllowAutoQuality(),
+                settings.isPreloadUserShips(),
+                settings.isDisplayHitpointBubbles(),
+                settings.isShowNotOwnedItems(),
+                settings.isDisplayChat(),
+                settings.isDisplayWindowsBackground(),
+                settings.isDisplayNotFreeCargoBoxes(),
+                settings.isDragWindowsAlways(),
+                settings.isDisplayNotifications(),
+                settings.isHoverShips(),
+                settings.isDisplayDrones(),
+                settings.isDisplayBonusBoxes(),
+                settings.isDisplayFreeCargoBoxes(),
+                settings.isShowMinimapBackground(),
+                settings.isForce2D(),
+                settings.getDisplaySetting3DqualityAntialias(),
+                settings.getQualityBackground(),
+                settings.getDisplaySetting3DqualityEffects(),
+                settings.getDisplaySetting3DqualityLights(),
+                settings.getDisplaySetting3DqualityTextures(),
+                settings.getQualityPOIzone(),
+                settings.getDisplaySetting3DsizeTextures(),
+                settings.getDisplaySetting3DtextureFiltering(),
+                settings.isProActionBarEnabled(),
+                settings.isProActionBarKeyboardInputEnabled(),
+                settings.isProActionBarAutohideEnabled()
+        );
+
+        var windowSettings = new UpdateWindowSettingsCommand(
+                settings.isHideAllWindows(),
+                settings.getScale(),
+                settings.getBarState()
+        );
+
+        var gameplaySettings = new UpdateGameplaySettingsCommand(
+                settings.isGameplayNotSet(),
+                settings.isAutoRefinement(),
+                settings.isQuickSlotStopAttack(),
+                settings.isAutoBoost(),
+                settings.isAutoBuyBootyKeys(),
+                settings.isDoubleClickAttackEnabled(),
+                settings.isAutoChangeAmmo(),
+                settings.isAutoStartEnabled(),
+                settings.isShowBattlerayNotifications(),
+                settings.isShowLowHpWarn()
+        );
+
+        var audioSettings = new UpdateAudioSettingsCommand(
+                settings.isAudioNotSet(),
+                settings.isPlayCombatMusic(),
+                settings.getVoice(),
+                settings.getSound(),
+                settings.getMusic()
+        );
+
         return new UpdateUserSettingsCommand(
-                (UpdateQualitySettingsCommand) commands.get(1),
-                (UpdateQuestsSettingsCommand) commands.get(3),
-                (UpdateDisplaySettingsCommand) commands.get(2),
-                (UpdateWindowSettingsCommand) commands.get(4),
-                (UpdateGameplaySettingsCommand) commands.get(5),
-                (UpdateAudioSettingsCommand) commands.get(6)
+                qualitySettings,
+                questsSettings,
+                displaySettings,
+                windowSettings,
+                gameplaySettings,
+                audioSettings
         );
     }
 
     private MenuBarCommand buildMenuBar() {
         var menuBarCommands = new ArrayList<ClientUiMenuBarCommand>();
-        var defaultWindows = defaultGameSettingsService.getWindows();
-        var defaultWindow = defaultGameSettingsService.getDefaultWindow();
+        var defaultWindows = this.getWindows();
+        var defaultWindow = this.getDefaultWindow();
 
         var leftItems = new HashMap<String, String>();
         var rightItems = new HashMap<String, String>();
@@ -314,7 +390,7 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
         return tooltips;
     }
 
-    private ClientUiMenuBarCommand buildMenuBar(HashMap<String, String> items, Map<String, DefaultGameSettingsService.Window> defaultWindows, DefaultGameSettingsService.Window defaultWindow, boolean isLeft) {
+    private ClientUiMenuBarCommand buildMenuBar(HashMap<String, String> items, Map<String, Window> defaultWindows, Window defaultWindow, boolean isLeft) {
         var position = gameFeatureBarPosition;
         var type = ClientUiMenuBarCommand.GAME_FEATURE_BAR;
         if (!isLeft) {
@@ -360,5 +436,40 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
                 menuItems,
                 gameFeatureBarLayoutType
         );
+    }
+
+
+    public Map<String, Window> getWindows() {
+        var map = new HashMap<String, Window>();
+        map.put("user", new Window(0, 97, 212, 88, true));
+        map.put("ship", new Window(72, 97, 212, 88, true));
+        map.put("ship_warp", new Window(50, 50, 300, 210, false));
+        map.put("chat", new Window(0, 7, 370, 260, true));
+        map.put("group", new Window(100, 30, 196, 200, true));
+        map.put("minimap", new Window(100, 100, 238, 180, true));
+        map.put("spacemap", new Window(10, 10, 650, 475, false));
+        map.put("log", new Window(30, 30, 240, 150, false));
+        map.put("pet", new Window(50, 50, 260, 130, false));
+        map.put("spaceball", new Window(10, 10, 170, 70, false));
+        map.put("booster", new Window(10, 10, 110, 150, false));
+        map.put("traininggrounds", new Window(10, 10, 320, 320, false));
+        map.put("settings", new Window(50, 50, 400, 470, false));
+        map.put("help", new Window(10, 10, 219, 121, false));
+        map.put("logout", new Window(50, 50, 200, 200, false));
+
+        return map;
+    }
+
+    public Window getDefaultWindow() {
+        return new Window(30, 30, 200, 100, false);
+    }
+
+    public record Window(
+            int x,
+            int y,
+            int width,
+            int height,
+            boolean maximized
+    ) {
     }
 }
