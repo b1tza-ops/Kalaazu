@@ -1,6 +1,8 @@
 package com.kalaazu.server.service;
 
+import com.kalaazu.persistence.entity.AccountsConfigurationsEntity;
 import com.kalaazu.persistence.entity.AccountsEntity;
+import com.kalaazu.persistence.entity.AccountsHangarsEntity;
 import com.kalaazu.persistence.entity.ItemType;
 import com.kalaazu.persistence.service.UsersService;
 import com.kalaazu.server.event.EndGameSessionEvent;
@@ -106,6 +108,21 @@ public class SessionInitializationService {
         var sab50 = 0L;
         var rsb75 = 0L;
 
+        var r310 = 0L;
+        var plt2026 = 0L;
+        var plt2021 = 0L;
+        var plt3030 = 0L;
+        var pld8 = 0L;
+        var dcr_250 = 0L;
+        var wiz = 0L;
+        var mine = 0L;
+        var smartbomb = 0L; // TODO add accounts.config.hasExtra()
+        var instashield = 0L; // "
+        var emp = 0L;
+        var mine_emp = 0L;
+        var mine_sab = 0L;
+        var mine_ddm = 0L;
+
         for (var item : account.getAccountsItems()) {
             var i = item.getItemsByItemsId();
             var amount = item.getAmount();
@@ -116,6 +133,7 @@ public class SessionInitializationService {
                 case "currency_jackpot" -> jpt = amount;
                 case "stats_experience" -> exp = amount;
                 case "stats_honor" -> hon = amount;
+
                 case "ammunition_laser_lcb-10" -> lcb10 = amount;
                 case "ammunition_laser_mcb-25" -> mcb25 = amount;
                 case "ammunition_laser_mcb-50" -> mcb50 = amount;
@@ -123,6 +141,18 @@ public class SessionInitializationService {
                 case "ammunition_laser_ucb-100" -> ucb100 = amount;
                 case "ammunition_laser_rsb-75" -> rsb75 = amount;
 
+                case "ammunition_rocket_r-310" -> r310 = amount;
+                case "ammunition_rocket_plt-2021" ->  plt2021 = amount;
+                case "ammunition_rocket_plt-2026" -> plt2026 = amount;
+                case "ammunition_rocket_plt-3030" ->  plt3030 = amount;
+                case "ammunition_specialammo_dcr-250" ->  dcr_250 = amount;
+                case "ammunition_specialammo_pld-8" -> pld8 = amount;
+                case "ammunition_specialammo_wiz-x" ->  wiz = amount;
+                case "ammunition_mine_acm-01" ->  mine = amount;
+                case "ammunition_mine_ddm-01" -> mine_ddm = amount;
+                case "ammunition_mine_empm-01" ->  mine_emp = amount;
+                case "ammunition_mine_sabm-01" ->  mine_sab = amount;
+                case "ammunition_specialammo_emp-01" -> emp = amount;
             }
 
             switch (i.getType()) {
@@ -157,7 +187,21 @@ public class SessionInitializationService {
                 mcb50,
                 ucb100,
                 sab50,
-                rsb75
+                rsb75,
+                r310,
+                plt2026,
+                plt2021,
+                plt3030,
+                pld8,
+                dcr_250,
+                wiz,
+                mine,
+                smartbomb,
+                instashield,
+                emp,
+                mine_emp,
+                mine_sab,
+                mine_ddm
         );
     }
 
@@ -179,7 +223,23 @@ public class SessionInitializationService {
             long mcb50,
             long ucb100,
             long sab50,
-            long rsb75
+            long rsb75,
+
+
+            long r310,
+            long plt2026,
+            long plt2021,
+            long plt3030,
+            long pld8,
+            long dcr_250,
+            long wiz,
+            long mine,
+            long smartbomb,
+            long instashield,
+            long emp,
+            long mine_emp,
+            long mine_sab,
+            long mine_ddm
     ) {
     }
 }

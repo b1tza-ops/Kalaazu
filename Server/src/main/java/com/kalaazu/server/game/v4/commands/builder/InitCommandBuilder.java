@@ -10,6 +10,7 @@ import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.v4.commands.out.map.ShipInitializationCommand;
 import com.kalaazu.server.game.v4.commands.out.user.PrimaryWeaponInfoCommand;
+import com.kalaazu.server.game.v4.commands.out.user.SecondaryWeaponInfoCommand;
 import com.kalaazu.server.service.SessionInitializationService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -101,6 +102,22 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 items.ucb100(),
                 items.sab50(),
                 items.rsb75()
+        ));
+        cmds.add(new SecondaryWeaponInfoCommand(
+                items.r310(),
+                items.plt2026(),
+                items.plt2021(),
+                items.plt3030(),
+                items.pld8(),
+                items.dcr_250(),
+                items.wiz(),
+                items.mine(),
+                items.smartbomb(),
+                items.instashield(),
+                items.emp(),
+                items.mine_emp(),
+                items.mine_sab(),
+                items.mine_ddm()
         ));
 
         return cmds;
