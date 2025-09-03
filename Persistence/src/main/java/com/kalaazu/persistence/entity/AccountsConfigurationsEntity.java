@@ -3,6 +3,9 @@ package com.kalaazu.persistence.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * Accounts configurations entity.
  * ===============================
@@ -49,4 +52,7 @@ public class AccountsConfigurationsEntity {
     @Basic
     @Column(name = "accounts_hangars_id", nullable = false, insertable = false, updatable = false)
     private int accountsHangarsId = 0;
+
+    @OneToMany(mappedBy = "accountsConfigurationsByAccountsConfigurationsId", fetch = FetchType.LAZY)
+    private Collection<AccountsConfigurationsAccountsItemsEntity> accountsConfigurationsAccountsItems = new HashSet<>();
 }

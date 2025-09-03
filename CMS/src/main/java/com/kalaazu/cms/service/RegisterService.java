@@ -126,6 +126,11 @@ public class RegisterService {
      */
     private void addItemsToConfig(List<AccountsItemsEntity> items, Map<Integer, AccountsConfigurationsEntity> configs) {
         configs.forEach((configId, config) -> items.forEach((item) -> {
+            var i = item.getItemsByItemsId();
+            if (i.getCategory() != ItemCategory.EQUIPMENT) {
+                return;
+            }
+
             var configItem = new AccountsConfigurationsAccountsItemsEntity();
             configItem.setAccountsItemsByAccountsItemsId(item);
             configItem.setAccountsConfigurationsByAccountsConfigurationsId(config);
@@ -133,7 +138,6 @@ public class RegisterService {
             this.accountsConfigItems.create(configItem);
 
             // Update config stats
-            var i = item.getItemsByItemsId();
             switch (i.getType()) {
                 case LASER -> config.setDamage(config.getDamage() + i.getBonus());
                 case SHIELD_GENERATOR -> config.setShield(config.getShield() + i.getBonus());
