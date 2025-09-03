@@ -10,6 +10,7 @@ import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.v4.commands.out.attributes.UpdateConfigurationCountCommand;
 import com.kalaazu.server.game.v4.commands.out.map.ShipInitializationCommand;
+import com.kalaazu.server.game.v4.commands.out.techs.SetTechStatusCommand;
 import com.kalaazu.server.game.v4.commands.out.user.PrimaryWeaponInfoCommand;
 import com.kalaazu.server.game.v4.commands.out.user.SecondaryWeaponInfoCommand;
 import com.kalaazu.server.service.SessionInitializationService;
@@ -96,6 +97,32 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         );
     }
 
+    private static SetTechStatusCommand buildSetTechStatus(SessionInitializationService.CalculatedItems items) {
+        return new SetTechStatusCommand(
+                items.energyLeechArrayStatus(),
+                items.energyLeechArrayAmount(),
+                items.energyLeechArraySecondsLeft(),
+                items.energyChainImpulseStatus(),
+                items.energyChainImpulseAmount(),
+                items.energyChainImpulseSecondsLeft(),
+                items.rocketProbabilityMaximizerStatus(),
+                items.rocketProbabilityMaximizerAmount(),
+                items.rocketProbabilityMaximizerSecondsLeft(),
+                items.shieldBackupStatus(),
+                items.shieldBackupAmount(),
+                items.shieldBackupSecondsLeft(),
+                items.battleRepairBotStatus(),
+                items.battleRepairBotAmount(),
+                items.battleRepairBotSecondsLeft(),
+                items.speedLeechStatus(),
+                items.speedLeechAmount(),
+                items.speedLeechSecondsLeft(),
+                items.clingingImpulseDroneStatus(),
+                items.clingingImpulseDroneAmount(),
+                items.clingingImpulseDroneSecondsLeft()
+        );
+    }
+
     /**
      * Builds the necessary commands for the given arguments.
      * <p>
@@ -119,7 +146,8 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 buildShipInitialization(account, ship, config, items, clanId, clanTag),
                 buildPrimaryWeaponInfo(items),
                 buildSecondaryWeaponInfo(items),
-                new UpdateConfigurationCountCommand(config.getConfigurationId())
+                new UpdateConfigurationCountCommand(config.getConfigurationId()),
+                buildSetTechStatus(items)
         );
     }
 }

@@ -1,6 +1,7 @@
 package com.kalaazu.server.service;
 
 import com.kalaazu.persistence.entity.AccountsEntity;
+import com.kalaazu.persistence.entity.AccountsTechfactoryItemsEntity;
 import com.kalaazu.persistence.entity.ItemType;
 import com.kalaazu.persistence.service.UsersService;
 import com.kalaazu.server.event.EndGameSessionEvent;
@@ -14,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Session initialization service.
@@ -130,6 +134,34 @@ public class SessionInitializationService {
         var mine_sab = 0L;
         var mine_ddm = 0L;
 
+        var energyLeechArrayStatus = 0L;
+        var energyLeechArrayAmount = 0L;
+        var energyLeechArraySecondsLeft = 0L;
+
+        var energyChainImpulseStatus = 0L;
+        var energyChainImpulseAmount = 0L;
+        var energyChainImpulseSecondsLeft = 0L;
+
+        var rocketProbabilityMaximizerStatus = 0L;
+        var rocketProbabilityMaximizerAmount = 0L;
+        var rocketProbabilityMaximizerSecondsLeft = 0L;
+
+        var shieldBackupStatus = 0L;
+        var shieldBackupAmount = 0L;
+        var shieldBackupSecondsLeft = 0L;
+
+        var battleRepairBotStatus = 0L;
+        var battleRepairBotAmount = 0L;
+        var battleRepairBotSecondsLeft = 0L;
+
+        var speedLeechStatus = 0L;
+        var speedLeechAmount = 0L;
+        var speedLeechSecondsLeft = 0L;
+
+        var clingingImpulseDroneStatus = 0L;
+        var clingingImpulseDroneAmount = 0L;
+        var clingingImpulseDroneSecondsLeft = 0L;
+
         for (var item : account.getAccountsItems()) {
             var i = item.getItemsByItemsId();
             var amount = item.getAmount();
@@ -178,23 +210,70 @@ public class SessionInitializationService {
             }
         }
 
+        for (var item : account.getAccountsTechfactoryItems()) {
+            var a = item.getAmount();
+            var s = item.getStatus();
+            var t = getTechItemSecondsLeft(item);
+
+            switch (item.getTechfactoryItemsId()) {
+                case 1 -> {
+                    energyLeechArrayAmount = a;
+                    energyLeechArrayStatus = s;
+                    energyLeechArraySecondsLeft = t;
+                }
+                case 2 -> {
+                    energyChainImpulseAmount = a;
+                    energyChainImpulseStatus = s;
+                    energyChainImpulseSecondsLeft = t;
+                }
+                case 3 -> {
+                    rocketProbabilityMaximizerAmount = a;
+                    rocketProbabilityMaximizerStatus = s;
+                    rocketProbabilityMaximizerSecondsLeft = t;
+                }
+                case 4 -> {
+                    shieldBackupAmount = a;
+                    shieldBackupStatus = s;
+                    shieldBackupSecondsLeft = t;
+                }
+                case 5 -> {
+                    battleRepairBotAmount = a;
+                    battleRepairBotStatus = s;
+                    battleRepairBotSecondsLeft = t;
+                }
+                case 6 -> {
+                    speedLeechAmount = a;
+                    speedLeechStatus = s;
+                    speedLeechSecondsLeft = t;
+                }
+                case 7 -> {
+                    clingingImpulseDroneAmount = a;
+                    clingingImpulseDroneStatus = s;
+                    clingingImpulseDroneSecondsLeft = t;
+                }
+            }
+        }
+
         return new CalculatedItems(
                 exp,
                 hon,
                 cre,
                 uri,
                 jpt,
+
                 cargo,
                 ammo,
                 rockets,
                 hellstorm,
                 mines,
+
                 lcb10,
                 mcb25,
                 mcb50,
                 ucb100,
                 sab50,
                 rsb75,
+
                 r310,
                 plt2026,
                 plt2021,
@@ -208,8 +287,45 @@ public class SessionInitializationService {
                 emp,
                 mine_emp,
                 mine_sab,
-                mine_ddm
+                mine_ddm,
+
+                energyLeechArrayStatus,
+                energyLeechArrayAmount,
+                energyLeechArraySecondsLeft,
+
+                energyChainImpulseStatus,
+                energyChainImpulseAmount,
+                energyChainImpulseSecondsLeft,
+
+                rocketProbabilityMaximizerStatus,
+                rocketProbabilityMaximizerAmount,
+                rocketProbabilityMaximizerSecondsLeft,
+
+                shieldBackupStatus,
+                shieldBackupAmount,
+                shieldBackupSecondsLeft,
+
+                battleRepairBotStatus,
+                battleRepairBotAmount,
+                battleRepairBotSecondsLeft,
+
+                speedLeechStatus,
+                speedLeechAmount,
+                speedLeechSecondsLeft,
+
+                clingingImpulseDroneStatus,
+                clingingImpulseDroneAmount,
+                clingingImpulseDroneSecondsLeft
         );
+    }
+
+    private long getTechItemSecondsLeft(AccountsTechfactoryItemsEntity item) {
+        var now = Instant.now();
+        var timerEnd = item.getDate().toInstant().plusSeconds(item.getTechfactoryItemsByTechfactoryItemsId().getCooldown());
+
+        var remaining = Duration.between(now, timerEnd).getSeconds();
+
+        return Math.max(remaining, 0);
     }
 
     public record CalculatedItems(
@@ -246,7 +362,35 @@ public class SessionInitializationService {
             long emp,
             long mine_emp,
             long mine_sab,
-            long mine_ddm
+            long mine_ddm,
+
+            long energyLeechArrayStatus,
+            long energyLeechArrayAmount,
+            long energyLeechArraySecondsLeft,
+
+            long energyChainImpulseStatus,
+            long energyChainImpulseAmount,
+            long energyChainImpulseSecondsLeft,
+
+            long rocketProbabilityMaximizerStatus,
+            long rocketProbabilityMaximizerAmount,
+            long rocketProbabilityMaximizerSecondsLeft,
+
+            long shieldBackupStatus,
+            long shieldBackupAmount,
+            long shieldBackupSecondsLeft,
+
+            long battleRepairBotStatus,
+            long battleRepairBotAmount,
+            long battleRepairBotSecondsLeft,
+
+            long speedLeechStatus,
+            long speedLeechAmount,
+            long speedLeechSecondsLeft,
+
+            long clingingImpulseDroneStatus,
+            long clingingImpulseDroneAmount,
+            long clingingImpulseDroneSecondsLeft
     ) {
     }
 }

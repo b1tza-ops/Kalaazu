@@ -28,6 +28,10 @@ public class AccountsTechfactoryItemsEntity {
     private short amount = 1;
 
     @Basic
+    @Column(name = "status", nullable = false)
+    private short status = 1;
+
+    @Basic
     @Column(name = "date")
     @CreationTimestamp
     private Timestamp date;
@@ -46,5 +50,5 @@ public class AccountsTechfactoryItemsEntity {
 
     @Basic
     @Column(name = "techfactory_items_id", nullable = false, insertable = false, updatable = false)
-    private byte rechfactoryItemsId = 0;
+    private byte techfactoryItemsId = 0;
 }

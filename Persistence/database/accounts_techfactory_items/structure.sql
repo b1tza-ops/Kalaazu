@@ -11,9 +11,9 @@ CREATE TABLE `accounts_techfactory_items`
     `techfactory_items_id` tinyint   NOT NULL
         COMMENT 'Item ID.',
     `amount`               smallint  NOT NULL DEFAULT 1
-        COMMENT 'Amount of build items.',
+        COMMENT 'Amount of completed items.',
     `date`                 timestamp NULL     DEFAULT NULL
-        COMMENT 'Date when the item started building.',
+        COMMENT 'Date when the item was last used.',
 
     CONSTRAINT `accounts_techfactory_items_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB
