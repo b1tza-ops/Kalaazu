@@ -158,7 +158,7 @@ public class AccountsEntity {
     @OneToMany(mappedBy = "accountsByAccountsId", fetch = FetchType.LAZY)
     private Collection<AccountsTechfactoriesEntity> accountsTechfactories = new HashSet<>();
 
-    @OneToMany(mappedBy = "accountsByAccountsId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "accountsByAccountsId", fetch = FetchType.EAGER)
     private Collection<AccountsTechfactoryItemsEntity> accountsTechfactoryItems = new HashSet<>();
 
     @OneToMany(mappedBy = "accountsByAccountsId", fetch = FetchType.LAZY)

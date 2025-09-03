@@ -28,7 +28,7 @@ public class AccountsConfigurationsAccountsItemsEntity {
     @Column(name = "accounts_configurations_id", nullable = false, insertable = false, updatable = false)
     private int accountsConfigurationsId = 0;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "accounts_items_id", referencedColumnName = "id")
     private AccountsItemsEntity accountsItemsByAccountsItemsId;
 

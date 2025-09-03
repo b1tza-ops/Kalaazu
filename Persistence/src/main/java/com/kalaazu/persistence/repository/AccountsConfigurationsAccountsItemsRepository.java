@@ -20,7 +20,7 @@ import java.util.List;
 @Repository
 public interface AccountsConfigurationsAccountsItemsRepository extends JpaRepository<AccountsConfigurationsAccountsItemsEntity, Integer> {
     @Query("""
-                SELECT i
+                SELECT ci
                 FROM AccountsConfigurationsEntity c
                 JOIN AccountsConfigurationsAccountsItemsEntity ci ON ci.accountsConfigurationsId = c.id
                 JOIN AccountsItemsEntity ai ON ai.id = ci.accountsItemsId
