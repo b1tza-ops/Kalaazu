@@ -1,13 +1,13 @@
 package com.kalaazu.server.entities;
 
 import com.kalaazu.math.Vector;
+import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.server.game.netty.GameSession;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -34,9 +34,9 @@ public class Player implements MovableMapEntity {
 
     private GameSession gameSession;
     private MapsEntity map;
+    private AccountsEntity account;
 
     @Async
-    @Scheduled(fixedDelay = 100)
     public void tick() {
         this.movementTick();
     }

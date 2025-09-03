@@ -11,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class MapService {
+    private final TaskScheduler taskScheduler;
     private final MapsService service;
     private final ApplicationContext ctx;
     private final Map<Short, Set<Npc>> npcs = new HashMap<>();
@@ -133,6 +136,7 @@ public class MapService {
         player.setId(account.getId());
         player.setPosition(ship.getPosition());
         player.setSpeed((short) (config.getSpeed() + 1000));
+        player.setAccount(account);
 
         session.setPlayer(player);
 
@@ -145,6 +149,7 @@ public class MapService {
                     commands.add(npc.getEntityCreationCommand());
                 });
 
+        taskScheduler.scheduleAtFixedRate(player::tick, Duration.ofSeconds(1));
 
         ctx.publishEvent(new SendCommandsEvent(session, commands, this));
     }
