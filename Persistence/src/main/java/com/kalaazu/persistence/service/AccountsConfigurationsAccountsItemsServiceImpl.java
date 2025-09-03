@@ -1,6 +1,8 @@
 package com.kalaazu.persistence.service;
 
 import com.kalaazu.persistence.entity.AccountsConfigurationsAccountsItemsEntity;
+import com.kalaazu.persistence.entity.AccountsConfigurationsEntity;
+import com.kalaazu.persistence.entity.ItemType;
 import com.kalaazu.persistence.repository.AccountsConfigurationsAccountsItemsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountsConfigurationsAccountsItemsServiceImpl implements AccountsConfigurationsAccountsItemsService {
     private final AccountsConfigurationsAccountsItemsRepository repository;
+
+    public List<AccountsConfigurationsAccountsItemsEntity> findConfiguredShipItemsByItemType(AccountsConfigurationsEntity configuration, ItemType... types) {
+        return repository.findAccountItemsByItemTypes(configuration.getId(), types);
+    }
 
     /**
      * @inheritDoc
