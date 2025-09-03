@@ -15,7 +15,6 @@ import com.kalaazu.server.game.v10.commands.out.player.BeaconCommand;
 import com.kalaazu.server.game.v10.commands.out.player.SetHealthPointsCommand;
 import com.kalaazu.server.game.v10.commands.out.player.SetShieldPointsCommand;
 import com.kalaazu.server.game.v10.commands.out.player.SetSpeedCommand;
-import com.kalaazu.server.service.SessionInitializationService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +35,9 @@ public class InitCommandBuilder implements CommandBuilderInterface {
     private final Version gameVersion = Version.V10;
     private final CommandType commandType = CommandType.InitCommands;
 
-    private static ShipInitializationCommand buildShipInitialization(AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config, SessionInitializationService.CalculatedItems items, int clanId, String clanTag) {
+    private static ShipInitializationCommand buildShipInitialization(AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config, int clanId, String clanTag) {
+        var items = account.getCalculatedItems();
+
         return new ShipInitializationCommand(
                 account.getId(),
                 account.getName(),
@@ -87,12 +88,11 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         var hangar = (AccountsHangarsEntity) arguments[1];
         var ship = (AccountsShipsEntity) arguments[2];
         var config = (AccountsConfigurationsEntity) arguments[3];
-        var items = (SessionInitializationService.CalculatedItems) arguments[4];
-        var clanId = (Integer) arguments[5];
-        var clanTag = (String) arguments[6];
+        var clanId = (Integer) arguments[4];
+        var clanTag = (String) arguments[5];
 
         return List.of(
-                buildShipInitialization(account, ship, config, items, clanId, clanTag),
+                buildShipInitialization(account, ship, config, clanId, clanTag),
                 new LegacyPacket(ServerCommands.SET_STATUS, ServerCommands.CONFIGURATION, config.getConfigurationId()),
                 new SetHealthPointsCommand(ship.getHealth(), config.getHealth(), ship.getNanohull(), ship.getShipsByShipsId().getHealth()),
                 new SetShieldPointsCommand(ship.getShield(), config.getShield()),

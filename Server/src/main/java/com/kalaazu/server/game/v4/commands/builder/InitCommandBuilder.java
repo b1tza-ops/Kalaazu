@@ -13,7 +13,6 @@ import com.kalaazu.server.game.v4.commands.out.map.ShipInitializationCommand;
 import com.kalaazu.server.game.v4.commands.out.techs.SetTechStatusCommand;
 import com.kalaazu.server.game.v4.commands.out.user.PrimaryWeaponInfoCommand;
 import com.kalaazu.server.game.v4.commands.out.user.SecondaryWeaponInfoCommand;
-import com.kalaazu.server.service.SessionInitializationService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,9 @@ public class InitCommandBuilder implements CommandBuilderInterface {
     private final Version gameVersion = Version.V4;
     private final CommandType commandType = CommandType.InitCommands;
 
-    private static SecondaryWeaponInfoCommand buildSecondaryWeaponInfo(SessionInitializationService.CalculatedItems items) {
+    private static SecondaryWeaponInfoCommand buildSecondaryWeaponInfo(AccountsEntity account) {
+        var items = account.getCalculatedItems();
+
         return new SecondaryWeaponInfoCommand(
                 items.r310(),
                 items.plt2026(),
@@ -52,7 +53,9 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         );
     }
 
-    private static PrimaryWeaponInfoCommand buildPrimaryWeaponInfo(SessionInitializationService.CalculatedItems items) {
+    private static PrimaryWeaponInfoCommand buildPrimaryWeaponInfo(AccountsEntity account) {
+        var items = account.getCalculatedItems();
+
         return new PrimaryWeaponInfoCommand(
                 items.lcb10(),
                 items.mcb25(),
@@ -63,7 +66,9 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         );
     }
 
-    private static ShipInitializationCommand buildShipInitialization(AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config, SessionInitializationService.CalculatedItems items, int clanId, String clanTag) {
+    private static ShipInitializationCommand buildShipInitialization(AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config, int clanId, String clanTag) {
+        var items = account.getCalculatedItems();
+
         return new ShipInitializationCommand(
                 account.getId(),
                 account.getName(),
@@ -97,7 +102,9 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         );
     }
 
-    private static SetTechStatusCommand buildSetTechStatus(SessionInitializationService.CalculatedItems items) {
+    private static SetTechStatusCommand buildSetTechStatus(AccountsEntity account) {
+        var items = account.getCalculatedItems();
+
         return new SetTechStatusCommand(
                 items.energyLeechArrayStatus(),
                 items.energyLeechArrayAmount(),
@@ -138,16 +145,15 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         var hangar = (AccountsHangarsEntity) arguments[1];
         var ship = (AccountsShipsEntity) arguments[2];
         var config = (AccountsConfigurationsEntity) arguments[3];
-        var items = (SessionInitializationService.CalculatedItems) arguments[4];
-        var clanId = (Integer) arguments[5];
-        var clanTag = (String) arguments[6];
+        var clanId = (Integer) arguments[4];
+        var clanTag = (String) arguments[5];
 
         return List.of(
-                buildShipInitialization(account, ship, config, items, clanId, clanTag),
-                buildPrimaryWeaponInfo(items),
-                buildSecondaryWeaponInfo(items),
+                buildShipInitialization(account, ship, config, clanId, clanTag),
+                buildPrimaryWeaponInfo(account),
+                buildSecondaryWeaponInfo(account),
                 new UpdateConfigurationCountCommand(config.getConfigurationId()),
-                buildSetTechStatus(items)
+                buildSetTechStatus(account)
         );
     }
 }
