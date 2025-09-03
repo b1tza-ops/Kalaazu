@@ -25,6 +25,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommandBuilder {
     private static CommandBuilder INSTANCE; // very bad, I know
+    private final ApplicationContext context;
+    @Value("${app.game.version}")
+    private Version version;
+    private Map<CommandType, List<CommandBuilderInterface>> builders;
 
     public static CommandBuilder getInstance() {
         if (INSTANCE == null) {
@@ -33,13 +37,6 @@ public class CommandBuilder {
 
         return INSTANCE;
     }
-
-    @Value("${app.game.version}")
-    private Version version;
-
-    private final ApplicationContext context;
-
-    private Map<CommandType, List<CommandBuilderInterface>> builders;
 
     @PostConstruct
     public void init() {

@@ -35,7 +35,7 @@ public class AccountsSkylabsEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +43,7 @@ public class AccountsSkylabsEntity {
     private SkylabModulesEntity skylabModulesBySkylabModulesId;
 
     @Basic
-    @Column(name= "skylab_modules_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "skylab_modules_id", nullable = false, insertable = false, updatable = false)
     private byte skylabModulesId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,6 +51,6 @@ public class AccountsSkylabsEntity {
     private LevelsEntity levelsByLevelsId;
 
     @Basic
-    @Column(name= "levels_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "levels_id", nullable = false, insertable = false, updatable = false)
     private byte levelsId = 0;
 }

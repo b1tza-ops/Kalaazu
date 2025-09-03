@@ -34,7 +34,7 @@ public class ModeratorsEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,7 +42,7 @@ public class ModeratorsEntity {
     private ModeratorsRolesEntity moderatorsRoles;
 
     @Basic
-    @Column(name= "moderators_roles_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "moderators_roles_id", nullable = false, insertable = false, updatable = false)
     private byte moderatorsRolesId = 0;
 
     @OneToMany(mappedBy = "moderatorsByModeratorsId", fetch = FetchType.LAZY)

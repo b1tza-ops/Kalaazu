@@ -29,7 +29,7 @@ public class ModeratorsRolesPermissionsEntity {
     private ModeratorsRolesEntity moderatorsRolesByModeratorsRolesId;
 
     @Basic
-    @Column(name= "moderators_roles_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "moderators_roles_id", nullable = false, insertable = false, updatable = false)
     private byte moderatorsRolesId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +37,6 @@ public class ModeratorsRolesPermissionsEntity {
     private PermissionsEntity permissions;
 
     @Basic
-    @Column(name= "permissions_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "permissions_id", nullable = false, insertable = false, updatable = false)
     private byte permissionsId = 0;
 }

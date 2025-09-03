@@ -39,7 +39,7 @@ public class SkilltreeLevelsEntity {
     private SkilltreeSkillsEntity skilltreeSkillsBySkilltreeSkillsId;
 
     @Basic
-    @Column(name= "skilltree_skills_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "skilltree_skills_id", nullable = false, insertable = false, updatable = false)
     private byte skilltreeSkillsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,7 +47,7 @@ public class SkilltreeLevelsEntity {
     private LevelsEntity levelsByLevelsId;
 
     @Basic
-    @Column(name= "levels_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "levels_id", nullable = false, insertable = false, updatable = false)
     private byte levelsId = 0;
 
     @OneToMany(mappedBy = "skilltreeLevelsByUpgradeSkilltreeLevelsId", fetch = FetchType.LAZY)

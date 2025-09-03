@@ -1,10 +1,10 @@
 package com.kalaazu.server.game.v10.commands.builder;
 
+import com.kalaazu.model.Version;
 import com.kalaazu.persistence.entity.AccountsConfigurationsEntity;
 import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.entity.AccountsHangarsEntity;
 import com.kalaazu.persistence.entity.AccountsShipsEntity;
-import com.kalaazu.model.Version;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
@@ -19,8 +19,6 @@ import com.kalaazu.server.service.SessionInitializationService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,37 +36,8 @@ public class InitCommandBuilder implements CommandBuilderInterface {
     private final Version gameVersion = Version.V10;
     private final CommandType commandType = CommandType.InitCommands;
 
-    /**
-     * Builds the necessary commands for the given arguments.
-     * <p>
-     * Since there's no way to ensure type safety on the arguments
-     * be careful of how you use it.
-     *
-     * @param arguments Command arguments.
-     * @return Command for the given arguments.
-     */
-    @Override
-    public List<OutCommand> build(Object[] arguments) {
-        var account = (AccountsEntity) arguments[0];
-        var hangar = (AccountsHangarsEntity) arguments[1];
-        var ship = (AccountsShipsEntity) arguments[2];
-        var config = (AccountsConfigurationsEntity) arguments[3];
-        var items = (SessionInitializationService.CalculatedItems) arguments[4];
-
-        var cmds = new ArrayList<OutCommand>();
-
-        var premium = account.getPremiumDate() != null && account.getPremiumDate().before(Timestamp.from(Instant.now()));
-
-        var clan = account.getClansByClansId();
-        var clanId = 0;
-        var clanTag = "";
-
-        if (clan != null) {
-            clanId = clan.getId();
-            clanTag = clan.getTag();
-        }
-
-        cmds.add(new ShipInitializationCommand(
+    private static ShipInitializationCommand buildShipInitialization(AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config, SessionInitializationService.CalculatedItems items, int clanId, String clanTag) {
+        return new ShipInitializationCommand(
                 account.getId(),
                 account.getName(),
                 ship.getShipsByShipsId().getItemsByItemsId().getLootId(),
@@ -87,7 +56,7 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 account.getFactionsId(),
                 clanId,
                 3,
-                premium,
+                account.isPremium(),
                 items.exp(),
                 items.hon(),
                 account.getLevelsId(),
@@ -100,14 +69,35 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 true,
                 false, // TODO account cloacked
                 new ArrayList<>()
-        ));
+        );
+    }
 
-        cmds.add(new LegacyPacket(ServerCommands.SET_STATUS, ServerCommands.CONFIGURATION, config.getConfigurationId()));
-        cmds.add(new SetHealthPointsCommand(ship.getHealth(), config.getHealth(), ship.getNanohull(), ship.getShipsByShipsId().getHealth()));
-        cmds.add(new SetShieldPointsCommand(ship.getShield(), config.getShield()));
-        cmds.add(new SetSpeedCommand(config.getSpeed()));
-        cmds.add(new BeaconCommand(1, 1, 1, 1, true, false, false, "equipment_extra_repbot_rep-4", false));
+    /**
+     * Builds the necessary commands for the given arguments.
+     * <p>
+     * Since there's no way to ensure type safety on the arguments
+     * be careful of how you use it.
+     *
+     * @param arguments Command arguments.
+     * @return Command for the given arguments.
+     */
+    @Override
+    public List<OutCommand> build(Object[] arguments) {
+        var account = (AccountsEntity) arguments[0];
+        var hangar = (AccountsHangarsEntity) arguments[1];
+        var ship = (AccountsShipsEntity) arguments[2];
+        var config = (AccountsConfigurationsEntity) arguments[3];
+        var items = (SessionInitializationService.CalculatedItems) arguments[4];
+        var clanId = (Integer) arguments[5];
+        var clanTag = (String) arguments[6];
 
-        return cmds;
+        return List.of(
+                buildShipInitialization(account, ship, config, items, clanId, clanTag),
+                new LegacyPacket(ServerCommands.SET_STATUS, ServerCommands.CONFIGURATION, config.getConfigurationId()),
+                new SetHealthPointsCommand(ship.getHealth(), config.getHealth(), ship.getNanohull(), ship.getShipsByShipsId().getHealth()),
+                new SetShieldPointsCommand(ship.getShield(), config.getShield()),
+                new SetSpeedCommand(config.getSpeed()),
+                new BeaconCommand(1, 1, 1, 1, true, false, false, "equipment_extra_repbot_rep-4", false)
+        );
     }
 }

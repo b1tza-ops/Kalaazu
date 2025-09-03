@@ -37,7 +37,7 @@ public class AccountsTechfactoryItemsEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,6 +45,6 @@ public class AccountsTechfactoryItemsEntity {
     private TechfactoryItemsEntity techfactoryItemsByTechfactoryItemsId;
 
     @Basic
-    @Column(name= "techfactory_items_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "techfactory_items_id", nullable = false, insertable = false, updatable = false)
     private byte rechfactoryItemsId = 0;
 }

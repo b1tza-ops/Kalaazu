@@ -1,7 +1,7 @@
 package com.kalaazu.server.game.v10;
 
-import com.kalaazu.server.game.Packet;
 import com.kalaazu.model.Version;
+import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.netty.InboundHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;

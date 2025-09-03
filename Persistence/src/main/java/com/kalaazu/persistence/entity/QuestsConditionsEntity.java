@@ -34,7 +34,7 @@ public class QuestsConditionsEntity {
     private QuestsConditionsEntity questsConditionsByQuestsConditionsId;
 
     @Basic
-    @Column(name= "quests_conditions_id", insertable = false, updatable = false)
+    @Column(name = "quests_conditions_id", insertable = false, updatable = false)
     private Integer questsConditionsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -42,6 +42,6 @@ public class QuestsConditionsEntity {
     private QuestsEntity questsByQuestsId;
 
     @Basic
-    @Column(name= "quests_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "quests_id", nullable = false, insertable = false, updatable = false)
     private short questsId = 0;
 }

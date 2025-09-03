@@ -25,7 +25,7 @@ public class AccountsSkillsEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +33,7 @@ public class AccountsSkillsEntity {
     private SkilltreeSkillsEntity skilltreeSkillsBySkilltreeSkillsId;
 
     @Basic
-    @Column(name= "skilltree_skills_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "skilltree_skills_id", nullable = false, insertable = false, updatable = false)
     private byte skilltreeSkillsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,6 +41,6 @@ public class AccountsSkillsEntity {
     private SkilltreeLevelsEntity skilltreeLevelsBySkilltreeLevelsId;
 
     @Basic
-    @Column(name= "skilltree_levels_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "skilltree_levels_id", nullable = false, insertable = false, updatable = false)
     private short skilltreeLevelsId = 0;
 }

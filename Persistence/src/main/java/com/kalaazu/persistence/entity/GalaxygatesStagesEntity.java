@@ -31,7 +31,7 @@ public class GalaxygatesStagesEntity {
     private GalaxygatesWavesEntity galaxygatesWavesByGalaxygatesWavesId;
 
     @Basic
-    @Column(name= "galaxygates_waves_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "galaxygates_waves_id", nullable = false, insertable = false, updatable = false)
     private byte galaxygatesWavesId = 0;
 
     @ManyToMany

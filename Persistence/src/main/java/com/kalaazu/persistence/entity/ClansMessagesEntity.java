@@ -51,7 +51,7 @@ public class ClansMessagesEntity {
     private ClansEntity clansByClansId;
 
     @Basic
-    @Column(name= "clans_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_id", nullable = false, insertable = false, updatable = false)
     private int clansId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,7 +59,7 @@ public class ClansMessagesEntity {
     private AccountsEntity accountsByFromAccountsId;
 
     @Basic
-    @Column(name= "from_accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "from_accounts_id", nullable = false, insertable = false, updatable = false)
     private int fromAccountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -67,6 +67,6 @@ public class ClansMessagesEntity {
     private AccountsEntity accountsByToAccountsId;
 
     @Basic
-    @Column(name= "to_accounts_id", insertable = false, updatable = false)
+    @Column(name = "to_accounts_id", insertable = false, updatable = false)
     private Integer toAccountsId = 0;
 }

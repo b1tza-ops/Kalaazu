@@ -19,9 +19,9 @@ public class GenerateServices {
 
     public static final String interfaceTemplate = """
             package ${servicePackageName};
-
+            
             import ${entityClass};
-
+            
             /**
              * ${entityName} service.
              * ${separator}
@@ -36,14 +36,14 @@ public class GenerateServices {
 
     public static final String serviceTemplate = """
             package ${servicePackageName};
-
+            
             import ${entityClass};
             import ${repositoryClass};
             import org.springframework.stereotype.Service;
-
+            
             import java.util.List;
             import lombok.RequiredArgsConstructor;
-
+            
             /**
              * ${entityName} service.
              * ${separator}
@@ -56,7 +56,7 @@ public class GenerateServices {
             @RequiredArgsConstructor
             public class ${serviceClassName}Impl implements ${serviceClassName} {
                 private ${repositoryClassName} repository;
-
+            
                 /**
                  * @inheritDoc
                  */
@@ -64,7 +64,7 @@ public class GenerateServices {
                 public ${entityClassName} create(${entityClassName} entity) {
                     return this.repository.save(entity);
                 }
-
+            
                 /**
                  * @inheritDoc
                  */
@@ -72,7 +72,7 @@ public class GenerateServices {
                 public ${entityClassName} find(Integer id) {
                     return this.repository.findById(id).orElse(null);
                 }
-
+            
                 /**
                  * @inheritDoc
                  */
@@ -80,7 +80,7 @@ public class GenerateServices {
                 public List<${entityClassName}> findAll() {
                     return this.repository.findAll();
                 }
-
+            
                 /**
                  * @inheritDoc
                  */
@@ -88,14 +88,14 @@ public class GenerateServices {
                 public ${entityClassName} update(${entityClassName} entity) {
                     return this.repository.save(entity);
                 }
-
+            
                 /**
                  * @inheritDoc
                  */
                 @Override
                 public boolean delete(Integer id) {
                     this.repository.deleteById(id);
-
+            
                     return !this.repository.existsById(id);
                 }
             }""";

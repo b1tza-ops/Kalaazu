@@ -33,7 +33,7 @@ public class AccountsDestroysEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,6 +41,6 @@ public class AccountsDestroysEntity {
     private ShipsEntity shipsByShipsId;
 
     @Basic
-    @Column(name= "ships_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "ships_id", nullable = false, insertable = false, updatable = false)
     private byte shipsId = 0;
 }

@@ -14,11 +14,11 @@ import java.nio.file.Path;
 public class GenerateRepositories {
     public static final String template = """
             package ${repositoryPackageName};
-
+            
             import ${entityClass};
             import org.springframework.data.jpa.repository.JpaRepository;
             import org.springframework.stereotype.Repository;
-
+            
             /**
              * ${entityName} repository.
              * ${separator}

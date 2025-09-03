@@ -38,6 +38,6 @@ public class GalaxygatesSpinsEntity {
     private ItemsEntity itemsByItemsId;
 
     @Basic
-    @Column(name= "items_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "items_id", nullable = false, insertable = false, updatable = false)
     private short itemsId = 0;
 }

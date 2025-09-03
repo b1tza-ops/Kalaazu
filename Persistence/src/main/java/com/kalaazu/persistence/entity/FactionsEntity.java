@@ -1,9 +1,7 @@
 package com.kalaazu.persistence.entity;
 
 import com.kalaazu.math.Vector;
-import com.kalaazu.math.VectorRegion;
 import com.kalaazu.persistence.VectorType;
-import com.kalaazu.persistence.VectorRegionType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Type;
@@ -56,7 +54,7 @@ public class FactionsEntity {
     private MapsEntity lowMapsByLowMapsId;
 
     @Basic
-    @Column(name= "low_maps_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "low_maps_id", nullable = false, insertable = false, updatable = false)
     private short lowMapsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,6 +62,6 @@ public class FactionsEntity {
     private MapsEntity highMapsByHighMapsId;
 
     @Basic
-    @Column(name= "high_maps_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "high_maps_id", nullable = false, insertable = false, updatable = false)
     private short highMapsId = 0;
 }

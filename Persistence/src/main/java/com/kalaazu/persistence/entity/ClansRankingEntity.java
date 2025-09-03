@@ -33,6 +33,6 @@ public class ClansRankingEntity {
     private ClansEntity clansByClansId;
 
     @Basic
-    @Column(name= "clans_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_id", nullable = false, insertable = false, updatable = false)
     private int clansId = 0;
 }

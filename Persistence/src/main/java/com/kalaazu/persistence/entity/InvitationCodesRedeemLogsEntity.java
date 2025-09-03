@@ -37,6 +37,6 @@ public class InvitationCodesRedeemLogsEntity {
     private InvitationCodesEntity invitationCodesByInvitationCodesId;
 
     @Basic
-    @Column(name= "invitation_codes_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "invitation_codes_id", nullable = false, insertable = false, updatable = false)
     private short invitationCodesId = 0;
 }

@@ -41,7 +41,7 @@ public class AccountsGalaxygatesEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,6 +49,6 @@ public class AccountsGalaxygatesEntity {
     private GalaxygatesEntity galaxygatesByGalaxygatesId;
 
     @Basic
-    @Column(name= "galaxygates_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "galaxygates_id", nullable = false, insertable = false, updatable = false)
     private byte galaxygatesId = 0;
 }

@@ -19,5 +19,6 @@ public abstract class SetAttributeCommand extends OutCommand {
     }
 
     public abstract void subWrite(Packet packet);
+
     public abstract String getAttribute();
 }

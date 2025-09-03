@@ -50,7 +50,7 @@ public class MapsPortalsEntity {
     private MapsEntity mapsByMapsId;
 
     @Basic
-    @Column(name= "maps_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "maps_id", nullable = false, insertable = false, updatable = false)
     private short mapsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,7 +58,7 @@ public class MapsPortalsEntity {
     private MapsEntity mapsByTargetMapsId;
 
     @Basic
-    @Column(name= "target_maps_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "target_maps_id", nullable = false, insertable = false, updatable = false)
     private short targetMapsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,6 +66,6 @@ public class MapsPortalsEntity {
     private LevelsEntity levelsByLevelsId;
 
     @Basic
-    @Column(name= "levels_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "levels_id", nullable = false, insertable = false, updatable = false)
     private byte levelsId = 0;
 }

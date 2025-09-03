@@ -16,9 +16,6 @@ import com.kalaazu.server.service.SessionInitializationService;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,37 +32,38 @@ public class InitCommandBuilder implements CommandBuilderInterface {
     private final Version gameVersion = Version.V4;
     private final CommandType commandType = CommandType.InitCommands;
 
-    /**
-     * Builds the necessary commands for the given arguments.
-     * <p>
-     * Since there's no way to ensure type safety on the arguments
-     * be careful of how you use it.
-     *
-     * @param arguments Command arguments.
-     * @return Command for the given arguments.
-     */
-    @Override
-    public List<OutCommand> build(Object[] arguments) {
-        var account = (AccountsEntity) arguments[0];
-        var hangar = (AccountsHangarsEntity) arguments[1];
-        var ship = (AccountsShipsEntity) arguments[2];
-        var config = (AccountsConfigurationsEntity) arguments[3];
-        var items = (SessionInitializationService.CalculatedItems) arguments[4];
+    private static SecondaryWeaponInfoCommand buildSecondaryWeaponInfo(SessionInitializationService.CalculatedItems items) {
+        return new SecondaryWeaponInfoCommand(
+                items.r310(),
+                items.plt2026(),
+                items.plt2021(),
+                items.plt3030(),
+                items.pld8(),
+                items.dcr_250(),
+                items.wiz(),
+                items.mine(),
+                items.smartbomb(),
+                items.instashield(),
+                items.emp(),
+                items.mine_emp(),
+                items.mine_sab(),
+                items.mine_ddm()
+        );
+    }
 
-        var cmds = new ArrayList<OutCommand>();
+    private static PrimaryWeaponInfoCommand buildPrimaryWeaponInfo(SessionInitializationService.CalculatedItems items) {
+        return new PrimaryWeaponInfoCommand(
+                items.lcb10(),
+                items.mcb25(),
+                items.mcb50(),
+                items.ucb100(),
+                items.sab50(),
+                items.rsb75()
+        );
+    }
 
-        var premium = account.getPremiumDate() != null && account.getPremiumDate().before(Timestamp.from(Instant.now()));
-
-        var clan = account.getClansByClansId();
-        var clanId = 0;
-        var clanTag = "";
-
-        if (clan != null) {
-            clanId = clan.getId();
-            clanTag = clan.getTag();
-        }
-
-        cmds.add(new ShipInitializationCommand(
+    private static ShipInitializationCommand buildShipInitialization(AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config, SessionInitializationService.CalculatedItems items, int clanId, String clanTag) {
+        return new ShipInitializationCommand(
                 account.getId(),
                 account.getName(),
                 ship.getShipsByShipsId().getGfx(),
@@ -84,7 +82,7 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 items.ammo(),
                 items.rockets(),
                 1, // TODO equipment expansion
-                premium,
+                account.isPremium(),
                 items.exp(),
                 items.hon(),
                 account.getLevelsId(),
@@ -95,33 +93,33 @@ public class InitCommandBuilder implements CommandBuilderInterface {
                 clanTag,
                 0, // TODO account rings
                 false // TODO account cloacked
-        ));
-        cmds.add(new PrimaryWeaponInfoCommand(
-                items.lcb10(),
-                items.mcb25(),
-                items.mcb50(),
-                items.ucb100(),
-                items.sab50(),
-                items.rsb75()
-        ));
-        cmds.add(new SecondaryWeaponInfoCommand(
-                items.r310(),
-                items.plt2026(),
-                items.plt2021(),
-                items.plt3030(),
-                items.pld8(),
-                items.dcr_250(),
-                items.wiz(),
-                items.mine(),
-                items.smartbomb(),
-                items.instashield(),
-                items.emp(),
-                items.mine_emp(),
-                items.mine_sab(),
-                items.mine_ddm()
-        ));
-        cmds.add(new UpdateConfigurationCountCommand(config.getConfigurationId()));
+        );
+    }
 
-        return cmds;
+    /**
+     * Builds the necessary commands for the given arguments.
+     * <p>
+     * Since there's no way to ensure type safety on the arguments
+     * be careful of how you use it.
+     *
+     * @param arguments Command arguments.
+     * @return Command for the given arguments.
+     */
+    @Override
+    public List<OutCommand> build(Object[] arguments) {
+        var account = (AccountsEntity) arguments[0];
+        var hangar = (AccountsHangarsEntity) arguments[1];
+        var ship = (AccountsShipsEntity) arguments[2];
+        var config = (AccountsConfigurationsEntity) arguments[3];
+        var items = (SessionInitializationService.CalculatedItems) arguments[4];
+        var clanId = (Integer) arguments[5];
+        var clanTag = (String) arguments[6];
+
+        return List.of(
+                buildShipInitialization(account, ship, config, items, clanId, clanTag),
+                buildPrimaryWeaponInfo(items),
+                buildSecondaryWeaponInfo(items),
+                new UpdateConfigurationCountCommand(config.getConfigurationId())
+        );
     }
 }

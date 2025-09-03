@@ -47,6 +47,6 @@ public class AccountsConfigurationsEntity {
     private AccountsHangarsEntity accountsHangarsByAccountsHangarsId;
 
     @Basic
-    @Column(name= "accounts_hangars_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_hangars_id", nullable = false, insertable = false, updatable = false)
     private int accountsHangarsId = 0;
 }

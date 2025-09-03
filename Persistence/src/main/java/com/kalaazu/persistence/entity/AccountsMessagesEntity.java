@@ -51,7 +51,7 @@ public class AccountsMessagesEntity {
     private AccountsEntity accountsByFromAccountsId;
 
     @Basic
-    @Column(name= "from_accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "from_accounts_id", nullable = false, insertable = false, updatable = false)
     private int fromAccountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,6 +59,6 @@ public class AccountsMessagesEntity {
     private AccountsEntity accountsByToAccountsId;
 
     @Basic
-    @Column(name= "to_accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "to_accounts_id", nullable = false, insertable = false, updatable = false)
     private int toAccountsId = 0;
 }

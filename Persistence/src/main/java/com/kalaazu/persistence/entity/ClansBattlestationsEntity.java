@@ -46,7 +46,7 @@ public class ClansBattlestationsEntity {
     private ClansEntity clansByClansId;
 
     @Basic
-    @Column(name= "clans_id", insertable = false, updatable = false)
+    @Column(name = "clans_id", insertable = false, updatable = false)
     private Integer clansId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -54,7 +54,7 @@ public class ClansBattlestationsEntity {
     private MapsEntity mapsByMapsId;
 
     @Basic
-    @Column(name= "maps_id", insertable = false, updatable = false)
+    @Column(name = "maps_id", insertable = false, updatable = false)
     private Short mapsId = 0;
 
     @OneToMany(mappedBy = "clansBattlestationsByClansBattlestationsId", fetch = FetchType.LAZY)

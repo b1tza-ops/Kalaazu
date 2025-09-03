@@ -35,7 +35,7 @@ public class QuestsEntity {
     private QuestsEntity questsByQuestsId;
 
     @Basic
-    @Column(name= "quests_id", insertable = false, updatable = false)
+    @Column(name = "quests_id", insertable = false, updatable = false)
     private Short questsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +43,7 @@ public class QuestsEntity {
     private FactionsEntity factionsByFactionsId;
 
     @Basic
-    @Column(name= "factions_id", insertable = false, updatable = false)
+    @Column(name = "factions_id", insertable = false, updatable = false)
     private Byte factionsId = 0;
 
     @OneToMany(mappedBy = "questsByQuestsId", fetch = FetchType.LAZY)

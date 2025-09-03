@@ -37,7 +37,7 @@ public class ClansBattlestationsLogsEntity {
     private ClansEntity clansByClansId;
 
     @Basic
-    @Column(name= "clans_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_id", nullable = false, insertable = false, updatable = false)
     private int clansId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,6 +45,6 @@ public class ClansBattlestationsLogsEntity {
     private ClansBattlestationsEntity clansBattlestationsByClansBattlestationsId;
 
     @Basic
-    @Column(name= "clans_battlestations_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_battlestations_id", nullable = false, insertable = false, updatable = false)
     private byte clansBattlestationsId = 0;
 }

@@ -1,9 +1,7 @@
 package com.kalaazu.persistence.entity;
 
-import com.kalaazu.math.Vector;
 import com.kalaazu.math.VectorRegion;
 import com.kalaazu.persistence.VectorRegionType;
-import com.kalaazu.persistence.VectorType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Type;
@@ -39,7 +37,7 @@ public class MapsCollectablesEntity {
     private MapsEntity mapsByMapsId;
 
     @Basic
-    @Column(name= "maps_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "maps_id", nullable = false, insertable = false, updatable = false)
     private short mapsId = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -47,6 +45,6 @@ public class MapsCollectablesEntity {
     private CollectablesEntity collectablesByCollectablesId;
 
     @Basic
-    @Column(name= "collectables_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "collectables_id", nullable = false, insertable = false, updatable = false)
     private byte collectablesId = 0;
 }

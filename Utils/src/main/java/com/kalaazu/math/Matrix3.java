@@ -34,9 +34,8 @@ public class Matrix3 implements Serializable {
     public static final int M21 = 5;
     public static final int M22 = 8;
     private static final long serialVersionUID = 7907569533774959788L;
-    public float[] val = new float[9];
-
     private final float[] tmp = new float[9];
+    public float[] val = new float[9];
 
     public Matrix3() {
         idt();

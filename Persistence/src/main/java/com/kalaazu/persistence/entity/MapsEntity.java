@@ -1,9 +1,7 @@
 package com.kalaazu.persistence.entity;
 
-import com.kalaazu.math.Vector;
 import com.kalaazu.math.VectorRegion;
 import com.kalaazu.persistence.VectorRegionType;
-import com.kalaazu.persistence.VectorType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Type;

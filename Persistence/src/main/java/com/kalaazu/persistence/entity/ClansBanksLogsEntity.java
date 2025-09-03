@@ -47,7 +47,7 @@ public class ClansBanksLogsEntity {
     private ClansBanksEntity clansBanksByClansBanksId;
 
     @Basic
-    @Column(name= "clans_banks_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_banks_id", nullable = false, insertable = false, updatable = false)
     private int clansBanksId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,7 +55,7 @@ public class ClansBanksLogsEntity {
     private AccountsEntity accountsByFromAccountsId;
 
     @Basic
-    @Column(name= "from_accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "from_accounts_id", nullable = false, insertable = false, updatable = false)
     private int fromAccountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -63,6 +63,6 @@ public class ClansBanksLogsEntity {
     private AccountsEntity accountsByToAccountsId;
 
     @Basic
-    @Column(name= "to_accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "to_accounts_id", nullable = false, insertable = false, updatable = false)
     private int toAccountsId = 0;
 }

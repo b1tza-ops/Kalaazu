@@ -140,7 +140,7 @@ public class MapService {
 
         npcs.getOrDefault(map, new HashSet<>())
                 // TODO filter near entities
-                .forEach(npc ->{
+                .forEach(npc -> {
                     log.info("Building npc {}", npc.getId());
                     commands.add(npc.getEntityCreationCommand());
                 });

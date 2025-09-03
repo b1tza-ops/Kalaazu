@@ -37,7 +37,7 @@ public class ClansBattlestationsItemsEntity {
     private ClansBattlestationsEntity clansBattlestationsByClansBattlestationsId;
 
     @Basic
-    @Column(name= "clans_battlestations_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_battlestations_id", nullable = false, insertable = false, updatable = false)
     private byte clansBattlestationsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,6 +45,6 @@ public class ClansBattlestationsItemsEntity {
     private AccountsItemsEntity accountsItemsByAccountsItemsId;
 
     @Basic
-    @Column(name= "accounts_items_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_items_id", nullable = false, insertable = false, updatable = false)
     private int accountsItemsId = 0;
 }

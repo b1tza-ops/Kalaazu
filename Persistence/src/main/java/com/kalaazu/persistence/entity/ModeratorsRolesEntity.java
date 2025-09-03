@@ -35,7 +35,7 @@ public class ModeratorsRolesEntity {
     private ModeratorsRolesEntity moderatorsRolesByModeratorsRolesId;
 
     @Basic
-    @Column(name= "moderators_roles_id", insertable = false, updatable = false)
+    @Column(name = "moderators_roles_id", insertable = false, updatable = false)
     private Byte moderatorsRolesId = 0;
 
     @OneToMany(mappedBy = "moderatorsRolesByModeratorsRolesId", fetch = FetchType.LAZY)

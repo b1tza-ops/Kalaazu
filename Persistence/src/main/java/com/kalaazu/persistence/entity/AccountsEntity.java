@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -62,7 +63,7 @@ public class AccountsEntity {
     private UsersEntity usersByUsersId;
 
     @Basic
-    @Column(name= "users_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "users_id", nullable = false, insertable = false, updatable = false)
     private int usersId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,7 +71,7 @@ public class AccountsEntity {
     private LevelsEntity levelsByLevelsId;
 
     @Basic
-    @Column(name= "levels_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "levels_id", nullable = false, insertable = false, updatable = false)
     private byte levelsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -78,7 +79,7 @@ public class AccountsEntity {
     private FactionsEntity factionsByFactionsId;
 
     @Basic
-    @Column(name= "factions_id", insertable = false, updatable = false)
+    @Column(name = "factions_id", insertable = false, updatable = false)
     private Byte factionsId = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -86,7 +87,7 @@ public class AccountsEntity {
     private AccountsHangarsEntity accountsHangarsByAccountsHangarsId;
 
     @Basic
-    @Column(name= "accounts_hangars_id", insertable = false, updatable = false)
+    @Column(name = "accounts_hangars_id", insertable = false, updatable = false)
     private Integer accountsHangarsId = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -94,7 +95,7 @@ public class AccountsEntity {
     private ClansEntity clansByClansId;
 
     @Basic
-    @Column(name= "clans_id", insertable = false, updatable = false)
+    @Column(name = "clans_id", insertable = false, updatable = false)
     private Integer clansId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -102,7 +103,7 @@ public class AccountsEntity {
     private RanksEntity ranksByRanksId;
 
     @Basic
-    @Column(name= "ranks_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "ranks_id", nullable = false, insertable = false, updatable = false)
     private byte ranksId = 0;
 
     @OneToMany(mappedBy = "accountsByAccountsId", fetch = FetchType.LAZY)
@@ -208,5 +209,14 @@ public class AccountsEntity {
     public void addSetting(AccountsSettingsEntity setting) {
         this.accountsSettings.add(setting);
         setting.setAccountsByAccountsId(this);
+    }
+
+    /**
+     * Checks if the premium subscription is active.
+     *
+     * @return Whether the account is premium or not.
+     */
+    public boolean isPremium() {
+        return this.getPremiumDate() != null && this.getPremiumDate().before(Timestamp.from(Instant.now()));
     }
 }

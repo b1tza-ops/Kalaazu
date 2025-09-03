@@ -37,6 +37,6 @@ public class LevelsUpgradesEntity {
     private LevelsEntity levelsByLevelsId;
 
     @Basic
-    @Column(name= "levels_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "levels_id", nullable = false, insertable = false, updatable = false)
     private byte levelsId = 0;
 }

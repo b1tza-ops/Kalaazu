@@ -41,6 +41,6 @@ public class ModeratorsLogsEntity {
     private ModeratorsEntity moderatorsByModeratorsId;
 
     @Basic
-    @Column(name= "moderators_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "moderators_id", nullable = false, insertable = false, updatable = false)
     private byte moderatorsId = 0;
 }

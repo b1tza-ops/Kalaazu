@@ -37,7 +37,7 @@ public class AccountsItemsEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -45,7 +45,7 @@ public class AccountsItemsEntity {
     private ItemsEntity itemsByItemsId;
 
     @Basic
-    @Column(name= "items_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "items_id", nullable = false, insertable = false, updatable = false)
     private short itemsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,6 +53,6 @@ public class AccountsItemsEntity {
     private LevelsEntity levelsByLevelsId;
 
     @Basic
-    @Column(name= "levels_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "levels_id", nullable = false, insertable = false, updatable = false)
     private byte levelsId = 0;
 }

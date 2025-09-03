@@ -1,8 +1,6 @@
 package com.kalaazu.server.service;
 
-import com.kalaazu.persistence.entity.AccountsConfigurationsEntity;
 import com.kalaazu.persistence.entity.AccountsEntity;
-import com.kalaazu.persistence.entity.AccountsHangarsEntity;
 import com.kalaazu.persistence.entity.ItemType;
 import com.kalaazu.persistence.service.UsersService;
 import com.kalaazu.server.event.EndGameSessionEvent;
@@ -83,7 +81,16 @@ public class SessionInitializationService {
         session.setHangar(hangar);
         session.setConfiguration(config);
 
-        var initialPackets = commandBuilder.buildCommands(CommandType.InitCommands, account, hangar, ship, config, getCalculatedItems(account));
+        var clan = account.getClansByClansId();
+        var clanId = 0;
+        var clanTag = "";
+
+        if (clan != null) {
+            clanId = clan.getId();
+            clanTag = clan.getTag();
+        }
+
+        var initialPackets = commandBuilder.buildCommands(CommandType.InitCommands, account, hangar, ship, config, getCalculatedItems(account), clanId, clanTag);
         ctx.publishEvent(new SendCommandsEvent(session, initialPackets, this));
     }
 
@@ -142,16 +149,16 @@ public class SessionInitializationService {
                 case "ammunition_laser_rsb-75" -> rsb75 = amount;
 
                 case "ammunition_rocket_r-310" -> r310 = amount;
-                case "ammunition_rocket_plt-2021" ->  plt2021 = amount;
+                case "ammunition_rocket_plt-2021" -> plt2021 = amount;
                 case "ammunition_rocket_plt-2026" -> plt2026 = amount;
-                case "ammunition_rocket_plt-3030" ->  plt3030 = amount;
-                case "ammunition_specialammo_dcr-250" ->  dcr_250 = amount;
+                case "ammunition_rocket_plt-3030" -> plt3030 = amount;
+                case "ammunition_specialammo_dcr-250" -> dcr_250 = amount;
                 case "ammunition_specialammo_pld-8" -> pld8 = amount;
-                case "ammunition_specialammo_wiz-x" ->  wiz = amount;
-                case "ammunition_mine_acm-01" ->  mine = amount;
+                case "ammunition_specialammo_wiz-x" -> wiz = amount;
+                case "ammunition_mine_acm-01" -> mine = amount;
                 case "ammunition_mine_ddm-01" -> mine_ddm = amount;
-                case "ammunition_mine_empm-01" ->  mine_emp = amount;
-                case "ammunition_mine_sabm-01" ->  mine_sab = amount;
+                case "ammunition_mine_empm-01" -> mine_emp = amount;
+                case "ammunition_mine_sabm-01" -> mine_sab = amount;
                 case "ammunition_specialammo_emp-01" -> emp = amount;
             }
 

@@ -48,7 +48,7 @@ public class ClansEntity {
     private AccountsEntity accountsByAccountsId;
 
     @Basic
-    @Column(name= "accounts_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_id", nullable = false, insertable = false, updatable = false)
     private int accountsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -56,7 +56,7 @@ public class ClansEntity {
     private FactionsEntity factionsByFactionsId;
 
     @Basic
-    @Column(name= "factions_id", insertable = false, updatable = false)
+    @Column(name = "factions_id", insertable = false, updatable = false)
     private Byte factions_id = 0;
 
     @OneToMany(mappedBy = "clansByClansId", fetch = FetchType.LAZY)

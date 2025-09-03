@@ -29,7 +29,7 @@ public class MapsNpcsEntity {
     private MapsEntity mapsByMapsId;
 
     @Basic
-    @Column(name= "maps_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "maps_id", nullable = false, insertable = false, updatable = false)
     private short mapsId = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -37,6 +37,6 @@ public class MapsNpcsEntity {
     private NpcsEntity npcsByNpcsId;
 
     @Basic
-    @Column(name= "npcs_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "npcs_id", nullable = false, insertable = false, updatable = false)
     private byte npcsId = 0;
 }

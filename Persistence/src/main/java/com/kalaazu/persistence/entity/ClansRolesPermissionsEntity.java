@@ -29,7 +29,7 @@ public class ClansRolesPermissionsEntity {
     private ClansRolesEntity clansRolesByClansRolesId;
 
     @Basic
-    @Column(name= "clans_roles_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_roles_id", nullable = false, insertable = false, updatable = false)
     private int clansRolesId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +37,6 @@ public class ClansRolesPermissionsEntity {
     private PermissionsEntity permissionsByPermissionsId;
 
     @Basic
-    @Column(name= "permissions_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "permissions_id", nullable = false, insertable = false, updatable = false)
     private byte permissionsId = 0;
 }

@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 /**
  * Vector region class.
  * ====================
- *
+ * <p>
  * Represents a region composed of 2 vectors:
- *  * Top left
- *  * Bottom right
+ * * Top left
+ * * Bottom right
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
@@ -30,7 +30,6 @@ public class VectorRegion {
      * Checks if a vector is within this region.
      *
      * @param vector Vector to check.
-     *
      * @return Whether vector is in this region or not.
      */
     public boolean isWithin(Vector vector) {

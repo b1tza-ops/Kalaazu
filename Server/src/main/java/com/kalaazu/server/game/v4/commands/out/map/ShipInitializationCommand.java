@@ -6,8 +6,6 @@ import com.kalaazu.server.game.v4.OutCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
-
 @Data
 @AllArgsConstructor
 public class ShipInitializationCommand extends OutCommand {

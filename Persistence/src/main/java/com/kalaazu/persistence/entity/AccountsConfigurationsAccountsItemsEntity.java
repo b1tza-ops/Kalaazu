@@ -25,7 +25,7 @@ public class AccountsConfigurationsAccountsItemsEntity {
     private AccountsConfigurationsEntity accountsConfigurationsByAccountsConfigurationsId;
 
     @Basic
-    @Column(name= "accounts_configurations_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "accounts_configurations_id", nullable = false, insertable = false, updatable = false)
     private int accountsConfigurationsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +33,7 @@ public class AccountsConfigurationsAccountsItemsEntity {
     private AccountsItemsEntity accountsItemsByAccountsItemsId;
 
     @Basic
-    @Column(name= "accounts_items_id", insertable = false, updatable = false)
+    @Column(name = "accounts_items_id", insertable = false, updatable = false)
     private Integer accountsItemsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +41,7 @@ public class AccountsConfigurationsAccountsItemsEntity {
     private AccountsDronesEntity accountsDronesByAccountsDronesId;
 
     @Basic
-    @Column(name= "accounts_drones_id", insertable = false, updatable = false)
+    @Column(name = "accounts_drones_id", insertable = false, updatable = false)
     private Integer accountsDronesId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,6 +49,6 @@ public class AccountsConfigurationsAccountsItemsEntity {
     private AccountsPetsEntity accountsPetsByAccountsPetsId;
 
     @Basic
-    @Column(name= "accounts_pets_id", insertable = false, updatable = false)
+    @Column(name = "accounts_pets_id", insertable = false, updatable = false)
     private Integer accountsPetsId = 0;
 }

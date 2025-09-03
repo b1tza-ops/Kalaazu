@@ -34,6 +34,6 @@ public class GalaxygatesProbabilitiesEntity {
     private GalaxygatesEntity galaxygatesByGalaxygatesId;
 
     @Basic
-    @Column(name= "galaxygates_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "galaxygates_id", nullable = false, insertable = false, updatable = false)
     private byte galaxyGatesId = 0;
 }

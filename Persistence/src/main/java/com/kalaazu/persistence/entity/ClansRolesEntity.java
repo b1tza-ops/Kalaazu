@@ -35,7 +35,7 @@ public class ClansRolesEntity {
     private ClansEntity clansByClansId;
 
     @Basic
-    @Column(name= "clans_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "clans_id", nullable = false, insertable = false, updatable = false)
     private int clansId = 0;
 
     @OneToMany(mappedBy = "clansRolesByClansRolesId", fetch = FetchType.LAZY)
@@ -46,6 +46,6 @@ public class ClansRolesEntity {
     private ClansRolesEntity clansRolesByClansRolesId;
 
     @Basic
-    @Column(name= "clans_roles_id", insertable = false, updatable = false)
+    @Column(name = "clans_roles_id", insertable = false, updatable = false)
     private Integer clansRolesId = 0;
 }

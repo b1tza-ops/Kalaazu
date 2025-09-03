@@ -47,7 +47,7 @@ public class ClansDiplomaciesEntity {
     private ClansEntity clansByFromClansId;
 
     @Basic
-    @Column(name= "from_clans_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "from_clans_id", nullable = false, insertable = false, updatable = false)
     private int fromClansId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,6 +55,6 @@ public class ClansDiplomaciesEntity {
     private ClansEntity clansByToClansId;
 
     @Basic
-    @Column(name= "to_clans_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "to_clans_id", nullable = false, insertable = false, updatable = false)
     private int toClansId = 0;
 }

@@ -22,6 +22,10 @@ import org.springframework.beans.factory.annotation.Value;
 @Slf4j
 public abstract class GameServer extends Thread {
     private static GameServer INSTANCE;
+    private final NioEventLoopGroup bossGroup = new NioEventLoopGroup();
+    private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+    @Value("${app.port.server}")
+    private int port;
 
     public static GameServer getInstance() {
         if (INSTANCE == null) {
@@ -30,12 +34,6 @@ public abstract class GameServer extends Thread {
 
         return INSTANCE;
     }
-
-    private final NioEventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
-
-    @Value("${app.port.server}")
-    private int port;
 
     public void run() {
         INSTANCE = this;

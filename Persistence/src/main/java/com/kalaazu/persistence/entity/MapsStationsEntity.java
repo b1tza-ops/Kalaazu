@@ -33,7 +33,7 @@ public class MapsStationsEntity {
     private MapsEntity mapsByMapsId;
 
     @Basic
-    @Column(name= "maps_id", insertable = false, updatable = false)
+    @Column(name = "maps_id", insertable = false, updatable = false)
     private Short mapsId = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,6 +41,6 @@ public class MapsStationsEntity {
     private FactionsEntity factionsByFactionsId;
 
     @Basic
-    @Column(name= "factions_id", insertable = false, updatable = false)
+    @Column(name = "factions_id", insertable = false, updatable = false)
     private Byte factionsId = 0;
 }

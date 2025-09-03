@@ -1,8 +1,8 @@
 package com.kalaazu.server;
 
+import com.kalaazu.model.Version;
 import com.kalaazu.server.game.GameServer;
 import com.kalaazu.server.game.PolicyServer;
-import com.kalaazu.model.Version;
 import com.kalaazu.server.service.MapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

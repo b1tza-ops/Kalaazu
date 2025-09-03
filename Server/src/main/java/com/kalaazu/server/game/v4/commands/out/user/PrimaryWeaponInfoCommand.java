@@ -1,8 +1,8 @@
 package com.kalaazu.server.game.v4.commands.out.user;
 
 import com.kalaazu.server.game.Packet;
-import com.kalaazu.server.game.v4.OutCommand;
 import com.kalaazu.server.game.util.ServerCommands;
+import com.kalaazu.server.game.v4.OutCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

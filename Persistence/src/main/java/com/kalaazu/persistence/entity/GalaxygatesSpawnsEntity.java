@@ -29,6 +29,6 @@ public class GalaxygatesSpawnsEntity {
     private NpcsEntity npcsByNpcsId;
 
     @Basic
-    @Column(name= "npcs_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "npcs_id", nullable = false, insertable = false, updatable = false)
     private byte npcsId = 0;
 }
