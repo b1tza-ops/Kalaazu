@@ -141,7 +141,15 @@ public class ChannelManager {
 
         packetHandlers.stream()
                 .filter(h -> h.getVersion() == this.version)
-                .filter(h -> h.canHandle(packet))
+                .filter(h -> {
+                    if (h.canHandle(packet)) {
+                        return true;
+                    }
+
+                    packet.reset();
+
+                    return false;
+                })
                 .findFirst()
                 .ifPresentOrElse(
                         (h) -> h.handle(packet, connection),

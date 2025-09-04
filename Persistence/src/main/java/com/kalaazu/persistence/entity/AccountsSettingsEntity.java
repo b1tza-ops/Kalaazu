@@ -166,7 +166,7 @@ public class AccountsSettingsEntity {
     private byte scale = 1;
 
     @Column(name = "bar_state", nullable = false)
-    private String barState = "";
+    private String barState = "23,1,24,1,25,1,26,1,27,1";
 
     //Gameplay settings
     @Column(name = "gameplay_not_set", nullable = false)
@@ -229,7 +229,7 @@ public class AccountsSettingsEntity {
 
     // Window settings
     @Column(name = "resolution_id", nullable = false)
-    private byte resolutionId = 1;
+    private byte resolutionId = 3;
 
     @Column(name = "minimap_scale", nullable = false)
     private byte minimapScale = 1;
@@ -238,10 +238,13 @@ public class AccountsSettingsEntity {
     private String windowSettings = "0,9,4,1,1,232,3,1,3,780,388,1,5,5,5,0,10,5,288,0,13,187,50,0,20,5,402,1,22,347,188,0,23,458,1,1,24,284,25,0";
 
     @Column(name = "quickbar_slot", nullable = false)
-    private String quickbarSlot = "-1,-1,-1,-1,-1,-1,-1,-1,-1,-1";
+    private String quickbarSlot = "3,4,5,6,7,39,11,12,13,23";
+
+    @Column(name = "main_menu_position", nullable = false)
+    private String mainMenuPosition = "806,830";
 
     @Column(name = "slot_menu_position", nullable = false)
-    private String slotMenuPosition = "313,451";
+    private String slotMenuPosition = "769,798";
 
     @Column(name = "slot_menu_order", nullable = false)
     private byte slotMenuOrder;

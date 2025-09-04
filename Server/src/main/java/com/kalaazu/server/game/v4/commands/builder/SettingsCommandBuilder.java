@@ -93,6 +93,7 @@ public class SettingsCommandBuilder implements CommandBuilderInterface {
                 new ClientSettingsCommand(ServerCommands.SET_QUALITY_EFFECT, settings.getQualityEffect()),
                 new ClientSettingsCommand(ServerCommands.SET_QUALITY_EXPLOSION, settings.getQualityExplosion()),
                 new ClientSettingsCommand(ServerCommands.SET_QUICKBAR_SLOT, settings.getQuickbarSlot()),
+                new ClientSettingsCommand(ServerCommands.SET_MAINMENU_POSITION, settings.getMainMenuPosition()),
                 new ClientSettingsCommand(ServerCommands.SET_SLOTMENU_POSITION, settings.getSlotMenuPosition()),
                 new ClientSettingsCommand(ServerCommands.SET_SLOTMENU_ORDER, settings.getSlotMenuOrder())
         );

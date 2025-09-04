@@ -30,6 +30,7 @@ public class Packet implements com.kalaazu.server.game.Packet {
 
         this.size = bytes.length;
         this.in = new DataInputStream(new ByteArrayInputStream(bytes));
+        this.in.mark(2);
     }
 
     /**

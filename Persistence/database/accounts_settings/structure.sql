@@ -55,7 +55,7 @@ CREATE TABLE `accounts_settings`
     -- Window settings
     `hide_all_windows`                      TINYINT(1)   DEFAULT 0 NOT NULL,
     `scale`                                 TINYINT(4)   DEFAULT 1 NOT NULL,
-    `bar_state`                             VARCHAR(255) DEFAULT '' NOT NULL,
+    `bar_state`                             VARCHAR(255) DEFAULT '23,1,24,1,25,1,26,1,27,1' NOT NULL,
 
     -- Gameplay settings
     `gameplay_not_set`                      TINYINT(1)   DEFAULT 0 NOT NULL,
@@ -80,11 +80,12 @@ CREATE TABLE `accounts_settings`
     `quests_completed_filter`               TINYINT(1)   DEFAULT 0 NOT NULL,
 
     -- Window settings
-    `resolution_id`                         TINYINT(4)   DEFAULT 1 NOT NULL,
+    `resolution_id`                         TINYINT(4)   DEFAULT 3 NOT NULL,
     `minimap_scale`                         TINYINT(4)   DEFAULT 1 NOT NULL,
-    `window_settings`                       VARCHAR(255) DEFAULT '0,9,4,1,1,232,3,1,3,780,388,1,5,5,5,0,10,5,288,0,13,187,50,0,20,5,402,1,22,347,188,0,23,458,1,1,24,284,25,0"' NOT NULL,
-    `quickbar_slot`                         VARCHAR(255) DEFAULT '-1,-1,-1,-1,-1,-1,-1,-1,-1,-1' NOT NULL,
-    `slot_menu_position`                    VARCHAR(255) DEFAULT '313,451' NOT NULL,
+    `window_settings`                       VARCHAR(255) DEFAULT '0,4,969,1,1,1392,976,1,3,1611,853,1,5,10,10,1,10,4,330,0,13,635,302,0,20,6,447,0,22,795,440,0,23,1694,184,1,24,732,277,0' NOT NULL,
+    `quickbar_slot`                         VARCHAR(255) DEFAULT '3,4,5,6,7,39,11,12,13,23' NOT NULL,
+    `main_menu_position`                    VARCHAR(255) DEFAULT '806,830' NOT NULL,
+    `slot_menu_position`                    VARCHAR(255) DEFAULT '769,798' NOT NULL,
     `slot_menu_order`                       TINYINT(4)   DEFAULT 0 NOT NULL,
 
     CONSTRAINT
