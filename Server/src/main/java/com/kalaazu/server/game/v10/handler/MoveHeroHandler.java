@@ -1,7 +1,6 @@
 package com.kalaazu.server.game.v10.handler;
 
 import com.kalaazu.model.Version;
-import com.kalaazu.server.event.PlayerMovementStartedEvent;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.util.Handler;
@@ -34,7 +33,6 @@ public class MoveHeroHandler extends Handler<MoveHero> {
         var player = session.getPlayer();
 
         player.move(packet.getFrom(), packet.getTo());
-        ctx.publishEvent(new PlayerMovementStartedEvent(player, this));
     }
 
     @Override

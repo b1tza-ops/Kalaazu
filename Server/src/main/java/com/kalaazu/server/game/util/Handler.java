@@ -7,6 +7,7 @@ import com.kalaazu.server.game.netty.GameSession;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * Abstract handler.
@@ -21,6 +22,7 @@ public abstract class Handler<T extends InCommand> {
     @Value("${app.game.packets.printIn}")
     private boolean printPackets;
 
+    @Async
     @SneakyThrows
     public void handle(Packet packet, GameSession session) {
         var command = getClazz().getDeclaredConstructor()

@@ -2,15 +2,16 @@ package com.kalaazu.server.service;
 
 import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.service.UsersService;
-import com.kalaazu.server.event.*;
+import com.kalaazu.server.event.EndGameSessionEvent;
+import com.kalaazu.server.event.EndGameSessionIfEvent;
+import com.kalaazu.server.event.GameSessionStartedEvent;
+import com.kalaazu.server.event.SendCommandsEvent;
 import com.kalaazu.server.game.commands.CommandBuilder;
 import com.kalaazu.server.game.commands.CommandType;
-import com.kalaazu.server.game.netty.ChannelManager;
 import com.kalaazu.server.game.netty.GameSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,14 +29,8 @@ public class SessionInitializationService {
     private final ApplicationContext ctx;
     private final UsersService users;
     private final CommandBuilder commandBuilder;
-    private final ChannelManager channelManager;
 
-    @EventListener
-    public void initialize(InitializeSessionEvent event) {
-        var userId = event.getUserId();
-        var sessionId = event.getSessionId();
-        var session = event.getSession();
-
+    public void initialize(int userId, String sessionId, GameSession session) {
         log.info("Incoming login request from userID {} with sessionID {}", userId, sessionId);
 
         var user = users.find(userId);
@@ -60,15 +55,15 @@ public class SessionInitializationService {
         }
 
         // End previous sessions of this account.
-        channelManager.handleEndGameSessionIf(new EndGameSessionIfEvent((s) -> {
+        ctx.publishEvent(new EndGameSessionIfEvent((s) -> {
             var acc = s.getValue().getAccount();
 
             return (acc != null && acc.getId() == account.getId());
         }, this));
 
-        session.setAccount(account);
-
         this.sendInitialPackets(account, session);
+
+        session.setAccount(account);
         ctx.publishEvent(new GameSessionStartedEvent(session, this));
     }
 
