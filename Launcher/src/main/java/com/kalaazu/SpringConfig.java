@@ -4,10 +4,15 @@ import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.support.TaskExecutorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.sql.Timestamp;
+import java.util.concurrent.Executors;
 
 /**
  * Spring configuration class.
@@ -40,5 +45,28 @@ public class SpringConfig {
         });
 
         return mapper;
+    }
+
+    /**
+     * Configure the TaskExecutor to use virtual threads.
+     *
+     * @return Virtual thread task executor.
+     */
+    @Bean
+    public TaskExecutor taskExecutor() {
+        return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
+    }
+
+    /**
+     * Configure the ApplicationEventMulticaster to use virtual threads
+     *
+     * @return Configured ApplicationEventMulticaster
+     */
+    @Bean
+    public ApplicationEventMulticaster  applicationEventMulticaster(TaskExecutor taskExecutor) {
+        var multicaster = new SimpleApplicationEventMulticaster();
+        multicaster.setTaskExecutor(taskExecutor);
+
+        return multicaster;
     }
 }

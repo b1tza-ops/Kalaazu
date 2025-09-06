@@ -29,7 +29,7 @@ public class AccountsTechfactoryItemsEntity {
 
     @Basic
     @Column(name = "status", nullable = false)
-    private short status = 1;
+    private byte status = 1;
 
     @Basic
     @Column(name = "date")
