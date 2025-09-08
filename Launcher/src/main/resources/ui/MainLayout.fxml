@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17.0.12"
+            fx:controller="com.kalaazu.ui.presenter.MainLayout">
+    <top>
+        <BorderPane fx:id="titleBar" maxHeight="36.0" minHeight="36.0" onMouseDragged="#titleBarMouseDragged"
+                    onMousePressed="#titleBarMousePressed" prefHeight="36.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="4.0" left="8.0" right="8.0" top="4.0"/>
+            </padding>
+            <center>
+                <Label fx:id="windowTitle" text="Window Title" BorderPane.alignment="CENTER"/>
+            </center>
+            <right>
+                <HBox spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
+                    <children>
+                        <Button fx:id="minimizeWindowButton" maxHeight="28.0" maxWidth="28.0" minHeight="28.0"
+                                minWidth="28.0" mnemonicParsing="false" onMouseClicked="#minimizeWindow"
+                                prefHeight="28.0" prefWidth="28.0"/>
+                        <Button fx:id="maximizeWindowButton" layoutX="10.0" layoutY="10.0" maxHeight="28.0"
+                                maxWidth="28.0" minHeight="28.0" minWidth="28.0" mnemonicParsing="false"
+                                onMouseClicked="#toggleMaximizeWindow" prefHeight="28.0" prefWidth="28.0"/>
+                        <Button fx:id="closeWindowButton" maxHeight="28.0" maxWidth="28.0" minHeight="28.0"
+                                minWidth="28.0" mnemonicParsing="false" onMouseClicked="#closeWindow" prefHeight="28.0"
+                                prefWidth="28.0"/>
+                    </children>
+                </HBox>
+            </right>
+            <left>
+                <HBox BorderPane.alignment="BOTTOM_LEFT">
+                    <children>
+                        <Button fx:id="windowIcon" maxHeight="28.0" maxWidth="28.0" minHeight="28.0" minWidth="28.0"
+                                mnemonicParsing="false" onMouseClicked="#showWindowIconContextMenu" prefHeight="28.0"
+                                prefWidth="28.0"/>
+                    </children>
+                </HBox>
+            </left>
+        </BorderPane>
+    </top>
+</BorderPane>

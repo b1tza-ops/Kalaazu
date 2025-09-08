@@ -1,10 +1,14 @@
 plugins {
+    id 'application'
     id 'java'
     id 'org.springframework.boot' version '4.0.0-M2'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
+group = 'com.kalaazu'
 version = '0.0.1-SNAPSHOT'
+mainClassName = 'com.kalaazu.Launcher'
 
 configurations {
     compileOnly {
@@ -20,12 +24,19 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.openjfx.javafxplugin'
 
     java {
         toolchain { languageVersion = JavaLanguageVersion.of(24) }
     }
 
     group 'com.kalaazu'
+
+    javafx {
+        version = '24'
+        modules = ['javafx.controls', 'javafx.fxml']
+    }
+
 
     repositories {
         mavenCentral()
@@ -40,8 +51,10 @@ allprojects {
         enabled = true
     }
 
-    springBoot {
-        mainClass = 'com.kalaazu.Launcher'
+
+    ext {
+        ikonliVersion = '12.4.0'
+        atlantaVersion = '2.1.0'
     }
 
     dependencies {
@@ -55,6 +68,14 @@ allprojects {
         annotationProcessor 'org.projectlombok:lombok'
         implementation 'org.reflections:reflections:0.10.2'
         implementation 'org.modelmapper:modelmapper:3.1.0'
+
+        implementation("io.github.mkpaz:atlantafx-base:$atlantaVersion")
+        implementation("io.github.mkpaz:atlantafx-styles:$atlantaVersion")
+
+
+        // Ikonli
+        implementation("org.kordamp.ikonli:ikonli-javafx:$ikonliVersion")
+        implementation("org.kordamp.ikonli:ikonli-feather-pack:$ikonliVersion")
     }
 
     test {

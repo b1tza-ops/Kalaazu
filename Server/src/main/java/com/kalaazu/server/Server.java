@@ -1,5 +1,6 @@
 package com.kalaazu.server;
 
+import com.kalaazu.event.StartKalaazuEvent;
 import com.kalaazu.model.Version;
 import com.kalaazu.server.game.GameServer;
 import com.kalaazu.server.game.PolicyServer;
@@ -7,8 +8,7 @@ import com.kalaazu.server.service.MapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class Server implements ApplicationListener<ApplicationReadyEvent> {
+public class Server {
     private final List<GameServer> servers;
     private final PolicyServer policyServer;
 
@@ -33,8 +33,8 @@ public class Server implements ApplicationListener<ApplicationReadyEvent> {
      *
      * @param event the event to respond to
      */
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    @EventListener
+    public void start(StartKalaazuEvent event) {
         mapService.initialize();
 
         log.info("Starting game server for main.swf version {}", version);
