@@ -1,6 +1,7 @@
 package com.kalaazu;
 
 import atlantafx.base.theme.PrimerDark;
+import com.kalaazu.ui.LoadingScreen;
 import com.kalaazu.ui.SceneManager;
 import com.kalaazu.ui.event.ShowMainScreenEvent;
 import com.kalaazu.ui.presenter.MainLayout;
@@ -30,6 +31,8 @@ import java.util.Arrays;
 @Slf4j
 @SpringBootApplication
 public class Launcher extends Application {
+    private static final LoadingScreen loadingScreen = new LoadingScreen();
+
     @Getter
     private static Launcher instance;
 
@@ -41,6 +44,7 @@ public class Launcher extends Application {
      * @param args Command line arguments.
      */
     public static void main(String[] args) {
+        loadingScreen.show();
         Application.launch(Launcher.class, args);
     }
 
@@ -49,6 +53,7 @@ public class Launcher extends Application {
         log.info("Init Kalaazu...");
         ctx = new SpringApplicationBuilder(Launcher.class).run();
         instance = this;
+        loadingScreen.close();
     }
 
     @Override
