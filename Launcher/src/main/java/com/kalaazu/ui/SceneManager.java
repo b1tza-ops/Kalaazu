@@ -10,8 +10,10 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,6 +28,9 @@ public class SceneManager {
     private final Map<String, Scene> scenes = new HashMap<>();
 
     private final ApplicationContext ctx;
+
+    @Value("classpath:styles/index.css")
+    private Resource style;
 
     private Stage stage;
     private Class<?> rootScene;
@@ -97,6 +102,7 @@ public class SceneManager {
             var parent = (Parent) loader.load();
 
             var scene = new Scene(parent);
+            scene.getStylesheets().add(style.getURI().toString());
             scene.setUserData(loader.getController());
 
             return scene;
