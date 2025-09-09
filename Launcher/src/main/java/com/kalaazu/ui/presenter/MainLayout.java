@@ -1,5 +1,6 @@
 package com.kalaazu.ui.presenter;
 
+import atlantafx.base.controls.Breadcrumbs;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.kalaazu.ui.SceneManager;
@@ -19,6 +20,9 @@ import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Main layout.
  * <p>
@@ -34,28 +38,38 @@ public class MainLayout {
 
     private final Delta delta = new Delta();
     private final ContextMenu windowIconContextMenu = new ContextMenu();
+
+    private final List<String> breadcrumbsItems = new ArrayList<>();
     @FXML
-    private BorderPane titleBar;
+    private Breadcrumbs<String> breadcrumbs;
+
     @FXML
     private Label windowTitle;
+
     @FXML
     private Button closeWindowButton;
+
     @FXML
     private Button maximizeWindowButton;
+
     @FXML
     private Button minimizeWindowButton;
+
     @FXML
     private Button windowIcon;
+
     private boolean maximized = false;
     private double prevX = 0;
     private double prevY = 0;
     private double prevWidth = 0;
     private double prevHeight = 0;
+    @FXML
+    private BorderPane titleBar;
+    private Breadcrumbs.BreadCrumbItem<String> rootBreadcrumbItem;
 
     @FXML
     public void initialize() {
-        windowTitle.setText("Kalaazu");
-
+        // Setup window bar
         closeWindowButton.setGraphic(new FontIcon(Feather.X_SQUARE));
         closeWindowButton.getStyleClass().addAll(Styles.FLAT, Styles.BUTTON_ICON, Styles.DANGER);
 
@@ -78,6 +92,12 @@ public class MainLayout {
         windowIconContextMenu.getItems().addAll(
                 // TODO Window Icon context menu items
         );
+
+        // Setup navigation
+        breadcrumbsItems.add("Home");
+        rootBreadcrumbItem = Breadcrumbs.buildTreeModel(breadcrumbsItems.toArray(String[]::new));
+        breadcrumbs = new Breadcrumbs<>(rootBreadcrumbItem);
+        breadcrumbs.setSelectedCrumb(getTreeItemByIndex(1));
     }
 
     public void titleBarMouseDragged(MouseEvent event) {
@@ -128,6 +148,17 @@ public class MainLayout {
 
     public void showWindowIconContextMenu(MouseEvent event) {
         windowIconContextMenu.show(windowIcon, Side.BOTTOM, 0, 0);
+    }
+
+
+    private Breadcrumbs.BreadCrumbItem<String> getTreeItemByIndex(int index) {
+        var counter = index;
+        var current = rootBreadcrumbItem;
+        while (counter > 0 && current.getParent() != null) {
+            current = (Breadcrumbs.BreadCrumbItem<String>) current.getParent();
+            counter--;
+        }
+        return current;
     }
 
     @Data

@@ -1,0 +1,7 @@
+@import "sidebar.css";
+@import "titleBar.css";
+@import "page.css";
+
+.root {
+    -fx-background-color: transparent;
+}

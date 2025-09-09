@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import atlantafx.base.controls.Breadcrumbs?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17.0.12"
             fx:controller="com.kalaazu.ui.presenter.MainLayout">
     <top>
         <BorderPane fx:id="titleBar" maxHeight="36.0" minHeight="36.0" onMouseDragged="#titleBarMouseDragged"
-                    onMousePressed="#titleBarMousePressed" prefHeight="36.0" BorderPane.alignment="CENTER">
+                    onMousePressed="#titleBarMousePressed" prefHeight="36.0" styleClass="titleBar"
+                    BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="4.0" left="8.0" right="8.0" top="4.0"/>
             </padding>
             <center>
-                <Label fx:id="windowTitle" text="Window Title" BorderPane.alignment="CENTER"/>
+                <Label fx:id="windowTitle" text="Kalaazu" BorderPane.alignment="CENTER"/>
             </center>
             <right>
                 <HBox spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
@@ -41,4 +44,27 @@
             </left>
         </BorderPane>
     </top>
+    <left>
+        <VBox alignment="TOP_CENTER" prefWidth="320.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Kalaazu" textAlignment="CENTER">
+                    <font>
+                        <Font size="64.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets top="32.0"/>
+                    </VBox.margin>
+                </Label>
+            </children>
+        </VBox>
+    </left>
+    <center>
+        <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="page" BorderPane.alignment="CENTER">
+            <top>
+                <HBox maxHeight="36.0" minHeight="36.0" prefHeight="36.0" BorderPane.alignment="CENTER">
+                    <Breadcrumbs fx:id="breadcrumbs"/>
+                </HBox>
+            </top>
+        </BorderPane>
+    </center>
 </BorderPane>

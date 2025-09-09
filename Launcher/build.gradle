@@ -1,18 +1,3 @@
-plugins {
-    id 'io.miret.etienne.sass' version '1.5.2'
-}
-
-compileSass {
-    sourceDir = sourceSets.main.resources.srcDirs.iterator().next().toPath().resolve("scss").toFile()
-    outputDir = sourceSets.main.output.resourcesDir
-    destPath = "styles"
-}
-
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(compileSass)
-}
-
 dependencies {
     implementation project(':CMS')
     implementation project(':Server')
