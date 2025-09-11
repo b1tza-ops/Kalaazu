@@ -20,92 +20,121 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class GameServer implements Runnable {
-    private static GameServer INSTANCE;
+    private static volatile GameServer INSTANCE;
 
-    private boolean isRunning;
+    private volatile boolean isRunning = false;
+    private Thread serverThread;
+
     private Channel serverChannel;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
 
+    /**
+     * Returns the singleton instance.
+     */
     public static GameServer getInstance() {
         if (INSTANCE == null) {
             throw new IllegalStateException("GameServer has not been initialized");
         }
-
         return INSTANCE;
     }
 
-    public void start() {
+    /**
+     * Starts the server in a new thread if not already running.
+     */
+    public synchronized void start() {
         if (isRunning) {
+            log.warn("Server {} is already running.", getVersion());
             return;
         }
 
-        var serverThread = new Thread(this);
+        serverThread = new Thread(this, getVersion() + "-ServerThread");
         serverThread.start();
     }
 
+    @Override
     public void run() {
         INSTANCE = this;
         isRunning = true;
-        var port = getConfig().getPort().getServer();
 
-        log.info("Starting emulator server on port {}...", port);
+        int port = getConfig().getPort().getServer();
+        log.info("Starting {} server on port {}...", getVersion(), port);
+
         try {
+            // Initialize Netty event loops
             bossGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
             workerGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
 
-            var b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
+            ServerBootstrap bootstrap = new ServerBootstrap();
+            bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.TRACE))
+                    .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(getChildHandler())
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            // Bind and start to accept incoming connections.
-            serverChannel = b.bind(port).sync().channel();
-
-            // Wait until the server socket is closed.
-            // In this example, this does not happen, but you can do that to gracefully
-            // shut down your server.
+            // Bind server and wait until closed
+            serverChannel = bootstrap.bind(port).sync().channel();
             serverChannel.closeFuture().sync();
+
+        } catch (InterruptedException e) {
+            log.warn("Server thread interrupted.", e);
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
-            log.warn("Couldn't start emulator server!", e);
+            log.error("Failed to start {} server.", getVersion(), e);
         } finally {
-            workerGroup.shutdownGracefully();
-            bossGroup.shutdownGracefully();
+            shutdownEventLoops();
+            isRunning = false;
+            log.info("{} server stopped.", getVersion());
         }
     }
 
     /**
      * Stops the server gracefully.
      */
-    public void stop() {
-        log.info("Stopping game {} server...", getVersion());
+    public synchronized void stop() {
+        if (!isRunning) {
+            log.warn("{} server is not running.", getVersion());
+            return;
+        }
+
+        log.info("Stopping {} server...", getVersion());
         isRunning = false;
 
-        if (serverChannel != null) {
-            serverChannel.close(); // trigger closeFuture
+        if (serverChannel != null && serverChannel.isOpen()) {
+            serverChannel.close();
         }
 
         shutdownEventLoops();
-    }
 
-    private void shutdownEventLoops() {
-        try {
-            workerGroup.shutdownGracefully().sync();
-            bossGroup.shutdownGracefully().sync();
-        } catch (InterruptedException e) {
-            log.warn("Event loop shutdown interrupted", e);
-            Thread.currentThread().interrupt();
+        if (serverThread != null && serverThread.isAlive()) {
+            serverThread.interrupt();
         }
     }
 
+    /**
+     * Gracefully shuts down event loops.
+     */
+    private void shutdownEventLoops() {
+        try {
+            if (workerGroup != null) workerGroup.shutdownGracefully().sync();
+            if (bossGroup != null) bossGroup.shutdownGracefully().sync();
+        } catch (InterruptedException e) {
+            log.warn("Event loop shutdown interrupted", e);
+            Thread.currentThread().interrupt();
+        } finally {
+            workerGroup = null;
+            bossGroup = null;
+            serverChannel = null;
+        }
+    }
+
+    /**
+     * Abstract methods to implement in subclasses
+     **/
+
     public abstract Packet getEmptyPacket();
-
     public abstract Version getVersion();
-
     protected abstract ChannelHandler getChildHandler();
-
     protected abstract KalaazuConfig getConfig();
 }
