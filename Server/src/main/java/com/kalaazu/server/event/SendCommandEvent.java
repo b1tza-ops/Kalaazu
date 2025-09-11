@@ -18,8 +18,8 @@ public class SendCommandEvent extends ApplicationEvent {
     private final GameSession session;
     private final OutCommand command;
 
-    public SendCommandEvent(GameSession session, OutCommand command, Object source) {
-        super(source);
+    public SendCommandEvent(GameSession session, OutCommand command) {
+        super(new Object());
 
         this.session = session;
         this.command = command;

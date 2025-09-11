@@ -17,8 +17,8 @@ import org.springframework.context.ApplicationEvent;
 public class GameSessionStartedEvent extends ApplicationEvent {
     private final GameSession session;
 
-    public GameSessionStartedEvent(GameSession session, Object source) {
-        super(source);
+    public GameSessionStartedEvent(GameSession session) {
+        super(new Object());
 
         this.session = session;
     }

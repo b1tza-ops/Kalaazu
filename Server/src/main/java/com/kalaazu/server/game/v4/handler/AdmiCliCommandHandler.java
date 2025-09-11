@@ -38,7 +38,7 @@ public class AdmiCliCommandHandler extends Handler<AdminCliCommand> {
 
                     log.info("Resending packet {}", p);
                 }
-            }, this));
+            }));
         }
     }
 

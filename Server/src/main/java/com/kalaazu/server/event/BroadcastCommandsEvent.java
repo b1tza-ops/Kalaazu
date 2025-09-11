@@ -18,8 +18,8 @@ import java.util.List;
 public class BroadcastCommandsEvent extends ApplicationEvent {
     private final List<? extends OutCommand> commands;
 
-    public BroadcastCommandsEvent(List<? extends OutCommand> commands, Object source) {
-        super(source);
+    public BroadcastCommandsEvent(List<? extends OutCommand> commands) {
+        super(new Object());
 
         this.commands = commands;
     }

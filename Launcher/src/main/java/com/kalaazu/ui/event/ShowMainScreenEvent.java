@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationEvent;
  * @author manulaiko
  */
 public class ShowMainScreenEvent extends ApplicationEvent {
-    public ShowMainScreenEvent(Object source) {
-        super(source);
+    public ShowMainScreenEvent() {
+        super(new Object());
     }
 }

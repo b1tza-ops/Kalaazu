@@ -75,8 +75,8 @@ public class MainLayout {
         version.setValue(config.getGame().getVersion());
         version.setOnAction(event -> config.getGame().setVersion(version.getValue()));
 
-        start.setOnAction(e -> ctx.publishEvent(new StartKalaazuEvent(this)));
-        stop.setOnAction(e -> ctx.publishEvent(new StopKalaazuEvent(this)));
+        start.setOnAction(e -> ctx.publishEvent(new StartKalaazuEvent()));
+        stop.setOnAction(e -> ctx.publishEvent(new StopKalaazuEvent()));
 
         // Setup navigation
         breadcrumbsItems.add("Home");

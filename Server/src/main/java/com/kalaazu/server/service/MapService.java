@@ -158,6 +158,6 @@ public class MapService {
 
         taskScheduler.scheduleAtFixedRate(player::tick, Duration.ofSeconds(1));
 
-        ctx.publishEvent(new SendCommandsEvent(session, commands, this));
+        ctx.publishEvent(new SendCommandsEvent(session, commands));
     }
 }

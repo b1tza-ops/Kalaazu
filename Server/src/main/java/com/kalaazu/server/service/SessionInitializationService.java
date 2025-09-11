@@ -49,7 +49,7 @@ public class SessionInitializationService {
         if (account == null) {
             log.info("Invalid session ID {}", sessionId);
 
-            ctx.publishEvent(new EndGameSessionEvent(session, this));
+            ctx.publishEvent(new EndGameSessionEvent(session));
 
             return;
         }
@@ -59,17 +59,17 @@ public class SessionInitializationService {
             var acc = s.getValue().getAccount();
 
             return (acc != null && acc.getId() == account.getId());
-        }, this));
+        }));
 
         this.sendInitialPackets(account, session);
 
         session.setAccount(account);
-        ctx.publishEvent(new GameSessionStartedEvent(session, this));
+        ctx.publishEvent(new GameSessionStartedEvent(session));
     }
 
     private void sendInitialPackets(AccountsEntity account, GameSession session) {
         var settings = commandBuilder.buildCommands(CommandType.SettingsCommand, account.getAccountsSettings());
-        ctx.publishEvent(new SendCommandsEvent(session, settings, this));
+        ctx.publishEvent(new SendCommandsEvent(session, settings));
 
         var hangar = account.getAccountsHangarsByAccountsHangarsId();
         var ship = hangar.getAccountsShipsByAccountsShipsId();
@@ -90,6 +90,6 @@ public class SessionInitializationService {
         }
 
         var initialPackets = commandBuilder.buildCommands(CommandType.InitCommands, account, hangar, ship, config, clanId, clanTag);
-        ctx.publishEvent(new SendCommandsEvent(session, initialPackets, this));
+        ctx.publishEvent(new SendCommandsEvent(session, initialPackets));
     }
 }

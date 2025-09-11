@@ -1,5 +1,6 @@
 package com.kalaazu.ui.presenter;
 
+import com.kalaazu.KalaazuConfig;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class Dashboard {
+    private final KalaazuConfig kalaazuConfig;
+
     public Label serverStatus;
     public Label serverVersion;
     public Label registeredUsers;

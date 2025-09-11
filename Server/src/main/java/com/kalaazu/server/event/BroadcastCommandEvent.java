@@ -16,8 +16,8 @@ import org.springframework.context.ApplicationEvent;
 public class BroadcastCommandEvent extends ApplicationEvent {
     private final OutCommand command;
 
-    public BroadcastCommandEvent(OutCommand command, Object source) {
-        super(source);
+    public BroadcastCommandEvent(OutCommand command) {
+        super(new Object());
 
         this.command = command;
     }

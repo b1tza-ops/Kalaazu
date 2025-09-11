@@ -16,8 +16,8 @@ import org.springframework.context.ApplicationEvent;
 public class EndGameSessionEvent extends ApplicationEvent {
     private final GameSession session;
 
-    public EndGameSessionEvent(GameSession session, Object source) {
-        super(source);
+    public EndGameSessionEvent(GameSession session) {
+        super(new Object());
 
         this.session = session;
     }

@@ -83,7 +83,7 @@ public class Launcher extends Application {
         sceneManager.setStage(stage);
         sceneManager.setRootScene(MainLayout.class);
 
-        ctx.publishEvent(new ShowMainScreenEvent(this));
+        ctx.publishEvent(new ShowMainScreenEvent());
     }
 
     /**

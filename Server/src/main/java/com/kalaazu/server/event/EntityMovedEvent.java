@@ -16,8 +16,8 @@ import org.springframework.context.ApplicationEvent;
 public class EntityMovedEvent extends ApplicationEvent {
     private final MovableMapEntity entity;
 
-    public EntityMovedEvent(MovableMapEntity entity, Object source) {
-        super(source);
+    public EntityMovedEvent(MovableMapEntity entity) {
+        super(new Object());
 
         this.entity = entity;
     }

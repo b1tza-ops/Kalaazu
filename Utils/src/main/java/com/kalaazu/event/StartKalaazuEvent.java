@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationEvent;
  * @author manulaiko
  */
 public class StartKalaazuEvent extends ApplicationEvent {
-    public StartKalaazuEvent(Object source) {
-        super(source);
+    public StartKalaazuEvent() {
+        super(new Object());
     }
 }
