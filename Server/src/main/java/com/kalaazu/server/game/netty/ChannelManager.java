@@ -1,6 +1,6 @@
 package com.kalaazu.server.game.netty;
 
-import com.kalaazu.model.Version;
+import com.kalaazu.KalaazuConfig;
 import com.kalaazu.server.event.*;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.commands.OutCommand;
@@ -12,7 +12,6 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -36,12 +35,7 @@ public class ChannelManager {
     private final Map<ChannelId, GameSession> sessions = new ConcurrentHashMap<>();
 
     private final List<Handler<?>> packetHandlers;
-
-    @Value("${app.game.packets.printOut}")
-    private boolean printPackets;
-
-    @Value("${app.game.version}")
-    private Version version;
+    private final KalaazuConfig config;
 
     private void send(ChannelId channelId, OutCommand command) {
         var channel = channels.find(channelId);
@@ -49,7 +43,7 @@ public class ChannelManager {
             return;
         }
 
-        if (printPackets) {
+        if (config.getGame().getPackets().isPrintOut()) {
             log.info("Packet sent: >>>>> {}", command);
         }
 
@@ -65,7 +59,7 @@ public class ChannelManager {
             return;
         }
 
-        if (printPackets) {
+        if (config.getGame().getPackets().isPrintOut()) {
             commands.forEach(p -> log.info("Packet sent: >>>>> {}", p));
         }
 
@@ -84,7 +78,7 @@ public class ChannelManager {
         var packet = Packet.empty();
         command.write(packet);
 
-        if (printPackets) {
+        if (config.getGame().getPackets().isPrintOut()) {
             log.info("Packet sent: >>>>> {}", command);
         }
 
@@ -97,8 +91,7 @@ public class ChannelManager {
                     var p = Packet.empty();
                     c.write(p);
 
-
-                    if (printPackets) {
+                    if (config.getGame().getPackets().isPrintOut()) {
                         log.info("Packet sent: >>>>> {}", p);
                     }
 
@@ -142,7 +135,7 @@ public class ChannelManager {
         }
 
         packetHandlers.stream()
-                .filter(h -> h.getVersion() == this.version)
+                .filter(h -> h.getVersion() == config.getGame().getVersion())
                 .filter(h -> {
                     if (h.canHandle(packet)) {
                         return true;

@@ -1,5 +1,6 @@
 package com.kalaazu.server.game.v10;
 
+import com.kalaazu.KalaazuConfig;
 import com.kalaazu.model.Version;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.netty.InboundHandler;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Component;
 public class GameServer extends com.kalaazu.server.game.GameServer {
     private final Version version = Version.V10;
     private final InboundHandler inboundHandler;
+    private final KalaazuConfig config;
 
     @Override
     public Packet getEmptyPacket() {

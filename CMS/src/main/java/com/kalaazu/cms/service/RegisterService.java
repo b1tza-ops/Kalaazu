@@ -197,7 +197,7 @@ public class RegisterService {
     private List<AccountsSettingsEntity> createSettings(AccountsEntity account) {
         var ret = new ArrayList<AccountsSettingsEntity>();
 
-        for (Version version : Version.values()) {
+        for (var version : Version.values()) {
             var settings = new AccountsSettingsEntity();
             settings.setAccountsByAccountsId(account);
             settings.setVersion(version.name());

@@ -34,6 +34,7 @@ public class MapService {
     private final TaskScheduler taskScheduler;
     private final MapsService service;
     private final ApplicationContext ctx;
+
     private final Map<Short, Set<Npc>> npcs = new HashMap<>();
     private final Map<Short, Set<Collectable>> collectables = new HashMap<>();
     private final Map<Short, Set<Station>> stations = new HashMap<>();
@@ -41,7 +42,14 @@ public class MapService {
     private final Map<Short, Set<Player>> players = new HashMap<>();
     private Map<Short, MapsEntity> maps;
 
+    private boolean isInitialized = false;
+
     public void initialize() {
+        if (isInitialized) {
+            return;
+        }
+        isInitialized = true;
+
         log.info("Loading maps..");
         maps = service.findAll()
                 .stream()

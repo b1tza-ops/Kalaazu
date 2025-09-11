@@ -5,63 +5,125 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.*?>
+<?import java.lang.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17.0.12"
             fx:controller="com.kalaazu.ui.presenter.MainLayout">
     <top>
-        <BorderPane fx:id="titleBar" maxHeight="36.0" minHeight="36.0" onMouseDragged="#titleBarMouseDragged"
-                    onMousePressed="#titleBarMousePressed" prefHeight="36.0" styleClass="titleBar"
+        <BorderPane maxHeight="40.0" minHeight="40.0" prefHeight="40.0" onMouseDragged="#titleBarMouseDragged"
+                    onMousePressed="#titleBarMousePressed" styleClass="titleBar"
                     BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="4.0" left="8.0" right="8.0" top="4.0"/>
             </padding>
             <center>
-                <Label fx:id="windowTitle" text="Kalaazu" BorderPane.alignment="CENTER"/>
+                <Label text="Kalaazu" BorderPane.alignment="CENTER"/>
             </center>
             <right>
                 <HBox spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
-                    <children>
-                        <Button fx:id="minimizeWindowButton" maxHeight="28.0" maxWidth="28.0" minHeight="28.0"
-                                minWidth="28.0" mnemonicParsing="false" onMouseClicked="#minimizeWindow"
-                                prefHeight="28.0" prefWidth="28.0"/>
-                        <Button fx:id="maximizeWindowButton" layoutX="10.0" layoutY="10.0" maxHeight="28.0"
-                                maxWidth="28.0" minHeight="28.0" minWidth="28.0" mnemonicParsing="false"
-                                onMouseClicked="#toggleMaximizeWindow" prefHeight="28.0" prefWidth="28.0"/>
-                        <Button fx:id="closeWindowButton" maxHeight="28.0" maxWidth="28.0" minHeight="28.0"
-                                minWidth="28.0" mnemonicParsing="false" onMouseClicked="#closeWindow" prefHeight="28.0"
-                                prefWidth="28.0"/>
-                    </children>
+                    <Button maxHeight="32.0" maxWidth="32.0" minHeight="32.0"
+                            minWidth="32.0" mnemonicParsing="false" onMouseClicked="#minimizeWindow" prefHeight="32.0"
+                            prefWidth="32.0">
+                        <graphic>
+                            <FontIcon iconLiteral="fth-minimize"/>
+                        </graphic>
+                        <styleClass>
+                            <String fx:value="flat"/>
+                            <String fx:value="button-icon"/>
+                        </styleClass>
+                    </Button>
+
+                    <Button layoutX="10.0" layoutY="10.0" maxHeight="32.0" maxWidth="32.0"
+                            minHeight="32.0" minWidth="32.0" mnemonicParsing="false"
+                            onMouseClicked="#toggleMaximizeWindow" prefHeight="32.0" prefWidth="32.0">
+                        <graphic>
+                            <FontIcon iconLiteral="fth-maximize"/>
+                        </graphic>
+                        <styleClass>
+                            <String fx:value="flat"/>
+                            <String fx:value="button-icon"/>
+                        </styleClass>
+                    </Button>
+
+                    <Button maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0"
+                            mnemonicParsing="false" onMouseClicked="#closeWindow" prefHeight="32.0" prefWidth="32.0">
+                        <graphic>
+                            <FontIcon iconLiteral="fth-x-square"/>
+                        </graphic>
+                        <styleClass>
+                            <String fx:value="flat"/>
+                            <String fx:value="button-icon"/>
+                            <String fx:value="danger"/>
+                        </styleClass>
+                    </Button>
                 </HBox>
             </right>
             <left>
-                <HBox BorderPane.alignment="BOTTOM_LEFT">
-                    <children>
-                        <Button fx:id="windowIcon" maxHeight="28.0" maxWidth="28.0" minHeight="28.0" minWidth="28.0"
-                                mnemonicParsing="false" onMouseClicked="#showWindowIconContextMenu" prefHeight="28.0"
-                                prefWidth="28.0"/>
-                    </children>
+                <HBox spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
+                    <Button fx:id="windowIcon" maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0"
+                            mnemonicParsing="false" onMouseClicked="#showWindowIconContextMenu" prefHeight="32.0"
+                            prefWidth="32.0">
+                        <styleClass>
+                            <String fx:value="flat"/>
+                            <String fx:value="button-icon"/>
+                        </styleClass>
+                    </Button>
+
+                    <ComboBox fx:id="version" maxHeight="32.0" minHeight="32.0" prefHeight="32.0">
+                        <styleClass>
+                            <String fx:value="flat"/>
+                            <String fx:value="button-icon"/>
+                            <String fx:value="version"/>
+                        </styleClass>
+                    </ComboBox>
+
+                    <Button fx:id="start" maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0"
+                            mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" contentDisplay="RIGHT">
+                        <graphic>
+                            <FontIcon iconLiteral="fth-play"/>
+                        </graphic>
+                        <styleClass>
+                            <String fx:value="flat"/>
+                            <String fx:value="button-icon"/>
+                            <String fx:value="success"/>
+                            <String fx:value="start"/>
+                        </styleClass>
+                    </Button>
+
+                    <Button fx:id="stop" layoutX="126.0" layoutY="10.0" maxHeight="32.0" maxWidth="32.0"
+                            minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                            contentDisplay="RIGHT">
+                        <graphic>
+                            <FontIcon iconLiteral="fth-square"/>
+                        </graphic>
+                        <styleClass>
+                            <String fx:value="flat"/>
+                            <String fx:value="button-icon"/>
+                            <String fx:value="danger"/>
+                            <String fx:value="stop"/>
+                        </styleClass>
+                    </Button>
                 </HBox>
             </left>
         </BorderPane>
     </top>
     <left>
         <VBox alignment="TOP_CENTER" prefWidth="320.0" styleClass="sidebar" BorderPane.alignment="CENTER">
-            <children>
-                <Label text="Kalaazu" textAlignment="CENTER">
-                    <font>
-                        <Font size="64.0"/>
-                    </font>
-                    <VBox.margin>
-                        <Insets top="32.0"/>
-                    </VBox.margin>
-                </Label>
-            </children>
+            <Label text="Kalaazu" textAlignment="CENTER">
+                <font>
+                    <Font size="64.0"/>
+                </font>
+                <VBox.margin>
+                    <Insets top="32.0"/>
+                </VBox.margin>
+            </Label>
         </VBox>
     </left>
     <center>
         <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="page" BorderPane.alignment="CENTER">
             <top>
-                <HBox maxHeight="36.0" minHeight="36.0" prefHeight="36.0" BorderPane.alignment="CENTER">
+                <HBox maxHeight="40.0" minHeight="40.0" prefHeight="40.0" BorderPane.alignment="CENTER">
                     <Breadcrumbs fx:id="breadcrumbs"/>
                 </HBox>
             </top>

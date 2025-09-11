@@ -1,23 +1,23 @@
 package com.kalaazu.ui.presenter;
 
 import atlantafx.base.controls.Breadcrumbs;
-import atlantafx.base.theme.Styles;
-import atlantafx.base.theme.Tweaks;
+import com.kalaazu.KalaazuConfig;
+import com.kalaazu.event.StartKalaazuEvent;
+import com.kalaazu.event.StopKalaazuEvent;
+import com.kalaazu.model.Version;
 import com.kalaazu.ui.SceneManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.kordamp.ikonli.feather.Feather;
-import org.kordamp.ikonli.javafx.FontIcon;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -35,50 +35,39 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MainLayout {
     private final SceneManager sceneManager;
+    private final ApplicationContext ctx;
+    private final KalaazuConfig config;
 
     private final Delta delta = new Delta();
     private final ContextMenu windowIconContextMenu = new ContextMenu();
-
     private final List<String> breadcrumbsItems = new ArrayList<>();
+
     @FXML
     private Breadcrumbs<String> breadcrumbs;
 
     @FXML
-    private Label windowTitle;
-
-    @FXML
-    private Button closeWindowButton;
-
-    @FXML
-    private Button maximizeWindowButton;
-
-    @FXML
-    private Button minimizeWindowButton;
-
-    @FXML
     private Button windowIcon;
+
+    @FXML
+    private ComboBox<Version> version;
+
+    @FXML
+    private Button start;
+
+    @FXML
+    private Button stop;
 
     private boolean maximized = false;
     private double prevX = 0;
     private double prevY = 0;
     private double prevWidth = 0;
     private double prevHeight = 0;
-    @FXML
-    private BorderPane titleBar;
+
     private Breadcrumbs.BreadCrumbItem<String> rootBreadcrumbItem;
 
     @FXML
     public void initialize() {
         // Setup window bar
-        closeWindowButton.setGraphic(new FontIcon(Feather.X_SQUARE));
-        closeWindowButton.getStyleClass().addAll(Styles.FLAT, Styles.BUTTON_ICON, Styles.DANGER);
-
-        maximizeWindowButton.setGraphic(new FontIcon(Feather.MAXIMIZE));
-        maximizeWindowButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT);
-
-        minimizeWindowButton.setGraphic(new FontIcon(Feather.MINIMIZE));
-        minimizeWindowButton.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT);
-
         windowIcon.setGraphic(new ImageView(
                 sceneManager.getStage()
                         .getIcons()
@@ -87,11 +76,17 @@ public class MainLayout {
                         .findFirst()
                         .orElse(null)
         ));
-        windowIcon.getStyleClass().addAll(Styles.BUTTON_ICON, Styles.FLAT, Tweaks.NO_ARROW);
 
         windowIconContextMenu.getItems().addAll(
                 // TODO Window Icon context menu items
         );
+
+        version.getItems().addAll(Version.values());
+        version.setValue(config.getGame().getVersion());
+        version.setOnAction(event -> config.getGame().setVersion(version.getValue()));
+
+        start.setOnAction(e -> ctx.publishEvent(new StartKalaazuEvent(this)));
+        stop.setOnAction(e -> ctx.publishEvent(new StopKalaazuEvent(this)));
 
         // Setup navigation
         breadcrumbsItems.add("Home");

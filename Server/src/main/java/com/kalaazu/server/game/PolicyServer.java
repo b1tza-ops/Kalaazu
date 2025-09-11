@@ -1,11 +1,9 @@
 package com.kalaazu.server.game;
 
+import com.kalaazu.KalaazuConfig;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
@@ -16,7 +14,6 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -30,18 +27,33 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class PolicyServer extends Thread {
+public class PolicyServer implements Runnable {
     public static final String POLICY_RESPONSE = "<?xml version=\"1.0\"?><cross-domain-policy xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://www.adobe.com/xml/schemas/PolicyFileSocket.xsd\"><allow-access-from domain=\"*\" to-ports=\"*\" secure=\"false\" /><site-control permitted-cross-domain-policies=\"master-only\" /></cross-domain-policy>\r\n";
 
-    private final NioEventLoopGroup bossGroup = new NioEventLoopGroup();
-    private final NioEventLoopGroup workerGroup = new NioEventLoopGroup();
+    private final KalaazuConfig config;
 
-    @Value("${app.port.policy}")
-    private int port;
+    private boolean isRunning;
+    private Channel serverChannel;
+    private EventLoopGroup bossGroup;
+    private EventLoopGroup workerGroup;
+
+    public void start() {
+        if (isRunning) {
+            return;
+        }
+
+        var serverThread = new Thread(this);
+        serverThread.start();
+    }
 
     public void run() {
-        log.info("Starting policy server on port {}...", port);
+        isRunning = true;
+
+        log.info("Starting policy server on port {}...", config.getPort().getPolicy());
         try {
+            bossGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
+            workerGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
+
             var b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
@@ -61,14 +73,37 @@ public class PolicyServer extends Thread {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             // Bind and start to accept incoming connections.
-            var f = b.bind(port).sync();
+            serverChannel = b.bind(config.getPort().getPolicy()).sync().channel();
 
-            f.channel().closeFuture().sync();
+            serverChannel.closeFuture().sync();
         } catch (Exception e) {
             log.warn("Couldn't start policy server!", e);
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
+        }
+    }
+
+    /**
+     * Stops the server gracefully.
+     */
+    public void stop() {
+        log.info("Stopping policy server...");
+        if (serverChannel != null) {
+            serverChannel.close(); // trigger closeFuture
+        }
+
+        shutdownEventLoops();
+        this.isRunning = false;
+    }
+
+    private void shutdownEventLoops() {
+        try {
+            workerGroup.shutdownGracefully().sync();
+            bossGroup.shutdownGracefully().sync();
+        } catch (InterruptedException e) {
+            log.warn("Event loop shutdown interrupted", e);
+            Thread.currentThread().interrupt();
         }
     }
 

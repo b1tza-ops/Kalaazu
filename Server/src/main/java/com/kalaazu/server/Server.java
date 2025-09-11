@@ -1,13 +1,13 @@
 package com.kalaazu.server;
 
+import com.kalaazu.KalaazuConfig;
 import com.kalaazu.event.StartKalaazuEvent;
-import com.kalaazu.model.Version;
+import com.kalaazu.event.StopKalaazuEvent;
 import com.kalaazu.server.game.GameServer;
 import com.kalaazu.server.game.PolicyServer;
 import com.kalaazu.server.service.MapService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -22,11 +22,8 @@ import java.util.List;
 public class Server {
     private final List<GameServer> servers;
     private final PolicyServer policyServer;
-
     private final MapService mapService;
-
-    @Value("${app.game.version}")
-    private Version version;
+    private final KalaazuConfig config;
 
     /**
      * Handle an application event.
@@ -35,16 +32,37 @@ public class Server {
      */
     @EventListener
     public void start(StartKalaazuEvent event) {
+        var v = config.getGame().getVersion();
         mapService.initialize();
 
-        log.info("Starting game server for main.swf version {}", version);
+        log.info("Starting game server for main.swf version {}", v);
         var server = servers.stream()
-                .filter((s) -> s.getVersion() == version)
+                .filter((s) -> s.getVersion() == v)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Game sever for version " + version + " not found!"));
+                .orElseThrow(() -> new IllegalStateException("Game sever for version " + v + " not found!"));
 
         server.start();
-
         policyServer.start();
+        log.info("Started game server");
+    }
+
+    /**
+     * Handle an application event.
+     *
+     * @param event the event to respond to
+     */
+    @EventListener
+    public void stop(StopKalaazuEvent event) {
+        var v = config.getGame().getVersion();
+
+        log.info("Stopping game server for main.swf version {}", v);
+        var server = servers.stream()
+                .filter((s) -> s.getVersion() == v)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Game sever for version " + v + " not found!"));
+
+        server.stop();
+        policyServer.stop();
+        log.info("Stopped game server");
     }
 }

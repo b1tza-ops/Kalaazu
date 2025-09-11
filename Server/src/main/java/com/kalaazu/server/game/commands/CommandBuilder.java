@@ -1,9 +1,9 @@
 package com.kalaazu.server.game.commands;
 
+import com.kalaazu.KalaazuConfig;
 import com.kalaazu.model.Version;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +26,8 @@ import java.util.stream.Collectors;
 public class CommandBuilder {
     private static CommandBuilder INSTANCE; // very bad, I know
     private final ApplicationContext context;
-    @Value("${app.game.version}")
-    private Version version;
-    private Map<CommandType, List<CommandBuilderInterface>> builders;
+    private final KalaazuConfig config;
+    private Map<Version, Map<CommandType, List<CommandBuilderInterface>>> builders;
 
     public static CommandBuilder getInstance() {
         if (INSTANCE == null) {
@@ -45,8 +44,10 @@ public class CommandBuilder {
         builders = context.getBeansOfType(CommandBuilderInterface.class)
                 .values()
                 .stream()
-                .filter(b -> b.getGameVersion() == version)
-                .collect(Collectors.groupingBy(CommandBuilderInterface::getCommandType));
+                .collect(Collectors.groupingBy(
+                        CommandBuilderInterface::getGameVersion,                 // first level: Version
+                        Collectors.groupingBy(CommandBuilderInterface::getCommandType) // second level: CommandType
+                ));
     }
 
     /**
@@ -59,7 +60,8 @@ public class CommandBuilder {
     public List<OutCommand> buildCommands(CommandType type, Object... arguments) {
         var cmds = new ArrayList<OutCommand>();
 
-        builders.getOrDefault(type, Collections.emptyList())
+        builders.get(config.getGame().getVersion())
+                .getOrDefault(type, Collections.emptyList())
                 .forEach(b -> cmds.addAll(b.build(arguments)));
 
         return cmds;

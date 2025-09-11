@@ -1,5 +1,6 @@
 package com.kalaazu.server.game.v4;
 
+import com.kalaazu.KalaazuConfig;
 import com.kalaazu.model.Version;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.netty.InboundHandler;
@@ -33,6 +34,7 @@ import java.nio.charset.Charset;
 public class GameServer extends com.kalaazu.server.game.GameServer {
     private final Version version = Version.V4;
     private final InboundHandler inboundHandler;
+    private final KalaazuConfig config;
 
     @Override
     public Packet getEmptyPacket() {
