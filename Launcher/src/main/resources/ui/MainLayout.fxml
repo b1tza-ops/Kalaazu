@@ -84,7 +84,6 @@
                             <FontIcon iconLiteral="fth-play"/>
                         </graphic>
                         <styleClass>
-                            <String fx:value="flat"/>
                             <String fx:value="button-icon"/>
                             <String fx:value="success"/>
                             <String fx:value="start"/>
@@ -98,7 +97,6 @@
                             <FontIcon iconLiteral="fth-square"/>
                         </graphic>
                         <styleClass>
-                            <String fx:value="flat"/>
                             <String fx:value="button-icon"/>
                             <String fx:value="danger"/>
                             <String fx:value="stop"/>
