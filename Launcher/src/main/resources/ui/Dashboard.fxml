@@ -86,34 +86,50 @@
             <Insets top="16.0"/>
         </padding>
         <VBox>
-            <Label text="CPU Usage">
-                <font>
-                    <Font size="24.0"/>
-                </font>
-            </Label>
-            <LineChart fx:id="cpuUsage">
+            <HBox>
+                <Label text="CPU Usage">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="cpuUsageLabel" layoutX="10.0" layoutY="10.0" text="0%">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+            </HBox>
+            <AreaChart fx:id="cpuUsage" animated="false" legendVisible="false">
                 <xAxis>
-                    <CategoryAxis side="BOTTOM"/>
+                    <NumberAxis autoRanging="false" side="BOTTOM" upperBound="60.0"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis side="LEFT"/>
+                    <NumberAxis autoRanging="false" side="LEFT"/>
                 </yAxis>
-            </LineChart>
+            </AreaChart>
         </VBox>
         <VBox>
-            <Label text="Memory usage">
-                <font>
-                    <Font size="24.0"/>
-                </font>
-            </Label>
-            <LineChart fx:id="memoryUsage">
+            <HBox>
+                <Label text="Memory usage">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="memoryUsageLabel" text="0 MB">
+                    <font>
+                        <Font size="24.0"/>
+                    </font>
+                </Label>
+            </HBox>
+            <AreaChart fx:id="memoryUsage" animated="false" legendVisible="false">
                 <xAxis>
-                    <CategoryAxis side="BOTTOM"/>
+                    <NumberAxis autoRanging="false" side="BOTTOM" upperBound="60.0" lowerBound="0" tickUnit="5"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis side="LEFT"/>
+                    <NumberAxis autoRanging="false" side="LEFT"/>
                 </yAxis>
-            </LineChart>
+            </AreaChart>
         </VBox>
     </SplitPane>
     <Label text="Server logs">
