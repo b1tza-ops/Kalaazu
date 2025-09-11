@@ -11,8 +11,8 @@
             prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17.0.12"
             fx:controller="com.kalaazu.ui.presenter.MainLayout">
     <top>
-        <BorderPane maxHeight="40.0" minHeight="40.0" prefHeight="40.0" onMouseDragged="#titleBarMouseDragged"
-                    onMousePressed="#titleBarMousePressed" styleClass="titleBar"
+        <BorderPane maxHeight="40.0" minHeight="40.0" onMouseDragged="#titleBarMouseDragged"
+                    onMousePressed="#titleBarMousePressed" prefHeight="40.0" styleClass="titleBar"
                     BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="4.0" left="8.0" right="8.0" top="4.0"/>
@@ -22,9 +22,8 @@
             </center>
             <right>
                 <HBox spacing="8.0" BorderPane.alignment="CENTER_RIGHT">
-                    <Button maxHeight="32.0" maxWidth="32.0" minHeight="32.0"
-                            minWidth="32.0" mnemonicParsing="false" onMouseClicked="#minimizeWindow" prefHeight="32.0"
-                            prefWidth="32.0">
+                    <Button maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false"
+                            onMouseClicked="#minimizeWindow" prefHeight="32.0" prefWidth="32.0">
                         <graphic>
                             <FontIcon iconLiteral="fth-minimize"/>
                         </graphic>
@@ -34,9 +33,9 @@
                         </styleClass>
                     </Button>
 
-                    <Button layoutX="10.0" layoutY="10.0" maxHeight="32.0" maxWidth="32.0"
-                            minHeight="32.0" minWidth="32.0" mnemonicParsing="false"
-                            onMouseClicked="#toggleMaximizeWindow" prefHeight="32.0" prefWidth="32.0">
+                    <Button layoutX="10.0" layoutY="10.0" maxHeight="32.0" maxWidth="32.0" minHeight="32.0"
+                            minWidth="32.0" mnemonicParsing="false" onMouseClicked="#toggleMaximizeWindow"
+                            prefHeight="32.0" prefWidth="32.0">
                         <graphic>
                             <FontIcon iconLiteral="fth-maximize"/>
                         </graphic>
@@ -46,8 +45,8 @@
                         </styleClass>
                     </Button>
 
-                    <Button maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0"
-                            mnemonicParsing="false" onMouseClicked="#closeWindow" prefHeight="32.0" prefWidth="32.0">
+                    <Button maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false"
+                            onMouseClicked="#closeWindow" prefHeight="32.0" prefWidth="32.0">
                         <graphic>
                             <FontIcon iconLiteral="fth-x-square"/>
                         </graphic>
@@ -78,8 +77,8 @@
                         </styleClass>
                     </ComboBox>
 
-                    <Button fx:id="start" maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0"
-                            mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" contentDisplay="RIGHT">
+                    <Button fx:id="start" contentDisplay="RIGHT" maxHeight="32.0" maxWidth="32.0" minHeight="32.0"
+                            minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
                         <graphic>
                             <FontIcon iconLiteral="fth-play"/>
                         </graphic>
@@ -90,9 +89,9 @@
                         </styleClass>
                     </Button>
 
-                    <Button fx:id="stop" layoutX="126.0" layoutY="10.0" maxHeight="32.0" maxWidth="32.0"
-                            minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                            contentDisplay="RIGHT">
+                    <Button fx:id="stop" contentDisplay="RIGHT" layoutX="126.0" layoutY="10.0" maxHeight="32.0"
+                            maxWidth="32.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" prefHeight="32.0"
+                            prefWidth="32.0">
                         <graphic>
                             <FontIcon iconLiteral="fth-square"/>
                         </graphic>
@@ -125,6 +124,16 @@
                     <Breadcrumbs fx:id="breadcrumbs"/>
                 </HBox>
             </top>
+            <center>
+                <StackPane styleClass="body">
+                    <ScrollPane prefHeight="200.0" prefWidth="1256.0" fitToWidth="true">
+                        <padding>
+                            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
+                        </padding>
+                        <StackPane fx:id="page"/>
+                    </ScrollPane>
+                </StackPane>
+            </center>
         </BorderPane>
     </center>
 </BorderPane>

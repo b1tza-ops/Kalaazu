@@ -13,6 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -41,28 +42,17 @@ public class MainLayout {
     private final Delta delta = new Delta();
     private final ContextMenu windowIconContextMenu = new ContextMenu();
     private final List<String> breadcrumbsItems = new ArrayList<>();
-
-    @FXML
-    private Breadcrumbs<String> breadcrumbs;
-
-    @FXML
-    private Button windowIcon;
-
-    @FXML
-    private ComboBox<Version> version;
-
-    @FXML
-    private Button start;
-
-    @FXML
-    private Button stop;
-
+    public Breadcrumbs<String> breadcrumbs;
+    public Button windowIcon;
+    public ComboBox<Version> version;
+    public Button start;
+    public Button stop;
+    public StackPane page;
     private boolean maximized = false;
     private double prevX = 0;
     private double prevY = 0;
     private double prevWidth = 0;
     private double prevHeight = 0;
-
     private Breadcrumbs.BreadCrumbItem<String> rootBreadcrumbItem;
 
     @FXML
@@ -93,6 +83,10 @@ public class MainLayout {
         rootBreadcrumbItem = Breadcrumbs.buildTreeModel(breadcrumbsItems.toArray(String[]::new));
         breadcrumbs = new Breadcrumbs<>(rootBreadcrumbItem);
         breadcrumbs.setSelectedCrumb(getTreeItemByIndex(1));
+
+        // Dashboard page
+        var dashboard = sceneManager.buildScene(Dashboard.class);
+        page.getChildren().add(dashboard.getRoot());
     }
 
     public void titleBarMouseDragged(MouseEvent event) {

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12"
+      fx:controller="com.kalaazu.ui.presenter.Dashboard">
+    <Label text="Dashboard">
+        <font>
+            <Font name="System Bold Italic" size="36.0"/>
+        </font>
+    </Label>
+    <Separator/>
+    <FlowPane alignment="BASELINE_LEFT" hgap="48" rowValignment="BASELINE">
+        <padding>
+            <Insets top="16.0"/>
+        </padding>
+        <HBox alignment="BASELINE_LEFT">
+            <Label text="Server status: ">
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <Label fx:id="serverStatus" text="Stopped">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+                <HBox.margin>
+                    <Insets/>
+                </HBox.margin>
+            </Label>
+        </HBox>
+        <HBox alignment="BASELINE_LEFT">
+            <Label text="Server Version: ">
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <Label fx:id="serverVersion" text="V10">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+            </Label>
+        </HBox>
+        <HBox alignment="BASELINE_LEFT">
+            <Label text="Registered Users: ">
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <Label fx:id="registeredUsers" text="0">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+            </Label>
+        </HBox>
+        <HBox alignment="BASELINE_LEFT">
+            <Label text="Online Users: ">
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <Label fx:id="onlineUsers" text="0">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+            </Label>
+        </HBox>
+        <HBox alignment="BASELINE_LEFT">
+            <Label text="Loaded maps: ">
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <Label fx:id="loadedMaps" text="0">
+                <font>
+                    <Font size="18.0"/>
+                </font>
+            </Label>
+        </HBox>
+    </FlowPane>
+    <SplitPane dividerPositions="0.5">
+        <padding>
+            <Insets top="16.0"/>
+        </padding>
+        <VBox>
+            <Label text="CPU Usage">
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <LineChart fx:id="cpuUsage">
+                <xAxis>
+                    <CategoryAxis side="BOTTOM"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis side="LEFT"/>
+                </yAxis>
+            </LineChart>
+        </VBox>
+        <VBox>
+            <Label text="Memory usage">
+                <font>
+                    <Font size="24.0"/>
+                </font>
+            </Label>
+            <LineChart fx:id="memoryUsage">
+                <xAxis>
+                    <CategoryAxis side="BOTTOM"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis side="LEFT"/>
+                </yAxis>
+            </LineChart>
+        </VBox>
+    </SplitPane>
+    <Label text="Server logs">
+        <font>
+            <Font size="24.0"/>
+        </font>
+        <VBox.margin>
+            <Insets top="16.0"/>
+        </VBox.margin>
+    </Label>
+    <TextArea fx:id="serverLogs" mouseTransparent="true" prefHeight="320.0" wrapText="true">
+        <VBox.margin>
+            <Insets top="4.0"/>
+        </VBox.margin>
+    </TextArea>
+</VBox>
