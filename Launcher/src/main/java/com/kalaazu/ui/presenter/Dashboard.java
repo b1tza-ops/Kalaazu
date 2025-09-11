@@ -1,11 +1,13 @@
 package com.kalaazu.ui.presenter;
 
+import ch.qos.logback.classic.Logger;
 import com.kalaazu.KalaazuConfig;
 import com.kalaazu.event.*;
 import com.kalaazu.persistence.service.AccountsService;
 import com.kalaazu.persistence.service.MapsService;
 import com.kalaazu.server.event.GameSessionStarted;
 import com.kalaazu.server.event.GameSessionStopped;
+import com.kalaazu.ui.component.TextAreaAppender;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
@@ -15,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
@@ -58,6 +61,13 @@ public class Dashboard {
 
     @FXML
     public void initialize() {
+        // Attach custom appender
+        var appender = new TextAreaAppender(serverLogs);
+        var rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        appender.setContext(rootLogger.getLoggerContext());
+        appender.start();
+        rootLogger.addAppender(appender);
+
         serverVersion.setText(kalaazuConfig.getGame().getVersion().toString());
         registeredUsers.setText(accountsService.countAll() + " users");
         loadedMaps.setText(mapsService.countAll() + " maps");
@@ -68,7 +78,7 @@ public class Dashboard {
         var osBean = ManagementFactory.getOperatingSystemMXBean();
         var runtime = Runtime.getRuntime();
 
-        ((NumberAxis) memoryUsage.getYAxis()).setUpperBound((double) runtime.totalMemory() / (1024 * 1024));
+        ((NumberAxis) memoryUsage.getYAxis()).setUpperBound((double) runtime.maxMemory() / (1024 * 1024));
 
         scheduler.scheduleAtFixedRate(() -> {
             double cpuLoad = 0;
@@ -83,8 +93,8 @@ public class Dashboard {
                 cpuSeries.getData().add(new XYChart.Data<>(cpuSeriesData++, finalCpuLoad));
                 memSeries.getData().add(new XYChart.Data<>(memSeriesData++, usedMemory));
 
-                cpuUsageLabel.setText((int) finalCpuLoad + "%");
-                memoryUsageLabel.setText(usedMemory + "MB");
+                cpuUsage.setTitle("CPU usage: " + (int) finalCpuLoad + "%");
+                memoryUsage.setTitle("Memory usage: " + usedMemory + "MB");
 
                 if (cpuSeries.getData().size() > MAX_POINTS) {
                     cpuSeries.getData().removeFirst();

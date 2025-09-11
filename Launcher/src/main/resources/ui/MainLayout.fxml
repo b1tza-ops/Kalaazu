@@ -126,7 +126,7 @@
             </top>
             <center>
                 <StackPane styleClass="body">
-                    <ScrollPane prefHeight="200.0" prefWidth="1256.0" fitToWidth="true">
+                    <ScrollPane prefHeight="200.0" prefWidth="1256.0" fitToWidth="true" fitToHeight="true">
                         <padding>
                             <Insets bottom="12.0" left="12.0" right="12.0" top="12.0"/>
                         </padding>

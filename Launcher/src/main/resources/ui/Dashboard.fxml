@@ -85,52 +85,22 @@
         <padding>
             <Insets top="16.0"/>
         </padding>
-        <VBox>
-            <HBox>
-                <Label text="CPU Usage">
-                    <font>
-                        <Font size="24.0"/>
-                    </font>
-                </Label>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="cpuUsageLabel" layoutX="10.0" layoutY="10.0" text="0%">
-                    <font>
-                        <Font size="24.0"/>
-                    </font>
-                </Label>
-            </HBox>
-            <AreaChart fx:id="cpuUsage" animated="false" legendVisible="false">
-                <xAxis>
-                    <NumberAxis autoRanging="false" side="BOTTOM" upperBound="60.0"/>
-                </xAxis>
-                <yAxis>
-                    <NumberAxis autoRanging="false" side="LEFT"/>
-                </yAxis>
-            </AreaChart>
-        </VBox>
-        <VBox>
-            <HBox>
-                <Label text="Memory usage">
-                    <font>
-                        <Font size="24.0"/>
-                    </font>
-                </Label>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="memoryUsageLabel" text="0 MB">
-                    <font>
-                        <Font size="24.0"/>
-                    </font>
-                </Label>
-            </HBox>
-            <AreaChart fx:id="memoryUsage" animated="false" legendVisible="false">
-                <xAxis>
-                    <NumberAxis autoRanging="false" side="BOTTOM" upperBound="60.0" lowerBound="0" tickUnit="5"/>
-                </xAxis>
-                <yAxis>
-                    <NumberAxis autoRanging="false" side="LEFT"/>
-                </yAxis>
-            </AreaChart>
-        </VBox>
+        <AreaChart fx:id="cpuUsage" animated="false" legendVisible="false">
+            <xAxis>
+                <NumberAxis autoRanging="false" side="BOTTOM" upperBound="60.0"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis autoRanging="false" side="LEFT"/>
+            </yAxis>
+        </AreaChart>
+        <AreaChart fx:id="memoryUsage" animated="false" legendVisible="false">
+            <xAxis>
+                <NumberAxis autoRanging="false" side="BOTTOM" upperBound="60.0"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis autoRanging="false" side="LEFT" tickUnit="200"/>
+            </yAxis>
+        </AreaChart>
     </SplitPane>
     <Label text="Server logs">
         <font>
@@ -140,7 +110,7 @@
             <Insets top="16.0"/>
         </VBox.margin>
     </Label>
-    <TextArea fx:id="serverLogs" mouseTransparent="true" prefHeight="320.0" wrapText="true">
+    <TextArea fx:id="serverLogs" editable="false" minHeight="320.0" VBox.vgrow="ALWAYS">
         <VBox.margin>
             <Insets top="4.0"/>
         </VBox.margin>
