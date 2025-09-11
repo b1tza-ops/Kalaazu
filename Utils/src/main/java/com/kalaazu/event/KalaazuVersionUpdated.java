@@ -1,4 +1,4 @@
-package com.kalaazu.ui.event;
+package com.kalaazu.event;
 
 import org.springframework.context.ApplicationEvent;
 

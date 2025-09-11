@@ -14,10 +14,10 @@ import org.springframework.context.ApplicationEvent;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Getter
-public class GameSessionStartedEvent extends ApplicationEvent {
+public class GameSessionStarted extends ApplicationEvent {
     private final GameSession session;
 
-    public GameSessionStartedEvent(GameSession session) {
+    public GameSessionStarted(GameSession session) {
         super(new Object());
 
         this.session = session;

@@ -20,6 +20,11 @@ import java.util.List;
 public class MapsServiceImpl implements MapsService {
     private final MapsRepository repository;
 
+    @Override
+    public long countAll() {
+        return this.repository.count();
+    }
+
     /**
      * @inheritDoc
      */

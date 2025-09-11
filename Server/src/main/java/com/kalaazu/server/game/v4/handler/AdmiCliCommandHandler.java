@@ -1,7 +1,7 @@
 package com.kalaazu.server.game.v4.handler;
 
 import com.kalaazu.model.Version;
-import com.kalaazu.server.event.SendCommandEvent;
+import com.kalaazu.server.event.SendCommand;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.util.Handler;
@@ -25,7 +25,7 @@ public class AdmiCliCommandHandler extends Handler<AdminCliCommand> {
     @Override
     public void handle(AdminCliCommand packet, GameSession session) {
         switch(packet.getAction()) {
-            case RESEND_PACKET -> ctx.publishEvent(new SendCommandEvent(session, new OutCommand() {
+            case RESEND_PACKET -> ctx.publishEvent(new SendCommand(session, new OutCommand() {
                 @Override
                 public void write(Packet p) {
                     var bytes = packet.getPacket().getBytes();

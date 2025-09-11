@@ -4,21 +4,23 @@ import com.kalaazu.server.game.commands.OutCommand;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
+import java.util.List;
+
 /**
- * Broadcast packet event.
- * =======================
+ * Broadcast packets event.
+ * ========================
  * <p>
  * Use this event to send packets to all available sessions.
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Getter
-public class BroadcastCommandEvent extends ApplicationEvent {
-    private final OutCommand command;
+public class BroadcastCommands extends ApplicationEvent {
+    private final List<? extends OutCommand> commands;
 
-    public BroadcastCommandEvent(OutCommand command) {
+    public BroadcastCommands(List<? extends OutCommand> commands) {
         super(new Object());
 
-        this.command = command;
+        this.commands = commands;
     }
 }

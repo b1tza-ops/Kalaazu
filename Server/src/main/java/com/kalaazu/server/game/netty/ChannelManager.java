@@ -12,6 +12,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +35,7 @@ public class ChannelManager {
     private final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private final Map<ChannelId, GameSession> sessions = new ConcurrentHashMap<>();
 
+    private final ApplicationContext ctx;
     private final List<Handler<?>> packetHandlers;
     private final KalaazuConfig config;
 
@@ -118,6 +120,7 @@ public class ChannelManager {
 
         sessions.remove(channelId);
         channels.close(channel -> channel.id().equals(channelId));
+        ctx.publishEvent(new GameSessionStopped());
     }
 
     /**
@@ -155,27 +158,27 @@ public class ChannelManager {
     // Event Handlers //
 
     @EventListener
-    public void handleSendPacket(SendCommandEvent event) {
+    public void handleSendPacket(SendCommand event) {
         this.send(event.getSession().getChannelId(), event.getCommand());
     }
 
     @EventListener
-    public void handleSendPackets(SendCommandsEvent event) {
+    public void handleSendPackets(SendCommands event) {
         this.send(event.getSession().getChannelId(), event.getCommands());
     }
 
     @EventListener
-    public void handleBroadcastPacket(BroadcastCommandEvent event) {
+    public void handleBroadcastPacket(BroadcastCommand event) {
         this.send(event.getCommand());
     }
 
     @EventListener
-    public void handleBroadcastPacket(BroadcastCommandsEvent event) {
+    public void handleBroadcastPacket(BroadcastCommands event) {
         this.send(event.getCommands());
     }
 
     @EventListener
-    public void handleEndGameSessionIf(EndGameSessionIfEvent event) {
+    public void handleEndGameSessionIf(EndGameSessionIf event) {
         var condition = event.getCondition();
 
         sessions.entrySet()
@@ -186,7 +189,7 @@ public class ChannelManager {
     }
 
     @EventListener
-    public void handleEndGameSession(EndGameSessionEvent event) {
+    public void handleEndGameSession(EndGameSession event) {
         this.endGameSession(event.getSession());
     }
 }

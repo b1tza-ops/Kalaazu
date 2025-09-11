@@ -2,4 +2,5 @@ dependencies {
     implementation project(':CMS')
     implementation project(':Server')
     implementation project(':Utils')
+    implementation project(':Persistence')
 }

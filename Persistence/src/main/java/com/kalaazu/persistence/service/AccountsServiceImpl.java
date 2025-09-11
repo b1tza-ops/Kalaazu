@@ -20,6 +20,11 @@ import java.util.List;
 public class AccountsServiceImpl implements AccountsService {
     private final AccountsRepository repository;
 
+    @Override
+    public long countAll() {
+        return this.repository.count();
+    }
+
     /**
      * @inheritDoc
      */

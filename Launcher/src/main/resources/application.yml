@@ -24,7 +24,7 @@ spring:
     active: dev
 
 app:
-  autoStart: ${AUTO_START:true}
+  autoStart: ${AUTO_START:false}
   game:
     version: ${GAME_VERSION:V4} # Game server version, see com.kalaazu.model.Version
     packets:

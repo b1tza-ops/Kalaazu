@@ -2,10 +2,10 @@ package com.kalaazu.ui.presenter;
 
 import atlantafx.base.controls.Breadcrumbs;
 import com.kalaazu.KalaazuConfig;
-import com.kalaazu.event.StartKalaazuEvent;
-import com.kalaazu.event.StopKalaazuEvent;
+import com.kalaazu.event.*;
 import com.kalaazu.model.Version;
 import com.kalaazu.ui.SceneManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.control.Button;
@@ -18,7 +18,10 @@ import javafx.stage.Screen;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -73,10 +76,13 @@ public class MainLayout {
 
         version.getItems().addAll(Version.values());
         version.setValue(config.getGame().getVersion());
-        version.setOnAction(event -> config.getGame().setVersion(version.getValue()));
+        version.setOnAction(event -> {
+            config.getGame().setVersion(version.getValue());
+            ctx.publishEvent(new KalaazuVersionUpdated());
+        });
 
-        start.setOnAction(e -> ctx.publishEvent(new StartKalaazuEvent()));
-        stop.setOnAction(e -> ctx.publishEvent(new StopKalaazuEvent()));
+        start.setOnAction(e -> ctx.publishEvent(new StartServer()));
+        stop.setOnAction(e -> ctx.publishEvent(new StopServer()));
 
         // Setup navigation
         breadcrumbsItems.add("Home");
@@ -87,6 +93,12 @@ public class MainLayout {
         // Dashboard page
         var dashboard = sceneManager.buildScene(Dashboard.class);
         page.getChildren().add(dashboard.getRoot());
+
+        if (config.isAutoStart()) {
+            this.serverStarted(null);
+        } else {
+            this.serverStopped(null);
+        }
     }
 
     public void titleBarMouseDragged(MouseEvent event) {
@@ -148,6 +160,40 @@ public class MainLayout {
             counter--;
         }
         return current;
+    }
+
+    @EventListener
+    public void serverStarted(ServerStarted event) {
+        Platform.runLater(() -> {
+            start.setDisable(true);
+            start.setGraphic(new FontIcon(Feather.PLAY));
+            stop.setDisable(false);
+        });
+    }
+
+    @EventListener
+    public void serverStopped(ServerStopped event) {
+        Platform.runLater(() -> {
+            stop.setDisable(true);
+            stop.setGraphic(new FontIcon(Feather.SQUARE));
+            start.setDisable(false);
+        });
+    }
+
+    @EventListener
+    public void serverStarting(StartServer event) {
+        Platform.runLater(() -> {
+            start.setDisable(true);
+            start.setGraphic(new FontIcon(Feather.MORE_HORIZONTAL));
+        });
+    }
+
+    @EventListener
+    public void serverStopping(StopServer event) {
+        Platform.runLater(() -> {
+            stop.setDisable(true);
+            stop.setGraphic(new FontIcon(Feather.MORE_HORIZONTAL));
+        });
     }
 
     @Data

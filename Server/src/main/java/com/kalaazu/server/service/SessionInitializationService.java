@@ -2,10 +2,10 @@ package com.kalaazu.server.service;
 
 import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.service.UsersService;
-import com.kalaazu.server.event.EndGameSessionEvent;
-import com.kalaazu.server.event.EndGameSessionIfEvent;
-import com.kalaazu.server.event.GameSessionStartedEvent;
-import com.kalaazu.server.event.SendCommandsEvent;
+import com.kalaazu.server.event.EndGameSession;
+import com.kalaazu.server.event.EndGameSessionIf;
+import com.kalaazu.server.event.GameSessionStarted;
+import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.CommandBuilder;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.netty.GameSession;
@@ -49,13 +49,13 @@ public class SessionInitializationService {
         if (account == null) {
             log.info("Invalid session ID {}", sessionId);
 
-            ctx.publishEvent(new EndGameSessionEvent(session));
+            ctx.publishEvent(new EndGameSession(session));
 
             return;
         }
 
         // End previous sessions of this account.
-        ctx.publishEvent(new EndGameSessionIfEvent((s) -> {
+        ctx.publishEvent(new EndGameSessionIf((s) -> {
             var acc = s.getValue().getAccount();
 
             return (acc != null && acc.getId() == account.getId());
@@ -64,12 +64,12 @@ public class SessionInitializationService {
         this.sendInitialPackets(account, session);
 
         session.setAccount(account);
-        ctx.publishEvent(new GameSessionStartedEvent(session));
+        ctx.publishEvent(new GameSessionStarted(session));
     }
 
     private void sendInitialPackets(AccountsEntity account, GameSession session) {
         var settings = commandBuilder.buildCommands(CommandType.SettingsCommand, account.getAccountsSettings());
-        ctx.publishEvent(new SendCommandsEvent(session, settings));
+        ctx.publishEvent(new SendCommands(session, settings));
 
         var hangar = account.getAccountsHangarsByAccountsHangarsId();
         var ship = hangar.getAccountsShipsByAccountsShipsId();
@@ -90,6 +90,6 @@ public class SessionInitializationService {
         }
 
         var initialPackets = commandBuilder.buildCommands(CommandType.InitCommands, account, hangar, ship, config, clanId, clanTag);
-        ctx.publishEvent(new SendCommandsEvent(session, initialPackets));
+        ctx.publishEvent(new SendCommands(session, initialPackets));
     }
 }

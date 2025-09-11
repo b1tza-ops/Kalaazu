@@ -4,8 +4,8 @@ import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.persistence.service.MapsService;
 import com.kalaazu.server.entities.*;
-import com.kalaazu.server.event.GameSessionStartedEvent;
-import com.kalaazu.server.event.SendCommandsEvent;
+import com.kalaazu.server.event.GameSessionStarted;
+import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.OutCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -123,7 +123,7 @@ public class MapService {
     }
 
     @EventListener
-    public void initializePlayer(GameSessionStartedEvent event) {
+    public void initializePlayer(GameSessionStarted event) {
         var session = event.getSession();
         var account = session.getAccount();
         var ship = session.getShip();
@@ -158,6 +158,6 @@ public class MapService {
 
         taskScheduler.scheduleAtFixedRate(player::tick, Duration.ofSeconds(1));
 
-        ctx.publishEvent(new SendCommandsEvent(session, commands));
+        ctx.publishEvent(new SendCommands(session, commands));
     }
 }

@@ -1,9 +1,10 @@
 package com.kalaazu;
 
 import atlantafx.base.theme.PrimerDark;
+import com.kalaazu.event.StartServer;
 import com.kalaazu.ui.LoadingScreen;
 import com.kalaazu.ui.SceneManager;
-import com.kalaazu.ui.event.ShowMainScreenEvent;
+import com.kalaazu.ui.event.ShowMainScreen;
 import com.kalaazu.ui.presenter.MainLayout;
 import javafx.application.Application;
 import javafx.scene.image.Image;
@@ -35,7 +36,6 @@ public class Launcher extends Application {
 
     @Getter
     private static Launcher instance;
-
     private ConfigurableApplicationContext ctx;
 
     /**
@@ -61,6 +61,7 @@ public class Launcher extends Application {
     public void start(Stage stage) {
         log.info("Starting Kalaazu...");
         var sceneManager = ctx.getBean(SceneManager.class);
+        var config = ctx.getBean(KalaazuConfig.class);
 
         var resolver = new PathMatchingResourcePatternResolver();
         var icons = resolver.getResources("classpath:img/icon*.*");
@@ -83,7 +84,10 @@ public class Launcher extends Application {
         sceneManager.setStage(stage);
         sceneManager.setRootScene(MainLayout.class);
 
-        ctx.publishEvent(new ShowMainScreenEvent());
+        ctx.publishEvent(new ShowMainScreen());
+        if (config.isAutoStart()) {
+            ctx.publishEvent(new StartServer());
+        }
     }
 
     /**

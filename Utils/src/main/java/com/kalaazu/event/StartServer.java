@@ -9,8 +9,8 @@ import org.springframework.context.ApplicationEvent;
  *
  * @author manulaiko
  */
-public class StartKalaazuEvent extends ApplicationEvent {
-    public StartKalaazuEvent() {
+public class StartServer extends ApplicationEvent {
+    public StartServer() {
         super(new Object());
     }
 }

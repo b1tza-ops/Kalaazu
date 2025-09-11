@@ -11,4 +11,5 @@ import com.kalaazu.persistence.entity.AccountsEntity;
  * @author Manulaiko <manulaiko@gmail.com>
  */
 public interface AccountsService extends IService<AccountsEntity, Integer> {
+    long countAll();
 }

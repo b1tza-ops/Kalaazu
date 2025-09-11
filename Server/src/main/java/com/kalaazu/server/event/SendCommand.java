@@ -14,11 +14,11 @@ import org.springframework.context.ApplicationEvent;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Getter
-public class SendCommandEvent extends ApplicationEvent {
+public class SendCommand extends ApplicationEvent {
     private final GameSession session;
     private final OutCommand command;
 
-    public SendCommandEvent(GameSession session, OutCommand command) {
+    public SendCommand(GameSession session, OutCommand command) {
         super(new Object());
 
         this.session = session;

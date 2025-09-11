@@ -13,10 +13,10 @@ import org.springframework.context.ApplicationEvent;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Getter
-public class EntityMovedEvent extends ApplicationEvent {
+public class EntityMoved extends ApplicationEvent {
     private final MovableMapEntity entity;
 
-    public EntityMovedEvent(MovableMapEntity entity) {
+    public EntityMoved(MovableMapEntity entity) {
         super(new Object());
 
         this.entity = entity;

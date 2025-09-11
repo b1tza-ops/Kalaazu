@@ -1,7 +1,7 @@
 package com.kalaazu.ui.handler;
 
 import com.kalaazu.ui.SceneManager;
-import com.kalaazu.ui.event.ShowMainScreenEvent;
+import com.kalaazu.ui.event.ShowMainScreen;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-public class ShowMainScreenHandler implements ApplicationListener<ShowMainScreenEvent> {
+public class ShowMainScreenHandler implements ApplicationListener<ShowMainScreen> {
     private final SceneManager sceneManager;
 
     @Override
-    public void onApplicationEvent(ShowMainScreenEvent event) {
+    public void onApplicationEvent(ShowMainScreen event) {
         log.info("Loading main screen");
         sceneManager.show();
     }

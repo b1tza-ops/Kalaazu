@@ -17,10 +17,10 @@ import java.util.function.Function;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Getter
-public class EndGameSessionIfEvent extends ApplicationEvent {
+public class EndGameSessionIf extends ApplicationEvent {
     private final Function<Map.Entry<ChannelId, GameSession>, Boolean> condition;
 
-    public EndGameSessionIfEvent(Function<Map.Entry<ChannelId, GameSession>, Boolean> condition) {
+    public EndGameSessionIf(Function<Map.Entry<ChannelId, GameSession>, Boolean> condition) {
         super(new Object());
 
         this.condition = condition;
