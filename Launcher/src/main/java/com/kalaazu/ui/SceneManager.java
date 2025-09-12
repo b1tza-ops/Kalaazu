@@ -1,5 +1,7 @@
 package com.kalaazu.ui;
 
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,9 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -22,9 +24,10 @@ import java.util.Map;
 
 @Component
 @Data
-@Slf4j
 @RequiredArgsConstructor
-public class SceneManager {
+public class SceneManager implements Logger {
+    @Getter
+    private final LoggingCategory category = LoggingCategory.UI;
     private final Map<String, Scene> scenes = new HashMap<>();
 
     private final ApplicationContext ctx;
@@ -49,7 +52,7 @@ public class SceneManager {
     private void doShow() {
         var scene = scenes.computeIfAbsent(this.getRootScene().getSimpleName(), this::buildScene);
 
-        log.debug("Showing root scene...");
+        debug("Showing root scene...");
         this.getStage().setScene(scene);
         this.getStage().show();
     }
@@ -80,7 +83,7 @@ public class SceneManager {
     private void doShow(String view) {
         var subScene = scenes.computeIfAbsent(view, this::buildScene);
 
-        log.debug("Showing scene for " + view + " (" + subScene + ")");
+        debug("Showing scene for {} ({})", view, subScene);
 
         var scene = this.getStage().getScene();
         var root = (BorderPane) scene.getRoot();
@@ -94,7 +97,7 @@ public class SceneManager {
      * @return New scene.
      */
     public Scene buildScene(String view) {
-        log.debug("Building scene for " + view);
+        debug("Building scene for {}", view);
         try {
             var loader = new FXMLLoader(new ClassPathResource("ui/" + view + ".fxml").getURL());
             loader.setControllerFactory(ctx::getBean);

@@ -4,8 +4,10 @@ import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.server.game.netty.GameSession;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -21,8 +23,10 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @Scope("prototype")
-@Slf4j
-public class Player implements MovableMapEntity {
+public class Player implements MovableMapEntity, Logger {
+    @Getter
+    private final LoggingCategory category = LoggingCategory.USER;
+
     private int id;
     private Vector initialPosition = Vector.ZERO.cpy();
     private Vector position = Vector.ZERO.cpy();

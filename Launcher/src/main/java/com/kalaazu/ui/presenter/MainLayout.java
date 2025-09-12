@@ -17,7 +17,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.springframework.context.ApplicationContext;
@@ -35,7 +34,6 @@ import java.util.List;
  * @author manulaiko
  */
 @Component
-@Slf4j
 @RequiredArgsConstructor
 public class MainLayout {
     private final SceneManager sceneManager;

@@ -1,6 +1,5 @@
 package com.kalaazu.persistence;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Controller;
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
-@Slf4j
 @Controller
 public class Persistence {
 }

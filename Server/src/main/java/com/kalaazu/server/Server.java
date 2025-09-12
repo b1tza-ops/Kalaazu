@@ -8,8 +8,10 @@ import com.kalaazu.event.StopServer;
 import com.kalaazu.server.game.GameServer;
 import com.kalaazu.server.game.PolicyServer;
 import com.kalaazu.server.service.MapService;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -19,15 +21,17 @@ import java.util.List;
 /**
  * @author manulaiko <manulaiko@gmail.com>
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
-public class Server {
+public class Server implements Logger {
     private final ApplicationContext ctx;
     private final List<GameServer> servers;
     private final PolicyServer policyServer;
     private final MapService mapService;
     private final KalaazuConfig config;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.SERVER;
 
     /**
      * Handle an application event.
@@ -39,7 +43,7 @@ public class Server {
         var v = config.getGame().getVersion();
         mapService.initialize();
 
-        log.info("Starting game server for main.swf version {}", v);
+        info("Starting game server for main.swf version {}", v);
         var server = servers.stream()
                 .filter((s) -> s.getVersion() == v)
                 .findFirst()
@@ -48,7 +52,7 @@ public class Server {
         server.start();
         policyServer.start();
         ctx.publishEvent(new ServerStarted());
-        log.info("Started game server");
+        info("Started game server");
     }
 
     /**
@@ -60,7 +64,7 @@ public class Server {
     public void stop(StopServer event) {
         var v = config.getGame().getVersion();
 
-        log.info("Stopping game server for main.swf version {}", v);
+        info("Stopping game server for main.swf version {}", v);
         var server = servers.stream()
                 .filter((s) -> s.getVersion() == v)
                 .findFirst()
@@ -69,6 +73,6 @@ public class Server {
         server.stop();
         policyServer.stop();
         ctx.publishEvent(new ServerStopped());
-        log.info("Stopped game server");
+        info("Stopped game server");
     }
 }

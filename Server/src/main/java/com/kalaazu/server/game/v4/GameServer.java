@@ -4,6 +4,8 @@ import com.kalaazu.KalaazuConfig;
 import com.kalaazu.model.Version;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.netty.InboundHandler;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
@@ -13,7 +15,6 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
@@ -29,12 +30,14 @@ import java.nio.charset.Charset;
  */
 @Getter
 @Component("v4GameServer")
-@Slf4j
 @RequiredArgsConstructor
-public class GameServer extends com.kalaazu.server.game.GameServer {
+public class GameServer extends com.kalaazu.server.game.GameServer implements Logger {
     private final Version version = Version.V4;
     private final InboundHandler inboundHandler;
     private final KalaazuConfig config;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.SERVER;
 
     @Override
     public Packet getEmptyPacket() {

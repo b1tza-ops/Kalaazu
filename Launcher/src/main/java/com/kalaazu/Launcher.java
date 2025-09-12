@@ -6,13 +6,14 @@ import com.kalaazu.ui.LoadingScreen;
 import com.kalaazu.ui.SceneManager;
 import com.kalaazu.ui.event.ShowMainScreen;
 import com.kalaazu.ui.presenter.MainLayout;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -29,9 +30,10 @@ import java.util.Arrays;
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
-@Slf4j
 @SpringBootApplication
-public class Launcher extends Application {
+public class Launcher extends Application implements Logger {
+    @Getter
+    private final LoggingCategory category = LoggingCategory.UI;
     private static final LoadingScreen loadingScreen = new LoadingScreen();
 
     @Getter
@@ -50,7 +52,7 @@ public class Launcher extends Application {
 
     @Override
     public void init() {
-        log.info("Init Kalaazu...");
+        info("Init Kalaazu...");
         ctx = new SpringApplicationBuilder(Launcher.class).run();
         instance = this;
         loadingScreen.close();
@@ -59,7 +61,7 @@ public class Launcher extends Application {
     @Override
     @SneakyThrows
     public void start(Stage stage) {
-        log.info("Starting Kalaazu...");
+        info("Starting Kalaazu...");
         var sceneManager = ctx.getBean(SceneManager.class);
         var config = ctx.getBean(KalaazuConfig.class);
 

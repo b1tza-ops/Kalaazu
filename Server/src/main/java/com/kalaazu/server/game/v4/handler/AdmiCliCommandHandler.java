@@ -7,18 +7,22 @@ import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.util.Handler;
 import com.kalaazu.server.game.v4.OutCommand;
 import com.kalaazu.server.game.v4.commands.in.AdminCliCommand;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component("v4AdminCliCommandHandler")
-@Slf4j
 @Data
-public class AdmiCliCommandHandler extends Handler<AdminCliCommand> {
+public class AdmiCliCommandHandler extends Handler<AdminCliCommand> implements Logger {
     private final Class<AdminCliCommand> clazz = AdminCliCommand.class;
     private final Version version = Version.V4;
     private final String id = AdminCliCommand.ID;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.SERVER;
 
     private final ApplicationContext ctx;
 
@@ -36,7 +40,7 @@ public class AdmiCliCommandHandler extends Handler<AdminCliCommand> {
                         p.writeString(args[i]);
                     }
 
-                    log.info("Resending packet {}", p);
+                    info("Resending packet {}", p);
                 }
             }));
         }

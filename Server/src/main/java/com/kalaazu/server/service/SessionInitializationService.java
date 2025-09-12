@@ -9,8 +9,10 @@ import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.CommandBuilder;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.netty.GameSession;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +25,21 @@ import org.springframework.stereotype.Service;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Service
-@Slf4j
 @RequiredArgsConstructor
-public class SessionInitializationService {
+public class SessionInitializationService implements Logger {
     private final ApplicationContext ctx;
     private final UsersService users;
     private final CommandBuilder commandBuilder;
 
+    @Getter
+    private final LoggingCategory category = LoggingCategory.SERVER;
+
     public void initialize(int userId, String sessionId, GameSession session) {
-        log.info("Incoming login request from userID {} with sessionID {}", userId, sessionId);
+        info("Incoming login request from userID {} with sessionID {}", userId, sessionId);
 
         var user = users.find(userId);
         if (user == null) {
-            log.info("Invalid user ID {}", userId);
+            info("Invalid user ID {}", userId);
 
             return;
         }
@@ -47,7 +51,7 @@ public class SessionInitializationService {
                 .orElse(null);
 
         if (account == null) {
-            log.info("Invalid session ID {}", sessionId);
+            info("Invalid session ID {}", sessionId);
 
             ctx.publishEvent(new EndGameSession(session));
 

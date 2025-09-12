@@ -10,7 +10,6 @@ import com.kalaazu.server.game.v4.commands.out.attributes.SetFlashSettingsComman
 import com.kalaazu.server.game.v4.commands.out.settings.ClientSettingsCommand;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -25,7 +24,6 @@ import java.util.List;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Data
-@Slf4j
 @RequiredArgsConstructor
 @Component("v4SettingsCommandBuilder")
 public class SettingsCommandBuilder implements CommandBuilderInterface {

@@ -5,8 +5,10 @@ import com.kalaazu.cms.service.LoginService;
 import com.kalaazu.cms.service.RegisterService;
 import com.kalaazu.persistence.entity.AccountsEntity;
 import com.kalaazu.persistence.entity.ItemType;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +24,12 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
-@Slf4j
 @RestController
 @RequestMapping("/external")
 @RequiredArgsConstructor
-public class ExternalController {
+public class ExternalController implements Logger {
+    @Getter
+    private final LoggingCategory category = LoggingCategory.CMS;
     private final LoginService login;
     private final RegisterService register;
     private final ModelMapper mapper;

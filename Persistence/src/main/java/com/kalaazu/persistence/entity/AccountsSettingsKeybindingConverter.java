@@ -3,19 +3,22 @@ package com.kalaazu.persistence.entity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Converter(autoApply = false)
+@Converter
 @Component
 @RequiredArgsConstructor
-@Slf4j
-public class AccountsSettingsKeybindingConverter implements AttributeConverter<List<AccountsSettingsEntity.Keybinding>, String> {
+public class AccountsSettingsKeybindingConverter implements AttributeConverter<List<AccountsSettingsEntity.Keybinding>, String>, Logger {
+    @Getter
+    private final LoggingCategory category = LoggingCategory.DATABASE;
     private final ObjectMapper mapper;
 
     @Override
@@ -23,7 +26,7 @@ public class AccountsSettingsKeybindingConverter implements AttributeConverter<L
         try {
             return mapper.writeValueAsString(keybindings);
         } catch (JsonProcessingException e) {
-            log.error("Could not convert Keybinding to JSON", e);
+            error("Could not convert Keybinding to JSON", e);
 
             throw new RuntimeException(e);
         }
@@ -35,7 +38,7 @@ public class AccountsSettingsKeybindingConverter implements AttributeConverter<L
             return mapper.readValue(json, new TypeReference<>() {
             });
         } catch (Exception e) {
-            log.error("Could not convert JSON to Keybinding", e);
+            error("Could not convert JSON to Keybinding", e);
 
             throw new RuntimeException(e);
         }

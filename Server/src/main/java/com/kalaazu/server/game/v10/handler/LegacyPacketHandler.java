@@ -6,9 +6,11 @@ import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.util.Handler;
 import com.kalaazu.server.game.v10.commands.LegacyHandler;
 import com.kalaazu.server.game.v10.commands.in.LegacyCommand;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -23,12 +25,14 @@ import java.util.List;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Slf4j
 @Component("v10LegacyPacketHandler")
-public class LegacyPacketHandler extends Handler<LegacyCommand> {
+public class LegacyPacketHandler extends Handler<LegacyCommand> implements Logger {
     private final Version version = Version.V10;
     private final short id = LegacyCommand.ID;
     private final Class<LegacyCommand> clazz = LegacyCommand.class;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.SERVER;
 
     private final List<LegacyHandler> handlers;
 

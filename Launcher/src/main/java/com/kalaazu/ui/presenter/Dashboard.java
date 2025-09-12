@@ -1,6 +1,5 @@
 package com.kalaazu.ui.presenter;
 
-import ch.qos.logback.classic.Logger;
 import com.kalaazu.KalaazuConfig;
 import com.kalaazu.event.*;
 import com.kalaazu.persistence.service.AccountsService;
@@ -8,6 +7,8 @@ import com.kalaazu.persistence.service.MapsService;
 import com.kalaazu.server.event.GameSessionStarted;
 import com.kalaazu.server.event.GameSessionStopped;
 import com.kalaazu.ui.component.TextAreaAppender;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
@@ -15,8 +16,8 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
@@ -32,9 +33,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Presenter for the Dashboard page
  */
 @Component
-@Slf4j
 @RequiredArgsConstructor
-public class Dashboard {
+public class Dashboard implements Logger {
+    @Getter
+    private final LoggingCategory category = LoggingCategory.UI;
     private final KalaazuConfig kalaazuConfig;
     private final AccountsService accountsService;
     private final MapsService mapsService;
@@ -63,7 +65,7 @@ public class Dashboard {
     public void initialize() {
         // Attach custom appender
         var appender = new TextAreaAppender(serverLogs);
-        var rootLogger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        var rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
         appender.setContext(rootLogger.getLoggerContext());
         appender.start();
         rootLogger.addAppender(appender);

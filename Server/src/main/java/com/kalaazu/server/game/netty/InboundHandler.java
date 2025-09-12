@@ -1,11 +1,13 @@
 package com.kalaazu.server.game.netty;
 
 import com.kalaazu.server.game.Packet;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -17,19 +19,21 @@ import org.springframework.stereotype.Component;
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
-@Slf4j
 @Component
 @RequiredArgsConstructor
 @ChannelHandler.Sharable
-public class InboundHandler extends SimpleChannelInboundHandler<Packet> {
+public class InboundHandler extends SimpleChannelInboundHandler<Packet> implements Logger {
     private final ChannelManager channelManager;
     private final ApplicationContext applicationContext;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.NETWORK;
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
         // Check for possible IP Bans here.
         var id = ctx.channel().id();
-        log.info("Connection received {}", id);
+        info("Connection received {}", id);
 
         var session = applicationContext.getBean(GameSession.class);
         session.setChannelId(id);
@@ -41,7 +45,7 @@ public class InboundHandler extends SimpleChannelInboundHandler<Packet> {
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        log.info("Connection closed {}", ctx.channel().id());
+        info("Connection closed {}", ctx.channel().id());
         channelManager.endGameSession(ctx.channel().id());
 
         super.channelUnregistered(ctx);
@@ -58,9 +62,9 @@ public class InboundHandler extends SimpleChannelInboundHandler<Packet> {
             channelManager.endGameSession(ctx.channel().id());
             ctx.channel().close();
 
-            log.debug("Connection reset received");
+            debug("Connection reset received");
         }
 
-        log.warn("Exception caught!", cause);
+        warn("Exception caught!", cause);
     }
 }

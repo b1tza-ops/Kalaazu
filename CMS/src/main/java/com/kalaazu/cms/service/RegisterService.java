@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kalaazu.model.Version;
 import com.kalaazu.persistence.entity.*;
 import com.kalaazu.persistence.service.*;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import com.kalaazu.util.StringUtils;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,8 +26,9 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class RegisterService {
+public class RegisterService implements Logger {
+    @Getter
+    private final LoggingCategory category = LoggingCategory.CMS;
     private final UsersService users;
     private final AccountsService accounts;
     private final LevelsService levels;

@@ -2,13 +2,15 @@ package com.kalaazu.server.game;
 
 import com.kalaazu.KalaazuConfig;
 import com.kalaazu.model.Version;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 
 /**
  * Game server interface.
@@ -18,8 +20,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
-@Slf4j
-public abstract class GameServer implements Runnable {
+public abstract class GameServer implements Runnable, Logger {
     private static volatile GameServer INSTANCE;
 
     private volatile boolean isRunning = false;
@@ -28,6 +29,9 @@ public abstract class GameServer implements Runnable {
     private Channel serverChannel;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.SERVER;
 
     /**
      * Returns the singleton instance.
@@ -44,7 +48,7 @@ public abstract class GameServer implements Runnable {
      */
     public synchronized void start() {
         if (isRunning) {
-            log.warn("Server {} is already running.", getVersion());
+            warn("Server {} is already running.", getVersion());
             return;
         }
 
@@ -58,7 +62,7 @@ public abstract class GameServer implements Runnable {
         isRunning = true;
 
         int port = getConfig().getPort().getServer();
-        log.info("Starting {} server on port {}...", getVersion(), port);
+        info("Starting {} server on port {}...", getVersion(), port);
 
         try {
             // Initialize Netty event loops
@@ -78,14 +82,14 @@ public abstract class GameServer implements Runnable {
             serverChannel.closeFuture().sync();
 
         } catch (InterruptedException e) {
-            log.warn("Server thread interrupted.", e);
+            warn("Server thread interrupted.", e);
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            log.error("Failed to start {} server.", getVersion(), e);
+            error("Failed to start {} server.", getVersion(), e);
         } finally {
             shutdownEventLoops();
             isRunning = false;
-            log.info("{} server stopped.", getVersion());
+            info("{} server stopped.", getVersion());
         }
     }
 
@@ -94,11 +98,11 @@ public abstract class GameServer implements Runnable {
      */
     public synchronized void stop() {
         if (!isRunning) {
-            log.warn("{} server is not running.", getVersion());
+            warn("{} server is not running.", getVersion());
             return;
         }
 
-        log.info("Stopping {} server...", getVersion());
+        info("Stopping {} server...", getVersion());
         isRunning = false;
 
         if (serverChannel != null && serverChannel.isOpen()) {
@@ -120,7 +124,7 @@ public abstract class GameServer implements Runnable {
             if (workerGroup != null) workerGroup.shutdownGracefully().sync();
             if (bossGroup != null) bossGroup.shutdownGracefully().sync();
         } catch (InterruptedException e) {
-            log.warn("Event loop shutdown interrupted", e);
+            warn("Event loop shutdown interrupted", e);
             Thread.currentThread().interrupt();
         } finally {
             workerGroup = null;

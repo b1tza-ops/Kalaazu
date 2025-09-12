@@ -1,6 +1,8 @@
 package com.kalaazu.server.game;
 
 import com.kalaazu.KalaazuConfig;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioIoHandler;
@@ -12,8 +14,8 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,8 +28,7 @@ import org.springframework.stereotype.Component;
  */
 @RequiredArgsConstructor
 @Component
-@Slf4j
-public class PolicyServer implements Runnable {
+public class PolicyServer implements Runnable, Logger {
     public static final String POLICY_RESPONSE =
             "<?xml version=\"1.0\"?><cross-domain-policy xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
                     "xsi:noNamespaceSchemaLocation=\"http://www.adobe.com/xml/schemas/PolicyFileSocket.xsd\">" +
@@ -35,6 +36,9 @@ public class PolicyServer implements Runnable {
                     "<site-control permitted-cross-domain-policies=\"master-only\" /></cross-domain-policy>\r\n";
 
     private final KalaazuConfig config;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.SERVER;
 
     private volatile boolean isRunning;
     private Thread serverThread;
@@ -47,7 +51,7 @@ public class PolicyServer implements Runnable {
      */
     public synchronized void start() {
         if (isRunning) {
-            log.warn("Policy server is already running.");
+            warn("Policy server is already running.");
             return;
         }
 
@@ -59,7 +63,7 @@ public class PolicyServer implements Runnable {
     public void run() {
         isRunning = true;
         int port = config.getPort().getPolicy();
-        log.info("Starting policy server on port {}...", port);
+        info("Starting policy server on port {}...", port);
 
         try {
             bossGroup = new MultiThreadIoEventLoopGroup(NioIoHandler.newFactory());
@@ -86,14 +90,14 @@ public class PolicyServer implements Runnable {
             serverChannel = bootstrap.bind(port).sync().channel();
             serverChannel.closeFuture().sync();
         } catch (InterruptedException e) {
-            log.warn("Policy server thread interrupted.", e);
+            warn("Policy server thread interrupted.", e);
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            log.error("Failed to start policy server.", e);
+            error("Failed to start policy server.", e);
         } finally {
             shutdownEventLoops();
             isRunning = false;
-            log.info("Policy server stopped.");
+            info("Policy server stopped.");
         }
     }
 
@@ -102,11 +106,11 @@ public class PolicyServer implements Runnable {
      */
     public synchronized void stop() {
         if (!isRunning) {
-            log.warn("Policy server is not running.");
+            warn("Policy server is not running.");
             return;
         }
 
-        log.info("Stopping policy server...");
+        info("Stopping policy server...");
         isRunning = false;
 
         if (serverChannel != null && serverChannel.isOpen()) {
@@ -128,7 +132,7 @@ public class PolicyServer implements Runnable {
             if (workerGroup != null) workerGroup.shutdownGracefully().sync();
             if (bossGroup != null) bossGroup.shutdownGracefully().sync();
         } catch (InterruptedException e) {
-            log.warn("Event loop shutdown interrupted", e);
+            warn("Event loop shutdown interrupted", e);
             Thread.currentThread().interrupt();
         } finally {
             serverChannel = null;
@@ -140,17 +144,19 @@ public class PolicyServer implements Runnable {
     /**
      * Handles inbound requests and sends the policy response.
      */
-    @Slf4j
-    static class InboundHandler extends SimpleChannelInboundHandler<String> {
+    static class InboundHandler extends SimpleChannelInboundHandler<String> implements Logger {
+        @Getter
+        private final LoggingCategory category = LoggingCategory.SERVER;
+
         @Override
         public void channelRegistered(ChannelHandlerContext ctx) {
-            log.debug("Received policy server connection!");
+            debug("Received policy server connection!");
             ctx.fireChannelRegistered();
         }
 
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-            log.debug("Received policy server request: {}", msg);
+            debug("Received policy server request: {}", msg);
             ctx.writeAndFlush(POLICY_RESPONSE).addListener(ChannelFutureListener.CLOSE);
         }
     }

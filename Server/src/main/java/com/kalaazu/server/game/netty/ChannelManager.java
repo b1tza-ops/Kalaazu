@@ -5,13 +5,15 @@ import com.kalaazu.server.event.*;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.commands.OutCommand;
 import com.kalaazu.server.game.util.Handler;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -29,15 +31,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Component
-@Slf4j
 @RequiredArgsConstructor
-public class ChannelManager {
+public class ChannelManager implements Logger {
     private final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     private final Map<ChannelId, GameSession> sessions = new ConcurrentHashMap<>();
 
     private final ApplicationContext ctx;
     private final List<Handler<?>> packetHandlers;
     private final KalaazuConfig config;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.NETWORK;
 
     private void send(ChannelId channelId, OutCommand command) {
         var channel = channels.find(channelId);
@@ -46,7 +50,7 @@ public class ChannelManager {
         }
 
         if (config.getGame().getPackets().isPrintOut()) {
-            log.info("Packet sent: >>>>> {}", command);
+            info("Packet sent: >>>>> {}", command);
         }
 
         var p = Packet.empty();
@@ -62,7 +66,7 @@ public class ChannelManager {
         }
 
         if (config.getGame().getPackets().isPrintOut()) {
-            commands.forEach(p -> log.info("Packet sent: >>>>> {}", p));
+            commands.forEach(p -> info("Packet sent: >>>>> {}", p));
         }
 
         commands.stream()
@@ -81,7 +85,7 @@ public class ChannelManager {
         command.write(packet);
 
         if (config.getGame().getPackets().isPrintOut()) {
-            log.info("Packet sent: >>>>> {}", command);
+            info("Packet sent: >>>>> {}", command);
         }
 
         channels.writeAndFlush(packet);
@@ -94,7 +98,7 @@ public class ChannelManager {
                     c.write(p);
 
                     if (config.getGame().getPackets().isPrintOut()) {
-                        log.info("Packet sent: >>>>> {}", p);
+                        info("Packet sent: >>>>> {}", p);
                     }
 
                     return p;
@@ -132,7 +136,7 @@ public class ChannelManager {
     public void processPacket(Packet packet, ChannelId channelId) {
         var connection = sessions.get(channelId);
         if (connection == null) {
-            log.info("Invalid connection {}, packet: {}", channelId, packet);
+            info("Invalid connection {}, packet: {}", channelId, packet);
 
             return;
         }
@@ -151,7 +155,7 @@ public class ChannelManager {
                 .findFirst()
                 .ifPresentOrElse(
                         (h) -> h.handle(packet, connection),
-                        () -> log.info("Received packet with no handler: {}", packet.toString())
+                        () -> info("Received packet with no handler: {}", packet.toString())
                 );
     }
 

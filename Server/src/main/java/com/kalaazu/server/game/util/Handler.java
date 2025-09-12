@@ -4,8 +4,10 @@ import com.kalaazu.model.Version;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.commands.InCommand;
 import com.kalaazu.server.game.netty.GameSession;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
+import lombok.Getter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 
@@ -17,10 +19,12 @@ import org.springframework.scheduling.annotation.Async;
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
-@Slf4j
-public abstract class Handler<T extends InCommand> {
+public abstract class Handler<T extends InCommand> implements Logger {
     @Value("${app.game.packets.printIn}")
     private boolean printPackets;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.NETWORK;
 
     @Async
     @SneakyThrows
@@ -29,9 +33,8 @@ public abstract class Handler<T extends InCommand> {
                 .newInstance();
         command.read(packet);
 
-
         if (printPackets) {
-            log.info("Packet received: <<<<< {}", command);
+            info("Packet received: <<<<< {}", command);
         }
 
         handle(command, session);

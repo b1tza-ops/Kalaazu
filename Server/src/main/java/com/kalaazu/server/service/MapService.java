@@ -7,8 +7,10 @@ import com.kalaazu.server.entities.*;
 import com.kalaazu.server.event.GameSessionStarted;
 import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.OutCommand;
+import com.kalaazu.util.Logger;
+import com.kalaazu.util.LoggingCategory;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
@@ -29,11 +31,13 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-@Slf4j
-public class MapService {
+public class MapService implements Logger {
     private final TaskScheduler taskScheduler;
     private final MapsService service;
     private final ApplicationContext ctx;
+
+    @Getter
+    private final LoggingCategory category = LoggingCategory.MAP;
 
     private final Map<Short, Set<Npc>> npcs = new HashMap<>();
     private final Map<Short, Set<Collectable>> collectables = new HashMap<>();
@@ -50,7 +54,7 @@ public class MapService {
         }
         isInitialized = true;
 
-        log.info("Loading maps..");
+        info("Loading maps..");
         maps = service.findAll()
                 .stream()
                 .collect(Collectors.toMap(MapsEntity::getId, (v) -> v));
@@ -59,7 +63,7 @@ public class MapService {
     }
 
     private void initializeMap(Short mapId, MapsEntity map) {
-        log.info("Initializing map {}", map.getName());
+        info("Initializing map {}", map.getName());
 
         var npcs = new LinkedHashSet<Npc>();
         var collectables = new LinkedHashSet<Collectable>();
@@ -114,7 +118,7 @@ public class MapService {
                     portals.add(p);
                 });
 
-        log.info("Initialized {} npcs, {} collectables, {} stations and {} portals", npcs.size(), collectables.size(), stations.size(), portals.size());
+        info("Initialized {} npcs, {} collectables, {} stations and {} portals", npcs.size(), collectables.size(), stations.size(), portals.size());
 
         this.npcs.put(mapId, npcs);
         this.collectables.put(mapId, collectables);
@@ -131,12 +135,12 @@ public class MapService {
         var map = session.getMapId();
 
         if (!maps.containsKey(map)) {
-            log.info("Invalid map {}!", map);
+            info("Invalid map {}!", map);
 
             return;
         }
 
-        log.info("Initializing player {}", account.getId());
+        info("Initializing player {}", account.getId());
 
         var player = ctx.getBean(Player.class);
         player.setGameSession(session);
