@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,7 +46,7 @@ public class ChannelManager implements Logger {
 
     private void send(ChannelId channelId, OutCommand command) {
         var channel = channels.find(channelId);
-        if (channel == null) {
+        if (channel == null || command == null) {
             return;
         }
 
@@ -61,7 +62,7 @@ public class ChannelManager implements Logger {
 
     private void send(ChannelId channelId, List<? extends OutCommand> commands) {
         var channel = channels.find(channelId);
-        if (channel == null) {
+        if (channel == null || commands == null || commands.isEmpty()) {
             return;
         }
 
@@ -70,6 +71,7 @@ public class ChannelManager implements Logger {
         }
 
         commands.stream()
+                .filter(Objects::nonNull)
                 .map(c -> {
                     var p = Packet.empty();
                     c.write(p);
@@ -81,6 +83,10 @@ public class ChannelManager implements Logger {
     }
 
     private void send(OutCommand command) {
+        if (command == null) {
+            return;
+        }
+
         var packet = Packet.empty();
         command.write(packet);
 
@@ -91,8 +97,13 @@ public class ChannelManager implements Logger {
         channels.writeAndFlush(packet);
     }
 
-    private void send(List<? extends OutCommand> packet) {
-        packet.stream()
+    private void send(List<? extends OutCommand> commands) {
+        if (commands == null || commands.isEmpty()) {
+            return;
+        }
+
+        commands.stream()
+                .filter(Objects::nonNull)
                 .map(c -> {
                     var p = Packet.empty();
                     c.write(p);
