@@ -17,7 +17,7 @@ public class Packet implements com.kalaazu.server.game.Packet {
     private List<String> in = new ArrayList<>();
 
     private int position = -1;
-    private boolean firstWrite = true;
+    private final boolean firstWrite = true;
 
     public Packet(String packet) {
         this.in = Arrays.stream(packet.split("\\|")).toList();
@@ -28,11 +28,8 @@ public class Packet implements com.kalaazu.server.game.Packet {
 
     @Override
     public void writeString(String argument) {
-        if (!firstWrite) {
-            this.out.append('|');
-        }
+        this.out.append('|');
         this.out.append(argument);
-        firstWrite = false;
     }
 
     @Override
