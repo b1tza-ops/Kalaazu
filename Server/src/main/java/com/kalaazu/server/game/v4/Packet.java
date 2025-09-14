@@ -13,111 +13,108 @@ import java.util.List;
  * @author manulaiko
  */
 public class Packet implements com.kalaazu.server.game.Packet {
-    private final List<String> out = new ArrayList<>();
+    private final StringBuilder out = new StringBuilder("0");
     private List<String> in = new ArrayList<>();
 
     private int position = -1;
+    private boolean firstWrite = true;
 
     public Packet(String packet) {
         this.in = Arrays.stream(packet.split("\\|")).toList();
     }
 
     public Packet() {
-
     }
 
     @Override
     public void writeString(String argument) {
-        this.out.add(argument);
+        if (!firstWrite) {
+            this.out.append('|');
+        }
+        this.out.append(argument);
+        firstWrite = false;
     }
 
     @Override
     public String readString() {
         this.position++;
-
         return this.in.get(this.position);
     }
 
     @Override
     public void writeInt(int i) {
-        this.out.add(Integer.toString(i));
+        writeString(Integer.toString(i));
     }
 
     @Override
     public int readInt() {
         this.position++;
-
         return Integer.parseInt(this.in.get(this.position));
     }
 
     @Override
     public void writeShort(short s) {
-        this.out.add(Short.toString(s));
+        writeString(Short.toString(s));
     }
 
     @Override
     public void writeShort(int s) {
-        this.out.add(Integer.toString(s));
+        writeString(Integer.toString(s));
     }
 
     @Override
     public short readShort() {
         this.position++;
-
         return Short.parseShort(this.in.get(this.position));
     }
 
     @Override
     public void writeLong(long l) {
-        this.out.add(Long.toString(l));
+        writeString(Long.toString(l));
     }
 
     @Override
     public long readLong() {
         this.position++;
-
         return Long.parseLong(this.in.get(this.position));
     }
 
     @Override
     public void writeBoolean(boolean b) {
-        this.out.add(b ? "1" : "0");
+        writeString(b ? "1" : "0");
     }
 
     @Override
     public boolean readBoolean() {
         this.position++;
-
         return Boolean.parseBoolean(this.in.get(this.position));
     }
 
     @Override
     public void writeByte(byte b) {
-        this.out.add(Byte.toString(b));
+        writeString(Byte.toString(b));
     }
 
     @Override
     public byte readByte() {
         this.position++;
-
         return Byte.parseByte(this.in.get(this.position));
     }
 
     @Override
     public void writeDouble(double d) {
-        this.out.add(Double.toString(d));
+        writeString(Double.toString(d));
     }
 
     @Override
     public double readDouble() {
         this.position++;
-
         return Double.parseDouble(this.in.get(this.position));
     }
 
     @Override
     public void writeFloat(float f) {
-        this.out.add(Float.toString(f));
+        writeString(Float.toString(f));
     }
 
     @Override
@@ -149,10 +146,7 @@ public class Packet implements com.kalaazu.server.game.Packet {
 
     @Override
     public String toString() {
-        if (!this.out.isEmpty()) {
-            return "0|" + String.join("|", this.out);
-        }
-
-        return String.join("|", this.in);
+        // Check if anything was written to `out` beyond the initial "0"
+        return out.length() > 1 ? out.toString() : String.join("|", this.in);
     }
 }

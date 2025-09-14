@@ -17,6 +17,12 @@ public class ClientSettingsCommand extends OutCommand {
     public void write(Packet packet) {
         packet.writeString(id);
         packet.writeString(this.getSetting());
-        packet.writeString(this.getValue().toString());
+
+        var valueToWrite = this.getValue();
+        if (valueToWrite instanceof Boolean b) {
+            packet.writeBoolean(b);
+        } else {
+            packet.writeString(valueToWrite.toString());
+        }
     }
 }

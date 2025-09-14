@@ -67,6 +67,8 @@ CREATE TABLE `accounts_settings`
     `auto_change_ammo`                      TINYINT(1)   DEFAULT 1 NOT NULL,
     `auto_start_enabled`                    TINYINT(1)   DEFAULT 1 NOT NULL,
     `show_low_hp_warn`                      TINYINT(1)   DEFAULT 1 NOT NULL,
+    `selected_battery` TINYINT DEFAULT 1 NOT NULL,
+    `selected_rocket`  TINYINT DEFAULT 1 NOT NULL,
 
     -- Audio settings
     `audio_not_set`                         TINYINT(1)   DEFAULT 0 NOT NULL,

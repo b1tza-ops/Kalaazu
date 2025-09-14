@@ -199,6 +199,12 @@ public class AccountsSettingsEntity {
     @Column(name = "show_low_hp_warn", nullable = false)
     private boolean showLowHpWarn = true;
 
+    @Column(name = "selected_battery", nullable = false)
+    private byte selectedBattery = 1;
+
+    @Column(name = "selected_rocket", nullable = false)
+    private byte selectedRocket = 1;
+
     // Audio settings
     @Column(name = "audio_not_set", nullable = false)
     private boolean audioNotSet;
