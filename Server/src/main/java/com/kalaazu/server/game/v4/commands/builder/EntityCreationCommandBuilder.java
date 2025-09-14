@@ -5,7 +5,10 @@ import com.kalaazu.server.entities.*;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
+import com.kalaazu.server.game.v4.commands.out.map.CreateCollectableCommand;
+import com.kalaazu.server.game.v4.commands.out.map.CreatePortalCommand;
 import com.kalaazu.server.game.v4.commands.out.map.CreateShipCommand;
+import com.kalaazu.server.game.v4.commands.out.map.CreateStationCommand;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
@@ -47,13 +50,22 @@ public class EntityCreationCommandBuilder implements CommandBuilderInterface {
     }
 
     private OutCommand buildStation(Station station) {
-        // TODO create station entity
-        return null;
+        return new CreateStationCommand(
+                station.getId(),
+                station.getStation().getFactionsId(),
+                station.getPosition().getX(),
+                station.getPosition().getY()
+        );
     }
 
     private OutCommand buildPortal(Portal portal) {
-        // TODO create portal entity
-        return null;
+        return new CreatePortalCommand(
+                portal.getId(),
+                portal.getPortal().getGfx(),
+                portal.getPosition().getX(),
+                portal.getPosition().getY(),
+                portal.getPortal().isVisible()
+        );
     }
 
     private OutCommand buildCreatePlayer(Player player) {
@@ -62,8 +74,12 @@ public class EntityCreationCommandBuilder implements CommandBuilderInterface {
     }
 
     private OutCommand buildCreateCollectable(Collectable collectable) {
-        // TODO create collectable entity
-        return null;
+        return new CreateCollectableCommand(
+                collectable.getId(),
+                collectable.getCollectable().getGfx(),
+                collectable.getPosition().getX(),
+                collectable.getPosition().getY()
+        );
     }
 
     private OutCommand buildCreateNpc(Npc npc) {

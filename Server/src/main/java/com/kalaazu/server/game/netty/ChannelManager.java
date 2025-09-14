@@ -50,12 +50,12 @@ public class ChannelManager implements Logger {
             return;
         }
 
-        if (config.getGame().getPackets().isPrintOut()) {
-            info("Packet sent: >>>>> {}", command);
-        }
-
         var p = Packet.empty();
         command.write(p);
+
+        if (config.getGame().getPackets().isPrintOut()) {
+            info("Packet sent: >>>>> {} ({})", command, p);
+        }
 
         channel.writeAndFlush(p);
     }
@@ -66,16 +66,15 @@ public class ChannelManager implements Logger {
             return;
         }
 
-        if (config.getGame().getPackets().isPrintOut()) {
-            commands.forEach(p -> info("Packet sent: >>>>> {}", p));
-        }
-
         commands.stream()
                 .filter(Objects::nonNull)
                 .map(c -> {
                     var p = Packet.empty();
                     c.write(p);
 
+                    if (config.getGame().getPackets().isPrintOut()) {
+                        info("Packet sent: >>>>> {} ({})", c, p);
+                    }
                     return p;
                 })
                 .forEach(channel::write);
@@ -91,7 +90,7 @@ public class ChannelManager implements Logger {
         command.write(packet);
 
         if (config.getGame().getPackets().isPrintOut()) {
-            info("Packet sent: >>>>> {}", command);
+            info("Packet sent: >>>>> {} ({})", command, packet);
         }
 
         channels.writeAndFlush(packet);
@@ -109,7 +108,7 @@ public class ChannelManager implements Logger {
                     c.write(p);
 
                     if (config.getGame().getPackets().isPrintOut()) {
-                        info("Packet sent: >>>>> {}", p);
+                        info("Packet sent: >>>>> {} ({})", c, p);
                     }
 
                     return p;

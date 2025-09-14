@@ -4,15 +4,16 @@ import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.persistence.service.MapsService;
 import com.kalaazu.server.entities.*;
-import com.kalaazu.server.event.GameSessionStarted;
 import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.OutCommand;
+import com.kalaazu.server.game.netty.GameSession;
+import com.kalaazu.server.game.util.ServerCommands;
+import com.kalaazu.server.game.v4.commands.out.settings.ClientSettingsCommand;
 import com.kalaazu.util.Logger;
 import com.kalaazu.util.LoggingCategory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -34,22 +35,17 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class MapService implements Logger {
     public static final double VISIBILITY_RADIUS = 3000;
+
     // Player IDs are their account ID, starting from 1 and going up.
     // We partition the rest of the integer space to prevent ID collisions.
-    // Static entities like stations and portals get small, sequential ranges.
-    private static final int STATION_ID_RANGE = 100;
-    private static final int PORTAL_ID_RANGE = 100;
+
     // Dynamic entities get huge random ranges to make collisions statistically impossible.
     private static final int NPC_ID_RANGE = 200_000_000;
     private static final int COLLECTABLE_ID_RANGE = 200_000_000;
-    private static final int PORTAL_ID_UPPER_BOUND = Integer.MAX_VALUE;
-    private static final int STATION_ID_UPPER_BOUND = PORTAL_ID_UPPER_BOUND - PORTAL_ID_RANGE;
-    private static final int COLLECTABLE_ID_UPPER_BOUND = STATION_ID_UPPER_BOUND - STATION_ID_RANGE;
+    private static final int COLLECTABLE_ID_UPPER_BOUND = Integer.MAX_VALUE;
     private static final int NPC_ID_UPPER_BOUND = COLLECTABLE_ID_UPPER_BOUND - COLLECTABLE_ID_RANGE;
     private static final int NPC_ID_LOWER_BOUND = NPC_ID_UPPER_BOUND - NPC_ID_RANGE;
     private static final int COLLECTABLE_ID_LOWER_BOUND = COLLECTABLE_ID_UPPER_BOUND - COLLECTABLE_ID_RANGE;
-    private static final int STATION_ID_LOWER_BOUND = STATION_ID_UPPER_BOUND - STATION_ID_RANGE;
-    private static final int PORTAL_ID_LOWER_BOUND = PORTAL_ID_UPPER_BOUND - PORTAL_ID_RANGE;
 
     private final TaskScheduler taskScheduler;
     private final MapsService service;
@@ -84,8 +80,8 @@ public class MapService implements Logger {
         info("Initializing map {}", map.getName());
 
         var r = new Random();
-        var stationIdGenerator = new AtomicInteger(STATION_ID_LOWER_BOUND);
-        var portalIdGenerator = new AtomicInteger(PORTAL_ID_LOWER_BOUND);
+        var stationIdGenerator = new AtomicInteger();
+        var portalIdGenerator = new AtomicInteger();
 
         var npcs = new HashMap<Integer, Npc>();
         map.getMapsNpcs()
@@ -182,14 +178,6 @@ public class MapService implements Logger {
         return findInRadius(collectables.get(mapId), center, radius);
     }
 
-    public List<Station> findStationsInRadius(short mapId, Vector center, double radius) {
-        return findInRadius(stations.get(mapId), center, radius);
-    }
-
-    public List<Portal> findPortalsInRadius(short mapId, Vector center, double radius) {
-        return findInRadius(portals.get(mapId), center, radius);
-    }
-
     /**
      * Finds all entities within a given radius of a central point.
      *
@@ -212,9 +200,7 @@ public class MapService implements Logger {
                 .collect(Collectors.toList());
     }
 
-    @EventListener
-    public void initializePlayer(GameSessionStarted event) {
-        var session = event.getSession();
+    public void initializePlayer(GameSession session) {
         var account = session.getAccount();
         var ship = session.getShip();
         var config = session.getConfiguration();
@@ -249,14 +235,16 @@ public class MapService implements Logger {
                 .stream()
                 .map(Collectable::getEntityCreationCommand)
                 .forEach(commands::add);
-        findStationsInRadius(map, player.getPosition(), VISIBILITY_RADIUS)
+        getStations(map)
                 .stream()
                 .map(Station::getEntityCreationCommand)
                 .forEach(commands::add);
-        findPortalsInRadius(map, player.getPosition(), VISIBILITY_RADIUS)
+        getPortals(map)
                 .stream()
                 .map(Portal::getEntityCreationCommand)
                 .forEach(commands::add);
+
+        commands.add(new ClientSettingsCommand(ServerCommands.MAP_READY_HANDSHAKE, 0));
 
         taskScheduler.scheduleAtFixedRate(player::tick, Duration.ofSeconds(1));
 
