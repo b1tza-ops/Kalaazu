@@ -1,5 +1,6 @@
 package com.kalaazu.server.service;
 
+import com.kalaazu.KalaazuConfig;
 import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.persistence.service.MapsService;
@@ -19,49 +20,47 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
- * Map service.
- * ============
- * <p>
- * Service for game maps.
+ * Map Service.
+ * ==========
+ *
+ * This service is responsible for managing the state of all game maps,
+ * including the entities within them (NPCs, players, portals, etc.).
+ * It handles the initial loading of map data from the database and the
+ * process of initializing a player when they join a map.
  *
  * @author manulaiko <manulaiko@gmail.com>
  */
 @Service
 @RequiredArgsConstructor
 public class MapService implements Logger {
-    public static final double VISIBILITY_RADIUS = 3000;
-
-    // Player IDs are their account ID, starting from 1 and going up.
-    // We partition the rest of the integer space to prevent ID collisions.
-
-    // Dynamic entities get huge random ranges to make collisions statistically impossible.
-    private static final int NPC_ID_RANGE = 200_000_000;
-    private static final int COLLECTABLE_ID_RANGE = 200_000_000;
-    private static final int COLLECTABLE_ID_UPPER_BOUND = Integer.MAX_VALUE;
-    private static final int NPC_ID_UPPER_BOUND = COLLECTABLE_ID_UPPER_BOUND - COLLECTABLE_ID_RANGE;
-    private static final int NPC_ID_LOWER_BOUND = NPC_ID_UPPER_BOUND - NPC_ID_RANGE;
-    private static final int COLLECTABLE_ID_LOWER_BOUND = COLLECTABLE_ID_UPPER_BOUND - COLLECTABLE_ID_RANGE;
-
-    private final TaskScheduler taskScheduler;
-    private final MapsService service;
-    private final ApplicationContext ctx;
-
     @Getter
     private final LoggingCategory category = LoggingCategory.MAP;
+
+    private final ApplicationContext ctx;
+    private final TaskScheduler taskScheduler;
+    private final KalaazuConfig config;
+    private final MapsService service;
+
     private final Map<Short, Map<Integer, Npc>> npcs = new HashMap<>();
     private final Map<Short, Map<Integer, Collectable>> collectables = new HashMap<>();
     private final Map<Short, Map<Integer, Station>> stations = new HashMap<>();
     private final Map<Short, Map<Integer, Portal>> portals = new HashMap<>();
     private final Map<Short, Map<Integer, Player>> players = new HashMap<>();
-    private Map<Short, MapsEntity> maps;
 
+    private Map<Short, MapsEntity> maps;
     private boolean isInitialized = false;
 
+    /**
+     * Initializes the map service.
+     *
+     * This method loads all map configurations from the database and then calls
+     * `initializeMap` for each one to populate them with their respective entities.
+     */
     public void initialize() {
         if (isInitialized) {
             return;
@@ -76,52 +75,57 @@ public class MapService implements Logger {
         maps.forEach(this::initializeMap);
     }
 
+    /**
+     * Initializes a single map with its entities.
+     *
+     * This method reads the configuration for a given map and creates all the
+     * necessary NPCs, collectables, stations, and portals, assigning them
+     * initial positions and unique IDs.
+     *
+     * @param mapId The ID of the map to initialize.
+     * @param map   The map's entity data from the database.
+     */
     private void initializeMap(Short mapId, MapsEntity map) {
         info("Initializing map {}", map.getName());
 
-        var r = new Random();
         var stationIdGenerator = new AtomicInteger();
         var portalIdGenerator = new AtomicInteger();
 
         var npcs = new HashMap<Integer, Npc>();
         map.getMapsNpcs()
-                .stream()
-                .flatMap(npc -> IntStream.range(0, npc.getAmount())
-                        .mapToObj(i -> {
-                            var n = ctx.getBean(Npc.class);
-                            n.setMap(map);
-                            n.setNpc(npc.getNpcsByNpcsId());
-                            n.setSpeed(n.getNpc().getSpeed());
-                            n.setPosition(Vector.random(map.getLimits().margin()));
+                .forEach(npc -> {
+                    for (int i = 0; i < npc.getAmount(); i++) {
+                        var n = ctx.getBean(Npc.class);
+                        n.setMap(map);
+                        n.setNpc(npc.getNpcsByNpcsId());
+                        n.setSpeed(n.getNpc().getSpeed());
+                        n.setPosition(Vector.random(map.getLimits().margin()));
 
-                            return n;
-                        }))
-                .forEach(n -> {
-                    int id;
-                    do {
-                        id = r.nextInt(NPC_ID_RANGE) + NPC_ID_LOWER_BOUND;
-                    } while (npcs.containsKey(id));
-                    n.setId(id);
-                    npcs.put(id, n);
+                        int id;
+                        do {
+                            id = ThreadLocalRandom.current().nextInt(Integer.MIN_VALUE, 0);
+                        } while (npcs.containsKey(id));
+                        n.setId(id);
+
+                        npcs.put(id, n);
+                    }
                 });
 
         var collectables = new HashMap<Integer, Collectable>();
         map.getMapsCollectables()
-                .stream()
-                .flatMap(collectable -> IntStream.range(0, collectable.getAmount())
-                        .mapToObj(i -> {
-                            var c = new Collectable(collectable.getCollectablesByCollectablesId(), map);
-                            c.setPosition(Vector.random(collectable.getRegion()));
+                .forEach(collectable -> {
+                    for (int i = 0; i < collectable.getAmount(); i++) {
+                        var c = new Collectable(collectable.getCollectablesByCollectablesId(), map);
+                        c.setPosition(Vector.random(collectable.getRegion()));
 
-                            return c;
-                        }))
-                .forEach(c -> {
-                    int id;
-                    do {
-                        id = r.nextInt(COLLECTABLE_ID_RANGE) + COLLECTABLE_ID_LOWER_BOUND;
-                    } while (collectables.containsKey(id));
-                    c.setId(id);
-                    collectables.put(id, c);
+                        int id;
+                        do {
+                            id = ThreadLocalRandom.current().nextInt();
+                        } while (collectables.containsKey(id));
+                        c.setId(id);
+
+                        collectables.put(id, c);
+                    }
                 });
 
         var stations = map.getMapsStations()
@@ -154,52 +158,48 @@ public class MapService implements Logger {
         this.portals.put(mapId, portals);
     }
 
+    /**
+     * Retrieves all NPCs for a given map.
+     *
+     * @param mapId The ID of the map.
+     *
+     * @return A `Collection` containing all NPCs on the map, or an empty collection if the map is not found.
+     */
     public Collection<Npc> getNpcs(short mapId) {
         return npcs.getOrDefault(mapId, Map.of()).values();
     }
 
+    /**
+     * Retrieves all collectables for a given map.
+     *
+     * @param mapId The ID of the map.
+     *
+     * @return A `Collection` containing all collectables on the map, or an empty collection if the map is not found.
+     */
     public Collection<Collectable> getCollectables(short mapId) {
         return collectables.getOrDefault(mapId, Map.of()).values();
     }
 
-    public Collection<Station> getStations(short mapId) {
-        return stations.getOrDefault(mapId, Map.of()).values();
-    }
-
-    public Collection<Portal> getPortals(short mapId) {
-        return portals.getOrDefault(mapId, Map.of()).values();
-    }
-
-    public List<Npc> findNpcsInRadius(short mapId, Vector center, double radius) {
-        return findInRadius(npcs.get(mapId), center, radius);
-    }
-
-    public List<Collectable> findCollectablesInRadius(short mapId, Vector center, double radius) {
-        return findInRadius(collectables.get(mapId), center, radius);
+    /**
+     * Retrieves all players for a given map.
+     *
+     * @param mapId The ID of the map.
+     *
+     * @return A `Collection` containing all players on the map, or an empty collection if the map is not found.
+     */
+    public Map<Integer, Player> getPlayers(short mapId) {
+        return players.getOrDefault(mapId, Map.of());
     }
 
     /**
-     * Finds all entities within a given radius of a central point.
+     * Handles the logic for initializing a player when they join a map.
      *
-     * @param entities The entities to search through.
-     * @param center   The center of the search radius.
-     * @param radius   The search radius.
-     * @param <T>      Type of the map entity.
-     * @return A list of entities within the radius.
+     * This method creates the player's `Player` entity, adds them to the map,
+     * starts their server-side tick, and sends them the creation commands for
+     * all visible entities on the map.
+     *
+     * @param session The game session of the player to initialize.
      */
-    private <T extends MapEntity> List<T> findInRadius(Map<Integer, T> entities, Vector center, double radius) {
-        if (entities == null || entities.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        // Use squared distance to avoid expensive square root operations
-        double radiusSq = radius * radius;
-
-        return entities.values().stream()
-                .filter(entity -> entity.getPosition().dst2(center) <= radiusSq)
-                .collect(Collectors.toList());
-    }
-
     public void initializePlayer(GameSession session) {
         var account = session.getAccount();
         var ship = session.getShip();
@@ -219,35 +219,87 @@ public class MapService implements Logger {
         player.setMap(maps.get(map));
         player.setId(account.getId());
         player.setPosition(ship.getPosition());
-        player.setSpeed((short) (config.getSpeed() + 1000));
+        player.setSpeed(config.getSpeed());
         player.setAccount(account);
+        player.setShip(ship);
+        player.setConfig(config);
 
         session.setPlayer(player);
+        this.players.computeIfAbsent(map, k -> new HashMap<>()).put(player.getId(), player);
 
         var commands = new ArrayList<OutCommand>();
 
         // Send only nearby entities to the player
-        findNpcsInRadius(map, player.getPosition(), VISIBILITY_RADIUS)
+        findNpcsInRadius(map, player.getPosition())
                 .stream()
                 .map(Npc::getEntityCreationCommand)
                 .forEach(commands::add);
-        findCollectablesInRadius(map, player.getPosition(), VISIBILITY_RADIUS)
+        findCollectablesInRadius(map, player.getPosition())
                 .stream()
                 .map(Collectable::getEntityCreationCommand)
                 .forEach(commands::add);
-        getStations(map)
-                .stream()
-                .map(Station::getEntityCreationCommand)
-                .forEach(commands::add);
-        getPortals(map)
-                .stream()
-                .map(Portal::getEntityCreationCommand)
-                .forEach(commands::add);
+
+        // Stations and portals are always sent
+        getStations(map).forEach(s -> commands.add(s.getEntityCreationCommand()));
+        getPortals(map).forEach(p -> commands.add(p.getEntityCreationCommand()));
 
         commands.add(new ClientSettingsCommand(ServerCommands.MAP_READY_HANDSHAKE, 0));
 
         taskScheduler.scheduleAtFixedRate(player::tick, Duration.ofSeconds(1));
 
         ctx.publishEvent(new SendCommands(session, commands));
+    }
+
+    private List<Npc> findNpcsInRadius(short mapId, Vector center) {
+        return findInRadius(npcs.get(mapId), center, config.getGame().getRenderDistance());
+    }
+
+    private List<Collectable> findCollectablesInRadius(short mapId, Vector center) {
+        return findInRadius(collectables.get(mapId), center, config.getGame().getRenderDistance());
+    }
+
+    /**
+     * Retrieves all stations for a given map.
+     *
+     * @param mapId The ID of the map.
+     *
+     * @return A `Collection` containing all stations on the map, or an empty collection if the map is not found.
+     */
+    public Collection<Station> getStations(short mapId) {
+        return stations.getOrDefault(mapId, Map.of()).values();
+    }
+
+    /**
+     * Retrieves all portals for a given map.
+     *
+     * @param mapId The ID of the map.
+     *
+     * @return A `Collection` containing all portals on the map, or an empty collection if the map is not found.
+     */
+    public Collection<Portal> getPortals(short mapId) {
+        return portals.getOrDefault(mapId, Map.of()).values();
+    }
+
+    /**
+     * Finds all entities within a given radius of a central point.
+     *
+     * @param entities The entities to search through.
+     * @param center   The center of the search radius.
+     * @param radius   The search radius.
+     * @param <T>      Type of the map entity.
+     *
+     * @return A list of entities within the radius.
+     */
+    private <T extends MapEntity> List<T> findInRadius(Map<Integer, T> entities, Vector center, double radius) {
+        if (entities == null || entities.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Use squared distance to avoid expensive square root operations
+        double radiusSq = radius * radius;
+
+        return entities.values().stream()
+                .filter(entity -> entity.getPosition().dst2(center) <= radiusSq)
+                .collect(Collectors.toList());
     }
 }

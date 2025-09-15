@@ -18,6 +18,8 @@ public class KalaazuConfig {
         private Version version;
         private Packets packets;
 
+        private int renderDistance;
+
         @Data
         public static class Packets {
             private boolean printOut;

@@ -21,10 +21,32 @@ import java.util.List;
 /**
  * Init command builder.
  * =====================
- * <p>
- * Command builder for the initial packets sent when a new session starts.
  *
- * @author manulaiko <manulaiko@gmail.com>
+ * This class is responsible for creating the initial set of commands sent to the client
+ * when a player's session is initialized. It aggregates various pieces of player data
+ * (account, ship, configuration, etc.) to construct commands that set up the player's
+ * ship, inventory, UI, and other initial states on the client-side.
+ *
+ * @example
+ * ```java
+ * // In a service, using a CommandBuilder to get all initialization commands.
+ * CommandBuilder commandBuilder = // ... injected instance
+ *
+ * // Build all commands associated with the InitCommands type.
+ * List<OutCommand> initCommands = commandBuilder.buildCommands(
+ *     CommandType.InitCommands,
+ *     account, hangar, ship, config, clanId, clanTag
+ * );
+ *
+ * // Send the commands to the player.
+ * ctx.publishEvent(new SendCommands(session, initCommands));
+ * ```
+ *
+ * @see com.kalaazu.server.game.commands.CommandBuilder
+ * @see com.kalaazu.server.game.commands.CommandBuilderInterface
+ * @see com.kalaazu.server.game.commands.CommandType
+ *
+ * @author manulaiko
  */
 @Data
 @Component("v4InitCommandBuilder")
@@ -36,13 +58,34 @@ public class InitCommandBuilder implements CommandBuilderInterface {
     private final AccountsConfigurationsAccountsItemsService accountsConfigurationsAccountsItemsService;
 
     /**
-     * Builds the necessary commands for the given arguments.
-     * <p>
-     * Since there's no way to ensure type safety on the arguments
-     * be careful of how you use it.
+     * Builds the list of initialization commands for a player session.
      *
-     * @param arguments Command arguments.
-     * @return Command for the given arguments.
+     * This method orchestrates the creation of several commands required to set up the player's
+     * state on the client, including ship initialization, weapon info, and CPU status. It
+     * expects a specific order and type of arguments.
+     *
+     * @param arguments An array of objects containing the necessary data for building the commands.
+     *                  The expected arguments are: `[AccountsEntity, AccountsHangarsEntity,
+     *                  AccountsShipsEntity, AccountsConfigurationsEntity, Integer (clanId),
+     *                  String (clanTag)]`.
+     *
+     * @return A `List` of `OutCommand` objects ready to be sent to the client.
+     *
+     * @throws ClassCastException If the elements in `arguments` are not of the expected types.
+     * @throws ArrayIndexOutOfBoundsException If the `arguments` array does not contain all the required elements.
+     *
+     * @example
+     * ```java
+     * AccountsEntity account = // ...
+     * AccountsHangarsEntity hangar = // ...
+     * AccountsShipsEntity ship = // ...
+     * AccountsConfigurationsEntity config = // ...
+     * int clanId = 1;
+     * String clanTag = "CLAN";
+     *
+     * Object[] args = { account, hangar, ship, config, clanId, clanTag };
+     * List<OutCommand> commands = initCommandBuilder.build(args);
+     * ```
      */
     @Override
     public List<OutCommand> build(Object[] arguments) {
@@ -52,6 +95,8 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         var config = (AccountsConfigurationsEntity) arguments[3];
         var clanId = (Integer) arguments[4];
         var clanTag = (String) arguments[5];
+
+        config.setSpeed((short) 1000);
 
         return List.of(
                 buildShipInitialization(account, ship, config, clanId, clanTag),
@@ -63,40 +108,33 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         );
     }
 
-    private SecondaryWeaponInfoCommand buildSecondaryWeaponInfo(AccountsEntity account) {
-        var items = account.getCalculatedItems();
-
-        return new SecondaryWeaponInfoCommand(
-                items.r310(),
-                items.plt2026(),
-                items.plt2021(),
-                items.plt3030(),
-                items.pld8(),
-                items.dcr_250(),
-                items.wiz(),
-                items.mine(),
-                items.smartbomb(),
-                items.instashield(),
-                items.emp(),
-                items.mine_emp(),
-                items.mine_sab(),
-                items.mine_ddm()
-        );
-    }
-
-    private PrimaryWeaponInfoCommand buildPrimaryWeaponInfo(AccountsEntity account) {
-        var items = account.getCalculatedItems();
-
-        return new PrimaryWeaponInfoCommand(
-                items.lcb10(),
-                items.mcb25(),
-                items.mcb50(),
-                items.ucb100(),
-                items.sab50(),
-                items.rsb75()
-        );
-    }
-
+    /**
+     * Builds the core ship initialization command.
+     *
+     * This command contains all the fundamental information about the player's ship and status,
+     * such as position, stats, clan info, and resources.
+     *
+     * @param account The player's account entity.
+     * @param ship The player's active ship entity.
+     * @param config The player's active configuration entity.
+     * @param clanId The ID of the player's clan.
+     * @param clanTag The tag of the player's clan.
+     *
+     * @return A `ShipInitializationCommand` with all the necessary data to create the player's ship on the client.
+     *
+     * @example
+     * ```java
+     * AccountsEntity account = // ...
+     * AccountsShipsEntity ship = // ...
+     * AccountsConfigurationsEntity config = // ...
+     * int clanId = 1;
+     * String clanTag = "CLAN";
+     *
+     * ShipInitializationCommand command = initCommandBuilder.buildShipInitialization(account, ship, config, clanId, clanTag);
+     * ```
+     *
+     * @see com.kalaazu.server.game.v4.commands.out.map.ShipInitializationCommand
+     */
     private ShipInitializationCommand buildShipInitialization(AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config, int clanId, String clanTag) {
         var items = account.getCalculatedItems();
 
@@ -133,6 +171,85 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         );
     }
 
+    /**
+     * Builds the command to inform the client about the player's primary weapon (laser) ammunition quantities.
+     *
+     * @param account The player's account entity, used to retrieve calculated item counts.
+     *
+     * @return A `PrimaryWeaponInfoCommand` populated with the player's laser ammunition data.
+     *
+     * @example
+     * ```java
+     * AccountsEntity account = // ...
+     * PrimaryWeaponInfoCommand command = initCommandBuilder.buildPrimaryWeaponInfo(account);
+     * ```
+     *
+     * @see com.kalaazu.server.game.v4.commands.out.user.PrimaryWeaponInfoCommand
+     * @see com.kalaazu.persistence.entity.AccountsEntity
+     */
+    private PrimaryWeaponInfoCommand buildPrimaryWeaponInfo(AccountsEntity account) {
+        var items = account.getCalculatedItems();
+
+        return new PrimaryWeaponInfoCommand(
+                items.lcb10(),
+                items.mcb25(),
+                items.mcb50(),
+                items.ucb100(),
+                items.sab50(),
+                items.rsb75()
+        );
+    }
+
+    /**
+     * Builds the command to inform the client about the player's secondary weapon and special ammunition quantities.
+     *
+     * @param account The player's account entity, used to retrieve calculated item counts.
+     *
+     * @return A `SecondaryWeaponInfoCommand` populated with the player's ammunition data.
+     *
+     * @example ```java
+     * AccountsEntity account = // ...
+     * SecondaryWeaponInfoCommand command = initCommandBuilder.buildSecondaryWeaponInfo(account);
+     * ```
+     * @see com.kalaazu.server.game.v4.commands.out.user.SecondaryWeaponInfoCommand
+     * @see com.kalaazu.persistence.entity.AccountsEntity
+     */
+    private SecondaryWeaponInfoCommand buildSecondaryWeaponInfo(AccountsEntity account) {
+        var items = account.getCalculatedItems();
+
+        return new SecondaryWeaponInfoCommand(
+                items.r310(),
+                items.plt2026(),
+                items.plt2021(),
+                items.plt3030(),
+                items.pld8(),
+                items.dcr_250(),
+                items.wiz(),
+                items.mine(),
+                items.smartbomb(),
+                items.instashield(),
+                items.emp(),
+                items.mine_emp(),
+                items.mine_sab(),
+                items.mine_ddm()
+        );
+    }
+
+    /**
+     * Builds the command to set the status of the player's tech items.
+     *
+     * @param account The player's account entity, used to retrieve tech item statuses.
+     *
+     * @return A `SetTechStatusCommand` populated with the player's tech statuses.
+     *
+     * @example
+     * ```java
+     * AccountsEntity account = // ...
+     * SetTechStatusCommand command = initCommandBuilder.buildSetTechStatus(account);
+     * ```
+     *
+     * @see com.kalaazu.server.game.v4.commands.out.techs.SetTechStatusCommand
+     */
     private SetTechStatusCommand buildSetTechStatus(AccountsEntity account) {
         var items = account.getCalculatedItems();
 
@@ -161,6 +278,24 @@ public class InitCommandBuilder implements CommandBuilderInterface {
         );
     }
 
+    /**
+     * Builds the command to inform the client about the player's equipped CPU items.
+     *
+     * It queries the items for the given configuration and maps them to the corresponding CPU types.
+     *
+     * @param config The player's active configuration entity, used to find equipped CPU items.
+     *
+     * @return A `CpuHeroInfoCommand` with the quantities of each equipped CPU.
+     *
+     * @example
+     * ```java
+     * AccountsConfigurationsEntity config = // ...
+     * CpuHeroInfoCommand command = initCommandBuilder.buildCpuHeroInfo(config);
+     * ```
+     *
+     * @see com.kalaazu.server.game.v4.commands.out.attributes.CpuHeroInfoCommand
+     * @see com.kalaazu.persistence.service.AccountsConfigurationsAccountsItemsService
+     */
     private CpuHeroInfoCommand buildCpuHeroInfo(AccountsConfigurationsEntity config) {
         var items = accountsConfigurationsAccountsItemsService.findConfiguredShipItemsByItemType(config, ItemType.SPECIAL_EXTRA, ItemType.EXTRA, ItemType.REPAIRBOT);
 
