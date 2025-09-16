@@ -84,8 +84,13 @@ public class Dashboard implements Logger {
 
         scheduler.scheduleAtFixedRate(() -> {
             double cpuLoad = 0;
-            if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
-                cpuLoad = ((com.sun.management.OperatingSystemMXBean) osBean).getCpuLoad() * 100;
+            if (osBean instanceof com.sun.management.OperatingSystemMXBean b) {
+                // getProcessCpuLoad() gives the CPU usage for the current JVM process.
+                // It can return a negative value if not available, so we check for it.
+                double processCpuLoad = b.getProcessCpuLoad();
+                if (processCpuLoad >= 0) {
+                    cpuLoad = processCpuLoad * 100;
+                }
             }
             final double finalCpuLoad = cpuLoad;
             final long usedMemory = (runtime.totalMemory() - runtime.freeMemory()) / (1024 * 1024);
