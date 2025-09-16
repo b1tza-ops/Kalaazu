@@ -11,6 +11,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.Getter;
+import org.springframework.core.task.TaskExecutor;
 
 /**
  * Game server interface.
@@ -24,7 +25,6 @@ public abstract class GameServer implements Runnable, Logger {
     private static volatile GameServer INSTANCE;
 
     private volatile boolean isRunning = false;
-    private Thread serverThread;
 
     private Channel serverChannel;
     private EventLoopGroup bossGroup;
@@ -46,14 +46,14 @@ public abstract class GameServer implements Runnable, Logger {
     /**
      * Starts the server in a new thread if not already running.
      */
-    public synchronized void start() {
+    public synchronized void start(TaskExecutor executor) {
         if (isRunning) {
             warn("Server {} is already running.", getVersion());
             return;
         }
 
-        serverThread = new Thread(this, getVersion() + "-ServerThread");
-        serverThread.start();
+        // Execute the server's run() method on the provided executor.
+        executor.execute(this);
     }
 
     @Override
@@ -110,10 +110,6 @@ public abstract class GameServer implements Runnable, Logger {
         }
 
         shutdownEventLoops();
-
-        if (serverThread != null && serverThread.isAlive()) {
-            serverThread.interrupt();
-        }
     }
 
     /**

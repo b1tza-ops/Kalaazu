@@ -5,11 +5,6 @@ spring:
     virtual:
       enabled: true
 
-  task:
-    scheduling:
-      pool:
-        size: 8
-
   datasource:
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}

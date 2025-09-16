@@ -12,8 +12,11 @@ import com.kalaazu.util.Logger;
 import com.kalaazu.util.LoggingCategory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -33,6 +36,10 @@ public class Server implements Logger {
     @Getter
     private final LoggingCategory category = LoggingCategory.SERVER;
 
+    @Autowired
+    @Qualifier("virtualThreadTaskExecutor")
+    private TaskExecutor virtualThreadTaskExecutor;
+
     /**
      * Handle an application event.
      *
@@ -49,8 +56,8 @@ public class Server implements Logger {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Game sever for version " + v + " not found!"));
 
-        server.start();
-        policyServer.start();
+        server.start(virtualThreadTaskExecutor);
+        policyServer.start(virtualThreadTaskExecutor);
         ctx.publishEvent(new ServerStarted());
         info("Started game server");
     }

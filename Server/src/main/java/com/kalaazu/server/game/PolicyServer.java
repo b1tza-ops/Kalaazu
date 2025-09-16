@@ -16,6 +16,7 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -41,7 +42,6 @@ public class PolicyServer implements Runnable, Logger {
     private final LoggingCategory category = LoggingCategory.SERVER;
 
     private volatile boolean isRunning;
-    private Thread serverThread;
     private Channel serverChannel;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
@@ -49,14 +49,13 @@ public class PolicyServer implements Runnable, Logger {
     /**
      * Starts the server in a separate thread.
      */
-    public synchronized void start() {
+    public synchronized void start(TaskExecutor executor) {
         if (isRunning) {
             warn("Policy server is already running.");
             return;
         }
 
-        serverThread = new Thread(this, "PolicyServerThread");
-        serverThread.start();
+        executor.execute(this);
     }
 
     @Override
@@ -102,6 +101,23 @@ public class PolicyServer implements Runnable, Logger {
     }
 
     /**
+     * Gracefully shuts down Netty event loops.
+     */
+    private void shutdownEventLoops() {
+        try {
+            if (workerGroup != null) workerGroup.shutdownGracefully().sync();
+            if (bossGroup != null) bossGroup.shutdownGracefully().sync();
+        } catch (InterruptedException e) {
+            warn("Event loop shutdown interrupted", e);
+            Thread.currentThread().interrupt();
+        } finally {
+            serverChannel = null;
+            workerGroup = null;
+            bossGroup = null;
+        }
+    }
+
+    /**
      * Stops the server gracefully.
      */
     public synchronized void stop() {
@@ -118,27 +134,6 @@ public class PolicyServer implements Runnable, Logger {
         }
 
         shutdownEventLoops();
-
-        if (serverThread != null && serverThread.isAlive()) {
-            serverThread.interrupt();
-        }
-    }
-
-    /**
-     * Gracefully shuts down Netty event loops.
-     */
-    private void shutdownEventLoops() {
-        try {
-            if (workerGroup != null) workerGroup.shutdownGracefully().sync();
-            if (bossGroup != null) bossGroup.shutdownGracefully().sync();
-        } catch (InterruptedException e) {
-            warn("Event loop shutdown interrupted", e);
-            Thread.currentThread().interrupt();
-        } finally {
-            serverChannel = null;
-            workerGroup = null;
-            bossGroup = null;
-        }
     }
 
     /**
