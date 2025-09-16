@@ -27,16 +27,22 @@ allprojects {
     apply plugin: 'org.openjfx.javafxplugin'
 
     java {
-        toolchain { languageVersion = JavaLanguageVersion.of(24) }
+        toolchain { languageVersion = JavaLanguageVersion.of(25) }
     }
 
     group 'com.kalaazu'
 
     javafx {
-        version = '24'
+        version = '25'
         modules = ['javafx.controls', 'javafx.fxml']
     }
 
+    task printClasspath {
+        doLast {
+            println "JavaFX Path:"
+            println sourceSets.main.runtimeClasspath.filter { it.name.contains("javafx") }.asPath
+        }
+    }
 
     repositories {
         mavenCentral()
@@ -65,8 +71,8 @@ allprojects {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
         testImplementation 'org.springframework.security:spring-security-test'
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
+        compileOnly 'org.projectlombok:lombok:1.18.40'
+        annotationProcessor 'org.projectlombok:lombok:1.18.40'
         implementation 'org.reflections:reflections:0.10.2'
         implementation 'org.modelmapper:modelmapper:3.1.0'
 
