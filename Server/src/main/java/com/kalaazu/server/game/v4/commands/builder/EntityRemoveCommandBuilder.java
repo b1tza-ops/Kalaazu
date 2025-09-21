@@ -3,8 +3,9 @@ package com.kalaazu.server.game.v4.commands.builder;
 import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.kalaazu.model.Version;
-import com.kalaazu.server.ecs.component.CollectableComponent;
+import com.kalaazu.server.ecs.component.EntityTypeComponent;
 import com.kalaazu.server.ecs.component.IdComponent;
+import com.kalaazu.server.ecs.entity.EntityType;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
@@ -49,21 +50,21 @@ public class EntityRemoveCommandBuilder implements CommandBuilderInterface {
     /**
      * Builds a specific removal command based on the entity's type.
      *
-     * This method acts as a dispatcher. It checks if the provided entity has a
-     * {@link CollectableComponent}. If so, it creates a {@link RemoveCollectableCommand}.
-     * Otherwise, it defaults to creating a {@link RemoveShipCommand}, which is used for
-     * players, NPCs, and other non-collectable map entities.
+     * This method acts as a dispatcher. It checks the entity's {@link EntityTypeComponent}
+     * to determine whether to build a {@link RemoveCollectableCommand} or a
+     * {@link RemoveShipCommand}.
      *
      * @param arguments An array where `arguments[0]` is the {@link World} and `arguments[1]` is the entity ID.
      *
      * @return The appropriate {@link OutCommand} for removing the entity.
      *
-     * @throws ClassCastException if the arguments are not of the expected type.
+     * @throws ClassCastException    if the arguments are not of the expected type.
+     * @throws IllegalStateException if the entity does not have an {@link EntityTypeComponent}.
      * @example ```java
      * // Create a command to remove a ship entity
      * OutCommand command = builder.buildOne(new Object[]{world, shipId});
      * // command is an instance of RemoveShipCommand
-     * <p>
+     *
      * // Create a command to remove a collectable entity
      * OutCommand command2 = builder.buildOne(new Object[]{world, boxId});
      * // command2 is an instance of RemoveCollectableCommand
@@ -73,15 +74,20 @@ public class EntityRemoveCommandBuilder implements CommandBuilderInterface {
     public OutCommand buildOne(Object[] arguments) {
         var world = (World) arguments[0];
         var entityId = (int) arguments[1];
+        var entityType = (EntityType) arguments[2];
 
         var idMapper = world.getMapper(IdComponent.class);
-        var collectableMapper = world.getMapper(CollectableComponent.class);
+        var entityTypeMapper = world.getMapper(EntityTypeComponent.class);
 
-        if (collectableMapper.has(entityId)) {
-            return buildRemoveCollectable(entityId, idMapper);
-        } else {
-            return buildRemoveShip(entityId, idMapper);
+        if (!entityTypeMapper.has(entityId)) {
+            throw new IllegalStateException("Could not build removal command for entity: " + entityId + ", missing EntityTypeComponent");
         }
+
+
+        if (entityType == EntityType.COLLECTABLE) {
+            return buildRemoveCollectable(entityId, idMapper);
+        }
+        return buildRemoveShip(entityId, idMapper);
     }
 
     /**
@@ -111,7 +117,7 @@ public class EntityRemoveCommandBuilder implements CommandBuilderInterface {
      * Builds a command to remove a ship-like entity.
      * <p>
      * This helper method constructs a {@link RemoveShipCommand}. It is used for any
-     * entity that does not have a {@link CollectableComponent}, such as players or NPCs.
+     * entity that is not a collectable, such as players or NPCs.
      *
      * @param entityId The ID of the map entity to remove.
      * @param idMapper The mapper to access the {@link IdComponent}.

@@ -4,6 +4,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.World;
 import com.kalaazu.model.Version;
 import com.kalaazu.server.ecs.component.*;
+import com.kalaazu.server.ecs.entity.EntityType;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
@@ -34,7 +35,7 @@ import org.springframework.stereotype.Component;
  * // 'world' is an instance of com.artemis.World
  * // 'entityId' is the integer ID of an existing entity in the world
  * Object[] args = new Object[]{world, entityId};
- *
+ * 
  * // Build the command
  * OutCommand command = builder.buildOne(args);
  *
@@ -78,30 +79,35 @@ public class EntityCreationCommandBuilder implements CommandBuilderInterface {
     public OutCommand buildOne(Object[] arguments) {
         var world = (World) arguments[0];
         var entityId = (int) arguments[1];
+        var entityType = (EntityType) arguments[2];
 
         // Get mappers from the world
         var idMapper = world.getMapper(IdComponent.class);
         var positionMapper = world.getMapper(PositionComponent.class);
-        var playerMapper = world.getMapper(PlayerComponent.class);
-        var npcMapper = world.getMapper(NpcComponent.class);
-        var collectableMapper = world.getMapper(CollectableComponent.class);
-        var portalMapper = world.getMapper(PortalComponent.class);
-        var stationMapper = world.getMapper(StationComponent.class);
 
-        // Determine entity type by checking for its main component
-        if (playerMapper.has(entityId)) {
-            return buildCreatePlayer(entityId, idMapper, positionMapper, playerMapper);
-        } else if (npcMapper.has(entityId)) {
-            return buildCreateNpc(entityId, idMapper, positionMapper, npcMapper);
-        } else if (collectableMapper.has(entityId)) {
-            return buildCreateCollectable(entityId, idMapper, positionMapper, collectableMapper);
-        } else if (portalMapper.has(entityId)) {
-            return buildPortal(entityId, idMapper, positionMapper, portalMapper);
-        } else if (stationMapper.has(entityId)) {
-            return buildStation(entityId, idMapper, positionMapper, stationMapper);
-        }
-
-        throw new IllegalStateException("Could not build creation command for entity: " + entityId);
+        return switch (entityType) {
+            case PLAYER -> {
+                var playerMapper = world.getMapper(PlayerComponent.class);
+                yield buildCreatePlayer(entityId, idMapper, positionMapper, playerMapper);
+            }
+            case NPC -> {
+                var npcMapper = world.getMapper(NpcComponent.class);
+                yield buildCreateNpc(entityId, idMapper, positionMapper, npcMapper);
+            }
+            case COLLECTABLE -> {
+                var collectableMapper = world.getMapper(CollectableComponent.class);
+                yield buildCreateCollectable(entityId, idMapper, positionMapper, collectableMapper);
+            }
+            case PORTAL -> {
+                var portalMapper = world.getMapper(PortalComponent.class);
+                yield buildPortal(entityId, idMapper, positionMapper, portalMapper);
+            }
+            case STATION -> {
+                var stationMapper = world.getMapper(StationComponent.class);
+                yield buildStation(entityId, idMapper, positionMapper, stationMapper);
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + entityType);
+        };
     }
 
     /**

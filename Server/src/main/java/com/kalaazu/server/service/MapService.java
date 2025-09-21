@@ -6,6 +6,7 @@ import com.kalaazu.KalaazuConfig;
 import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.persistence.service.MapsService;
+import com.kalaazu.server.ecs.component.EntityTypeComponent;
 import com.kalaazu.server.ecs.component.PositionComponent;
 import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.CommandBuilder;
@@ -224,32 +225,43 @@ public class MapService implements Logger {
 
         var world = gameLoopService.getEngine(map);
         var commands = new ArrayList<OutCommand>();
+        var entityTypeMapper = world.getMapper(EntityTypeComponent.class);
 
         // Send only nearby entities to the player
         var playersInRadius = findPlayersInRadius(world, map, ship.getPosition());
         for (int i = 0, s = playersInRadius.size(); i < s; i++) {
-            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, playersInRadius.get(i)));
+            var entityId = playersInRadius.get(i);
+            var entityType = entityTypeMapper.get(entityId);
+            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, entityId, entityType.getType()));
         }
 
         var npcsInRadius = findNpcsInRadius(world, map, ship.getPosition());
         for (int i = 0, s = npcsInRadius.size(); i < s; i++) {
-            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, npcsInRadius.get(i)));
+            var entityId = npcsInRadius.get(i);
+            var entityType = entityTypeMapper.get(entityId);
+            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, entityId, entityType.getType()));
         }
 
         var collectablesInRadius = findCollectablesInRadius(world, map, ship.getPosition());
         for (int i = 0, s = collectablesInRadius.size(); i < s; i++) {
-            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, collectablesInRadius.get(i)));
+            var entityId = collectablesInRadius.get(i);
+            var entityType = entityTypeMapper.get(entityId);
+            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, entityId, entityType.getType()));
         }
 
         // Stations and portals are always sent
         var stations = getStations(map);
         for (int i = 0, s = stations.size(); i < s; i++) {
-            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, stations.get(i)));
+            var entityId = stations.get(i);
+            var entityType = entityTypeMapper.get(entityId);
+            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, entityId, entityType.getType()));
         }
 
         var portals = getPortals(map);
         for (int i = 0, s = portals.size(); i < s; i++) {
-            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, portals.get(i)));
+            var entityId = portals.get(i);
+            var entityType = entityTypeMapper.get(entityId);
+            commands.addAll(commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, entityId, entityType.getType()));
         }
 
         commands.add(new ClientSettingsCommand(ServerCommands.MAP_READY_HANDSHAKE, 0));

@@ -8,6 +8,7 @@ import com.kalaazu.persistence.entity.*;
 import com.kalaazu.server.ecs.GameLoop;
 import com.kalaazu.server.ecs.WorldAction;
 import com.kalaazu.server.ecs.component.*;
+import com.kalaazu.server.ecs.entity.EntityType;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.util.Logger;
 import com.kalaazu.util.LoggingCategory;
@@ -158,7 +159,7 @@ public class GameLoopService implements Logger {
      * ```
      */
     public int addPlayer(MapsEntity map, GameSession session, AccountsEntity account, AccountsShipsEntity ship, AccountsConfigurationsEntity config) {
-        return createEntity(map.getId(), account.getId(), "player", (edit) -> {
+        return createEntity(map.getId(), account.getId(), EntityType.PLAYER, (edit) -> {
             // Create and add all necessary components
             edit.create(PositionComponent.class)
                     .setPosition(ship.getPosition());
@@ -185,20 +186,24 @@ public class GameLoopService implements Logger {
      *
      * @param mapId          The ID of the map where the entity will be created.
      * @param entityIdForLog The ID used for logging purposes.
-     * @param entityType     A string representing the type of entity for logging.
+     * @param entityType     The type of the entity.
      * @param componentAdder A consumer that receives an `EntityEdit` to add the specific components.
      *
      * @return The integer ID of the newly created entity, or -1 on failure.
      */
-    private int createEntity(short mapId, int entityIdForLog, String entityType, Consumer<EntityEdit> componentAdder) {
+    private int createEntity(short mapId, int entityIdForLog, EntityType entityType, Consumer<EntityEdit> componentAdder) {
         var world = worlds.get(mapId);
         if (world == null) {
-            error("Could not add {} {} to map {}: Engine not found.", entityType, entityIdForLog, mapId);
+            error("Could not add {} {} to map {}: Engine not found.", entityType.name().toLowerCase(), entityIdForLog, mapId);
             return -1;
         }
 
         int entityId = world.create();
         var edit = world.edit(entityId);
+
+        var type = edit.create(EntityTypeComponent.class);
+        type.setType(entityType);
+
         componentAdder.accept(edit);
 
         return entityId;
@@ -219,7 +224,7 @@ public class GameLoopService implements Logger {
      * ```
      */
     public void addNpc(short mapId, NpcsEntity npc, Vector position, int id) {
-        createEntity(mapId, id, "NPC", (edit) -> {
+        createEntity(mapId, id, EntityType.NPC, (edit) -> {
             edit.create(SpeedComponent.class)
                     .setSpeed(npc.getSpeed());
 
@@ -249,7 +254,7 @@ public class GameLoopService implements Logger {
      * ```
      */
     public void addCollectable(short mapId, CollectablesEntity collectable, Vector position, int id) {
-        createEntity(mapId, id, "collectable", (edit) -> {
+        createEntity(mapId, id, EntityType.COLLECTABLE, (edit) -> {
             edit.create(PositionComponent.class)
                     .setPosition(position);
 
@@ -275,7 +280,7 @@ public class GameLoopService implements Logger {
      * ```
      */
     public void addStation(short mapId, MapsStationsEntity station, int id) {
-        createEntity(mapId, id, "station", (edit) -> {
+        createEntity(mapId, id, EntityType.STATION, (edit) -> {
             edit.create(PositionComponent.class)
                     .setPosition(station.getPosition());
 
@@ -301,7 +306,7 @@ public class GameLoopService implements Logger {
      * ```
      */
     public void addPortal(short mapId, MapsPortalsEntity portal, int id) {
-        createEntity(mapId, id, "portal", (edit) -> {
+        createEntity(mapId, id, EntityType.PORTAL, (edit) -> {
             edit.create(PositionComponent.class)
                     .setPosition(portal.getPosition());
 

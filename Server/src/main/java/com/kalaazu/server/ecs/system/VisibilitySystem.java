@@ -72,6 +72,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     private ComponentMapper<PositionComponent> positionMapper;
     private ComponentMapper<ViewComponent> viewMapper;
     private ComponentMapper<PlayerComponent> playerMapper;
+    private ComponentMapper<EntityTypeComponent> entityTypeMapper;
 
     // Subscriptions to entity groups, managed by Artemis
     private IntBag allPlayers;
@@ -138,6 +139,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
         var position = positionMapper.get(entity);
         var view = viewMapper.get(entity);
         var player = playerMapper.get(entity);
+        var entityType = entityTypeMapper.get(entity).getType();
 
         final int renderDistance = config.getGame().getRenderDistance();
         final long renderDistanceSq = (long) renderDistance * renderDistance;
@@ -157,13 +159,13 @@ public class VisibilitySystem extends IntervalIteratingSystem {
 
         // Notify other players about this player's appearance/disappearance
         if (!playersInView.isEmpty()) {
-            var creationCommand = commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, entity).getFirst();
+            var creationCommand = commandBuilder.buildCommands(CommandType.EntityCreationCommand, world, entity, entityType).getFirst();
             var sessions = getSessionsFromIntBag(playersInView);
             publisher.publishEvent(new SendCommandToSessions(sessions, creationCommand));
         }
 
         if (!playersOutOfView.isEmpty()) {
-            var removalCommand = commandBuilder.buildCommands(CommandType.EntityRemoveCommand, world, entity).getFirst();
+            var removalCommand = commandBuilder.buildCommands(CommandType.EntityRemoveCommand, world, entity, entityType).getFirst();
             var sessions = getSessionsFromIntBag(playersOutOfView);
             publisher.publishEvent(new SendCommandToSessions(sessions, removalCommand));
         }
@@ -320,7 +322,8 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     private void addCommandsForEntities(IntBag entities, CommandType commandType, List<OutCommand> commands) {
         for (int i = 0, s = entities.size(); i < s; i++) {
             int entityId = entities.get(i);
-            commands.addAll(commandBuilder.buildCommands(commandType, world, entityId));
+            var entityType = entityTypeMapper.get(entityId);
+            commands.addAll(commandBuilder.buildCommands(commandType, world, entityId, entityType.getType()));
         }
     }
 }
