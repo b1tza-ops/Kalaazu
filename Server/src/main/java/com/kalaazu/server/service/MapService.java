@@ -105,7 +105,7 @@ public class MapService implements Logger {
         info("Loading maps..");
         maps = service.findAll()
                 .stream()
-                //.filter(m -> m.getId() == 1)
+                .filter(m -> m.getId() == 1)
                 .collect(Collectors.toMap(MapsEntity::getId, (v) -> v));
 
         maps.forEach(this::initializeMap);

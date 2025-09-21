@@ -99,6 +99,7 @@ public class MovementIntentSystem extends IteratingSystem {
             movement.setEndMovementTime(System.currentTimeMillis() + duration);
             movement.setTotalMovementTime((int) duration);
             movement.setJustStarted(true);
+            movement.setInitialPosition(from);
             movement.setMoving(true);
         }
 

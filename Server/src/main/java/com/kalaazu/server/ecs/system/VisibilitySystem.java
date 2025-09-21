@@ -2,6 +2,7 @@ package com.kalaazu.server.ecs.system;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
+import com.artemis.EntitySubscription;
 import com.artemis.systems.IntervalIteratingSystem;
 import com.artemis.utils.IntBag;
 import com.kalaazu.KalaazuConfig;
@@ -75,6 +76,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     private ComponentMapper<EntityTypeComponent> entityTypeMapper;
 
     // Subscriptions to entity groups, managed by Artemis
+    private EntitySubscription allPlayersSubscription;
     private IntBag allPlayers;
     private IntBag allNpcs;
     private IntBag allCollectables;
@@ -101,6 +103,26 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     }
 
     /**
+     * Called before system processing begins.
+     * <p>
+     * <b>Nota Bene:</b> Any entities created in this method
+     * won't become active until the next system starts processing
+     * or when a new processing rounds begins, whichever comes first.
+     * </p>
+     */
+    @Override
+    protected void begin() {
+        if (allNpcs == null || allNpcs.isEmpty()) {
+            var am = world.getAspectSubscriptionManager();
+
+            this.allNpcs = am.get(Aspect.all(NpcComponent.class, PositionComponent.class)).getEntities();
+            this.allCollectables = am.get(Aspect.all(CollectableComponent.class, PositionComponent.class)).getEntities();
+        }
+
+        allPlayers = allPlayersSubscription.getEntities();
+    }
+
+    /**
      * Initializes the system after it's been added to the world.
      *
      * This method is called once by the Artemis-odb framework. It's used here to
@@ -115,9 +137,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     protected void initialize() {
         // Cache entity collections for quick access
         var am = world.getAspectSubscriptionManager();
-        this.allPlayers = am.get(Aspect.all(PlayerComponent.class, PositionComponent.class)).getEntities();
-        this.allNpcs = am.get(Aspect.all(NpcComponent.class, PositionComponent.class)).getEntities();
-        this.allCollectables = am.get(Aspect.all(CollectableComponent.class, PositionComponent.class)).getEntities();
+        this.allPlayersSubscription = am.get(Aspect.all(PlayerComponent.class, PositionComponent.class));
     }
 
     /**
@@ -136,6 +156,16 @@ public class VisibilitySystem extends IntervalIteratingSystem {
      */
     @Override
     protected void process(int entity) {
+        // Clear all temporary bags at the start of processing for a new entity.
+        // This is crucial to prevent stale data from the previously processed entity,
+        // especially when parts of the logic are commented out for debugging.
+        playersInView.clear();
+        playersOutOfView.clear();
+        npcsInView.clear();
+        npcsOutOfView.clear();
+        collectablesInView.clear();
+        collectablesOutOfView.clear();
+
         var position = positionMapper.get(entity);
         var view = viewMapper.get(entity);
         var player = playerMapper.get(entity);
@@ -171,9 +201,19 @@ public class VisibilitySystem extends IntervalIteratingSystem {
         }
 
         // Update the view component for the next tick
-        view.setPlayers(newlyVisiblePlayers);
-        view.setNpcs(newlyVisibleNpcs);
-        view.setCollectables(newlyVisibleCollectables);
+        // We must copy the data into the component's bags, not just assign the reference.
+        // This prevents all ViewComponents from sharing the same IntBag instance from this system.
+        var viewPlayers = view.getPlayers();
+        viewPlayers.clear();
+        viewPlayers.addAll(newlyVisiblePlayers);
+
+        var viewNpcs = view.getNpcs();
+        viewNpcs.clear();
+        viewNpcs.addAll(newlyVisibleNpcs);
+
+        var viewCollectables = view.getCollectables();
+        viewCollectables.clear();
+        viewCollectables.addAll(newlyVisibleCollectables);
     }
 
     /**
