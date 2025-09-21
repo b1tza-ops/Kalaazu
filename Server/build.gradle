@@ -2,4 +2,5 @@ dependencies {
     implementation project(':Utils')
     implementation project(':Persistence')
     implementation 'io.netty:netty-all'
+    implementation 'net.onedaybeard.artemis:artemis-odb:2.3.0'
 }

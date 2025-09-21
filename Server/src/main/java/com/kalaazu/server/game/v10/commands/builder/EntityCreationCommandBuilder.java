@@ -1,44 +1,76 @@
 package com.kalaazu.server.game.v10.commands.builder;
 
 import com.kalaazu.model.Version;
-import com.kalaazu.server.entities.*;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
-import com.kalaazu.server.game.v10.commands.out.map.CreateShipCommand;
-import com.kalaazu.server.game.v10.commands.out.map.MinimapEntityDiplomacyStatusCommand;
-import com.kalaazu.server.game.v10.commands.out.unknown.class_387;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-
 /**
- * Entity creation command builder.
- * ================================
- * <p>
- * Builder for the commands for the map entity creation command.
+ * Builds commands for creating entities on the client for game version V10.
  *
- * @author manulaiko <manulaiko@gmail.com>
+ * A specialized builder responsible for creating the network commands that
+ * instruct the client to render a new entity on the map (e.g., ships, portals, collectables).
+ * This builder is selected when the command building system
+ * receives a request with the type {@link CommandType#EntityCreationCommand}.
+ * It uses an entity-component-system (ECS) world to inspect an entity's components
+ * and determine the correct creation command to build.
+ *
+ * NOTE: The implementation for V10 is currently a placeholder.
+ *
+ * @example
+ * ```java
+ * // In a Spring-managed component
+ * // @Autowired
+ * // private EntityCreationCommandBuilder builder;
+ *
+ * // 'world' is an instance of com.artemis.World
+ * // 'entityId' is the integer ID of an existing entity in the world
+ * Object[] args = new Object[]{world, entityId};
+ *
+ * // Build the command (currently returns null)
+ * OutCommand command = builder.buildOne(args);
+ *
+ * // When implemented, the command can be sent to the client.
+ * ```
+ *
+ * @see com.kalaazu.server.game.commands.CommandBuilderInterface
+ * @see com.kalaazu.server.game.commands.CommandType
+ * @see com.kalaazu.server.game.commands.OutCommand
+ *
+ * @author manulaiko
  */
-@Component
+@Component("v10EntityCreationCommandBuilder")
 @Getter
 public class EntityCreationCommandBuilder implements CommandBuilderInterface {
     private final Version gameVersion = Version.V10;
     private final CommandType commandType = CommandType.EntityCreationCommand;
 
     /**
-     * Builds a single command for the given arguments.
-     * <p>
-     * Since there's no way to ensure type safety on the arguments
-     * be careful of how you use it.
+     * Builds a single entity creation command based on the entity's components.
      *
-     * @param arguments Command arguments.
-     * @return Command for the given arguments.
+     * This method is intended to inspect an entity within the ECS world and build the
+     * appropriate `OutCommand` to create it on the client. The entity's type (e.g., Player,
+     * NPC, Portal) would be determined by checking for specific components.
+     *
+     * NOTE: This method is currently a placeholder and returns `null`.
+     *
+     * @param arguments Command arguments, expected to contain the `World` and the entity ID.
+     *
+     * @return The generated `OutCommand` for creating the entity, or `null` in the current implementation.
+     *
+     * @example
+     * ```java
+     * // 'world' is a valid World instance
+     * // 'playerEntityId' is the ID of an entity with a PlayerComponent
+     * Object[] args = new Object[]{world, playerEntityId};
+     * OutCommand playerCreationCommand = builder.buildOne(args); // returns null for now
+     * ```
      */
     @Override
     public OutCommand buildOne(Object[] arguments) {
-        var entity = (MapEntity) arguments[0];
+        /*var entity = (MapEntity) arguments[0];
 
         return switch (entity) {
             case Collectable c -> buildCreateCollectable(c);
@@ -47,9 +79,11 @@ public class EntityCreationCommandBuilder implements CommandBuilderInterface {
             case Portal p -> buildPortal(p);
             case Station s -> buildStation(s);
             default -> throw new IllegalStateException("Unexpected value: " + entity);
-        };
-    }
+        };*/
 
+        return null;
+    }
+/*
     private OutCommand buildStation(Station station) {
         // TODO create station entity
         return null;
@@ -94,4 +128,5 @@ public class EntityCreationCommandBuilder implements CommandBuilderInterface {
                 new class_387(class_387.DEFAULT)
         );
     }
+ */
 }

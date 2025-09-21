@@ -23,6 +23,7 @@ app:
   game:
     version: ${GAME_VERSION:V4} # Game server version, see com.kalaazu.model.Version
     renderDistance: ${RENDER_DISTANCE:3000}
+    tickRate: ${TICK_RATE:100}
     packets:
       printOut: true
       printIn: true
