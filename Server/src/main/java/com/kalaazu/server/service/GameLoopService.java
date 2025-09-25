@@ -167,6 +167,12 @@ public class GameLoopService implements Logger {
             edit.create(SpeedComponent.class)
                     .setSpeed(config.getSpeed());
 
+            var health = edit.create(HealthComponent.class);
+            health.setHealth(ship.getHealth());
+            health.setMaxHealth(config.getHealth());
+            health.setShield(ship.getShield());
+            health.setMaxShield(ship.getShield());
+
             var playerComponent = edit.create(PlayerComponent.class);
             playerComponent.setSession(session);
             playerComponent.setAccount(account);
@@ -236,6 +242,12 @@ public class GameLoopService implements Logger {
 
             edit.create(NpcComponent.class)
                     .setNpc(npc);
+
+            var health = edit.create(HealthComponent.class);
+            health.setHealth(npc.getHealth());
+            health.setMaxHealth(npc.getHealth());
+            health.setShield(npc.getShield());
+            health.setMaxShield(npc.getShield());
         });
     }
 
