@@ -3,7 +3,7 @@ package com.kalaazu.persistence;
 import com.kalaazu.math.VectorRegion;
 import lombok.Getter;
 import org.hibernate.Cache;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
@@ -25,6 +25,21 @@ public class VectorRegionType implements UserType<VectorRegion> {
     private final int sqlType = Types.VARCHAR;
     private final boolean mutable = false;
 
+    @Override
+    public Class<VectorRegion> returnedClass() {
+        return VectorRegion.class;
+    }
+
+    @Override
+    public boolean equals(VectorRegion x, VectorRegion y) {
+        return x.equals(y);
+    }
+
+    @Override
+    public int hashCode(VectorRegion x) {
+        return x.hashCode();
+    }
+
     /**
      * Read an instance of the Java class mapped by this custom type
      * from the given JDBC {@link ResultSet}. Implementors must handle
@@ -32,11 +47,10 @@ public class VectorRegionType implements UserType<VectorRegion> {
      *
      * @param rs
      * @param position
-     * @param session
-     * @param owner
+     * @param options
      */
     @Override
-    public VectorRegion nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws SQLException {
+    public VectorRegion nullSafeGet(ResultSet rs, int position, WrapperOptions options) throws SQLException {
         var str = rs.getString(position);
         if (rs.wasNull()) {
             return null;
@@ -54,10 +68,10 @@ public class VectorRegionType implements UserType<VectorRegion> {
      * @param st
      * @param value
      * @param index
-     * @param session
+     * @param options
      */
     @Override
-    public void nullSafeSet(PreparedStatement st, VectorRegion value, int index, SharedSessionContractImplementor session) throws SQLException {
+    public void nullSafeSet(PreparedStatement st, VectorRegion value, int index, WrapperOptions options) throws SQLException {
         if (value == null) {
             st.setNull(index, Types.VARCHAR);
         } else {
@@ -81,11 +95,12 @@ public class VectorRegionType implements UserType<VectorRegion> {
      * </ul>
      *
      * @param value the object to be cloned, which may be null
+     *
      * @return a clone
      */
     @Override
     public VectorRegion deepCopy(VectorRegion value) {
-        return new VectorRegion(value.getTopLeft(), value.getBottomRight());
+        return new VectorRegion(value.topLeft(), value.bottomRight());
     }
 
     /**
@@ -104,7 +119,9 @@ public class VectorRegionType implements UserType<VectorRegion> {
      * this type will not be cacheable in the second-level cache.
      *
      * @param value the object to be cached
+     *
      * @return a cacheable representation of the object
+     *
      * @see Cache
      */
     @Override
@@ -127,26 +144,13 @@ public class VectorRegionType implements UserType<VectorRegion> {
      *
      * @param cached the object to be cached
      * @param owner  the owner of the cached object
+     *
      * @return a reconstructed object from the cacheable representation
+     *
      * @see Cache
      */
     @Override
     public VectorRegion assemble(Serializable cached, Object owner) {
         return new VectorRegion(cached.toString());
-    }
-
-    @Override
-    public Class<VectorRegion> returnedClass() {
-        return VectorRegion.class;
-    }
-
-    @Override
-    public boolean equals(VectorRegion x, VectorRegion y) {
-        return x.equals(y);
-    }
-
-    @Override
-    public int hashCode(VectorRegion x) {
-        return x.hashCode();
     }
 }

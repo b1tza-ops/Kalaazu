@@ -50,7 +50,7 @@ public class Vector implements Serializable {
      * @see com.kalaazu.math.VectorRegion
      */
     public static Vector random(VectorRegion limit) {
-        return random(limit.getTopLeft(), limit.getBottomRight());
+        return random(limit.topLeft(), limit.bottomRight());
     }
 
     /**
