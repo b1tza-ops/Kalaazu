@@ -4,9 +4,10 @@ package com.kalaazu.server.ecs.system;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
+import com.kalaazu.server.ecs.component.EntityTypeComponent;
 import com.kalaazu.server.ecs.component.MovementComponent;
 import com.kalaazu.server.ecs.component.PlayerComponent;
-import com.kalaazu.server.ecs.component.ViewComponent;
+import com.kalaazu.server.ecs.component.VisibleByComponent;
 import com.kalaazu.server.event.SendCommandToSessions;
 import com.kalaazu.server.game.commands.CommandBuilder;
 import com.kalaazu.server.game.commands.CommandType;
@@ -54,10 +55,12 @@ public class MovementBroadcastSystem extends IteratingSystem implements Logger {
 
     private ComponentMapper<MovementComponent> movementMapper;
     private ComponentMapper<PlayerComponent> playerMapper;
-    private ComponentMapper<ViewComponent> viewMapper;
+    private ComponentMapper<EntityTypeComponent> entityTypeMapper;
+    private ComponentMapper<VisibleByComponent> visibleByMapper;
 
     /**
-     * Constructor for the `MovementBroadcastSystem`.
+     * Initializes the system, setting the aspect to process entities that have both a
+     * `MovementComponent` and an `EntityTypeComponent`.
      *
      * @param publisher      The application event publisher used to dispatch events, such as sending commands to sessions.
      * @param commandBuilder The builder used to construct game commands, like the `MoveEntityCommand`.
@@ -69,13 +72,14 @@ public class MovementBroadcastSystem extends IteratingSystem implements Logger {
      * ```
      */
     public MovementBroadcastSystem(ApplicationEventPublisher publisher, CommandBuilder commandBuilder) {
-        super(Aspect.all(PlayerComponent.class, MovementComponent.class, ViewComponent.class));
+        super(Aspect.all(MovementComponent.class, EntityTypeComponent.class));
         this.publisher = publisher;
         this.commandBuilder = commandBuilder;
     }
 
     /**
      * Processes an entity that has a `MovementComponent`.
+     *
      * This method is the core logic of the system. It checks if the entity's movement has just started.
      * If so, it constructs a `MoveEntityCommand` and sends it to all players who currently have the moving entity
      * in their `ViewComponent`. Finally, it resets the `justStarted` flag on the `MovementComponent` to ensure
@@ -91,7 +95,7 @@ public class MovementBroadcastSystem extends IteratingSystem implements Logger {
      * int movingPlayerId = world.create();
      * MovementComponent movement = world.edit(movingPlayerId)
      * .add(new PlayerComponent())
-     * .add(new ViewComponent())
+     * .add(new EntityTypeComponent())
      * .create(MovementComponent.class);
      *
      * movement.setJustStarted(true);
@@ -111,21 +115,25 @@ public class MovementBroadcastSystem extends IteratingSystem implements Logger {
 
         movement.setJustStarted(false);
 
-        var view = viewMapper.get(entityId);
-        if (view == null || view.getPlayers().isEmpty()) {
-            return;
-        }
+        var sessionsToNotify = new ArrayList<GameSession>();
 
-        var moveCommand = commandBuilder.buildCommands(CommandType.MoveEntityCommand, world, entityId).getFirst();
-
-        var playersInView = view.getPlayers();
-        var sessionsToNotify = new ArrayList<GameSession>(playersInView.size());
-        for (int i = 0, s = playersInView.size(); i < s; i++) {
-            var player = playerMapper.get(playersInView.get(i));
-            if (player != null) sessionsToNotify.add(player.getSession());
+        // Use the pre-calculated list of observers from VisibleByComponent.
+        var visibleBy = visibleByMapper.get(entityId);
+        if (visibleBy != null) {
+            var observers = visibleBy.getPlayers();
+            for (int i = 0, s = observers.size(); i < s; i++) {
+                var playerId = observers.get(i);
+                var player = playerMapper.get(playerId);
+                if (player != null) {
+                    sessionsToNotify.add(player.getSession());
+                }
+            }
         }
 
         if (!sessionsToNotify.isEmpty()) {
+            // Build the command once and broadcast it to all relevant sessions.
+            var movingEntityType = entityTypeMapper.get(entityId).getType();
+            var moveCommand = commandBuilder.buildCommands(CommandType.MoveEntityCommand, world, entityId, movingEntityType).getFirst();
             publisher.publishEvent(new SendCommandToSessions(sessionsToNotify, moveCommand));
         }
     }

@@ -27,18 +27,21 @@ import java.util.Set;
  * ==================
  *
  * An ECS system that periodically checks which entities are within a player's visual range.
+ * 
  * It is responsible for managing the lifecycle of entities on the client-side by sending
  * "create" and "remove" commands as other entities enter or leave the player's view.
  * This system is crucial for network performance, as it ensures that clients only receive
  * updates for entities they can actually see.
- *
+ * 
  * The system processes players and determines which other players, NPCs, and collectables
  * are within a configured render distance. It then compares this with the state from the
  * previous tick to identify newly visible and out-of-view entities, dispatching the
  * appropriate commands.
  *
  * @author manulaiko
- * @example ```java
+ *
+ * @example
+ * ```java
  * // In an Artemis-odb WorldConfiguration, the system is added to the world.
  * // Dependencies are typically injected by a framework like Spring.
  * WorldConfiguration config = new WorldConfigurationBuilder()
@@ -46,6 +49,7 @@ import java.util.Set;
  * .build();
  * World world = new World(config);
  * ```
+ *
  * @see com.artemis.systems.IntervalIteratingSystem
  * @see com.kalaazu.server.ecs.component.ViewComponent
  * @see com.kalaazu.server.ecs.component.PositionComponent
@@ -75,6 +79,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     private ComponentMapper<PlayerComponent> playerMapper;
     private ComponentMapper<EntityTypeComponent> entityTypeMapper;
     private ComponentMapper<TargetComponent> targetMapper;
+    private ComponentMapper<VisibleByComponent> visibleByMapper;
     private ComponentMapper<TargetedByComponent> targetedByMapper;
 
     // Subscriptions to entity groups, managed by Artemis
@@ -84,9 +89,8 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     private IntBag allCollectables;
 
     /**
-     * Constructor for the `VisibilitySystem`.
-     *
      * Initializes the system with its dependencies and sets the processing interval.
+     * 
      * The interval determines how frequently visibility checks are performed for each player.
      *
      * @param config         The application configuration, used to retrieve settings like render distance.
@@ -105,12 +109,21 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     }
 
     /**
-     * Called before system processing begins.
-     * <p>
-     * <b>Nota Bene:</b> Any entities created in this method
+     * Called by the framework before the processing of entities begins for the current tick.
+     *
+     * This method ensures that the lists of all NPCs and collectables are initialized on the first run.
+     * It also refreshes the list of all active players for the current processing cycle.
+     *
+     * **Note:** Any entities created in this method
      * won't become active until the next system starts processing
      * or when a new processing rounds begins, whichever comes first.
-     * </p>
+     *
+     * @example
+     * ```java
+     * // This method is invoked automatically by the Artemis-odb framework.
+     * // It is not meant to be called directly by the user.
+     * world.process(); // begin() is called internally at the start of the system's turn.
+     * ```
      */
     @Override
     protected void begin() {
@@ -125,7 +138,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     }
 
     /**
-     * Initializes the system after it's been added to the world.
+     * Initializes the system after it has been added to the world.
      *
      * This method is called once by the Artemis-odb framework. It's used here to
      * subscribe to and cache collections of all relevant entity types (players, NPCs, collectables).
@@ -133,6 +146,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
      *
      * @example ```java
      * // This method is invoked by the Artemis-odb framework. It is not meant to be called directly.
+     * World world = new World(new WorldConfigurationBuilder().with(new VisibilitySystem(...)).build());
      * ```
      */
     @Override
@@ -143,7 +157,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     }
 
     /**
-     * Processes a single player entity to update its view of the world.
+     * Processes a single player entity to update its view of the game world.
      *
      * This is the core logic of the system, executed for each player at a fixed interval.
      * It calculates which entities are currently in range, determines which have entered or left the view
@@ -154,6 +168,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
      *
      * @example ```java
      * // This method is invoked by the Artemis-odb framework. It is not meant to be called directly.
+     * // It will be called for each entity matching the system's Aspect.
      * ```
      */
     @Override
@@ -184,6 +199,9 @@ public class VisibilitySystem extends IntervalIteratingSystem {
         processEntityType(allNpcs, newlyVisibleNpcs, view.getNpcs(), npcsInView, npcsOutOfView, position, renderDistanceSq, false, entity, commands);
         // Process collectables
         processEntityType(allCollectables, newlyVisibleCollectables, view.getCollectables(), collectablesInView, collectablesOutOfView, position, renderDistanceSq, false, -1, commands);
+
+        // Update the reverse lookup component (VisibleByComponent)
+        updateVisibleBy(entity, playersInView, playersOutOfView, npcsInView, npcsOutOfView);
 
         if (!commands.isEmpty()) {
             publisher.publishEvent(new SendCommands(player.getSession(), commands));
@@ -221,7 +239,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     /**
      * Processes a specific category of entities (e.g., players, NPCs, or collectables).
      *
-     * This helper method orchestrates the visibility check for a given entity type. It finds all entities
+     * This helper method orchestrates the visibility check for a given entity type. It finds all entities of that type within the player's range, compares them to the previously visible set to find what's new and what's gone, and adds the necessary creation/removal commands to a list.
      * of that type within the player's range, compares them to the previously visible set to find what's
      * new and what's gone, and adds the necessary creation/removal commands to a list.
      *
@@ -235,6 +253,12 @@ public class VisibilitySystem extends IntervalIteratingSystem {
      * @param excludeSelf       A flag to indicate if the observing player should be excluded from the check.
      * @param selfEntityId      The ID of the observing player, used when `excludeSelf` is true.
      * @param commands          The list to which generated commands will be added.
+     *
+     * @example
+     * ```java
+     * // Process all NPCs for the current player
+     * processEntityType(allNpcs, newlyVisibleNpcs, view.getNpcs(), npcsInView, npcsOutOfView, playerPosition, renderDistSq, false, -1, commands);
+     * ```
      */
     private void processEntityType(
             IntBag allEntities, IntBag newlyVisible, IntBag previouslyVisible,
@@ -253,10 +277,46 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     }
 
     /**
+     * Updates the `VisibleByComponent` for entities that have entered or left the player's view.
+     *
+     * This method maintains a reverse-lookup for visibility. When an entity becomes visible to a player,
+     * that player's ID is added to the entity's `VisibleByComponent`. When it's no longer visible,
+     * the player's ID is removed. This is crucial for efficiently broadcasting events (like movement)
+     * from an entity to only the players who can see it.
+     *
+     * @param observerPlayerId The ID of the player whose view is being processed.
+     * @param playersInView    Players that just entered the view.
+     * @param playersOutOfView Players that just left the view.
+     * @param npcsInView       NPCs that just entered the view.
+     * @param npcsOutOfView    NPCs that just left the view.
+     *
+     * @example ```java
+     * // Inside the process() method for a player (entityId = 100)
+     * updateVisibleBy(100, playersJustEntered, playersJustLeft, npcsJustEntered, npcsJustLeft);
+     * ```
+     */
+    private void updateVisibleBy(int observerPlayerId, IntBag playersInView, IntBag playersOutOfView, IntBag npcsInView, IntBag npcsOutOfView) {
+        // Add observer to entities that came into view
+        for (int i = 0, s = playersInView.size(); i < s; i++) {
+            addObserver(playersInView.get(i), observerPlayerId);
+        }
+        for (int i = 0, s = npcsInView.size(); i < s; i++) {
+            addObserver(npcsInView.get(i), observerPlayerId);
+        }
+
+        // Remove observer from entities that went out of view
+        for (int i = 0, s = playersOutOfView.size(); i < s; i++) {
+            removeObserver(playersOutOfView.get(i), observerPlayerId);
+        }
+        for (int i = 0, s = npcsOutOfView.size(); i < s; i++) {
+            removeObserver(npcsOutOfView.get(i), observerPlayerId);
+        }
+    }
+
+    /**
      * Retrieves the `GameSession` for each player entity in a given `IntBag`.
      *
-     * This helper method iterates through a bag of player entity IDs, looks up the `PlayerComponent`
-     * for each, and collects their associated `GameSession` into a list.
+     * This helper method iterates through a bag of player entity IDs, looks up the `PlayerComponent` for each, and collects their associated `GameSession` into a list.
      *
      * @param bag An `IntBag` containing player entity IDs.
      *
@@ -264,6 +324,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
      *
      * @example ```java
      * List<GameSession> sessionsToNotify = getSessionsFromIntBag(playersInView);
+     * publisher.publishEvent(new SendCommandToSessions(sessionsToNotify, someCommand));
      * ```
      */
     private List<GameSession> getSessionsFromIntBag(IntBag bag) {
@@ -276,12 +337,9 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     }
 
     /**
-     * Finds all entities from a given set that are within the player's render distance,
-     * or are targeted by the player, or are targeting the player.
+     * Finds all entities from a given set that are within the player's render distance.
      *
-     * It iterates through a collection of entities, performs a distance check against the player's position,
-     * and adds any entity within range to the result bag. It also adds entities that are either
-     * the player's current target or are targeting the player, regardless of distance.
+     * It iterates through a collection of entities, performs a distance check against the player's position, and adds any entity within range to the result bag. It also includes entities that are either the player's current target or are targeting the player, regardless of distance, to ensure combat interactions remain consistent even at long ranges.
      *
      * @param allEntities        The bag of all entities to check.
      * @param newlyVisibleResult The bag to populate with entities that are in range.
@@ -289,6 +347,12 @@ public class VisibilitySystem extends IntervalIteratingSystem {
      * @param renderDistanceSq   The squared render distance for efficient comparison.
      * @param excludeSelf        A flag to exclude the player's own entity ID from the results.
      * @param selfEntityId       The player's own entity ID, to be excluded if `excludeSelf` is true.
+     *
+     * @example
+     * ```java
+     * // Find all players visible to the current player (entityId 100)
+     * findNewlyVisibleEntities(allPlayers, newlyVisiblePlayers, playerPos, renderDistSq, true, 100);
+     * ```
      */
     private void findNewlyVisibleEntities(IntBag allEntities, IntBag newlyVisibleResult, PositionComponent playerPosition, long renderDistanceSq, boolean excludeSelf, int selfEntityId) {
         newlyVisibleResult.clear();
@@ -331,8 +395,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     /**
      * Finds entities that are in the newly visible set but not in the previously visible set.
      *
-     * This method calculates the difference `newlyVisible - previouslyVisible` to identify entities
-     * that have just entered the player's range of vision.
+     * This method calculates the difference `newlyVisible - previouslyVisible` to identify entities that have just entered the player's range of vision. It uses a `HashSet` for an efficient lookup (`O(1)` average time complexity) to check for existence in the `previouslyVisible` bag.
      *
      * @param newlyVisible      The bag of entities currently in range.
      * @param previouslyVisible The bag of entities that were in range on the last tick.
@@ -360,9 +423,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     /**
      * Finds entities that are in the previously visible set but not in the newly visible set.
      *
-     * This method calculates the difference `previouslyVisible - newlyVisible` to identify entities
-     * that have just left the player's range of vision. It achieves this by reusing the `findInView`
-     * logic with swapped arguments.
+     * This method calculates the difference `previouslyVisible - newlyVisible` to identify entities that have just left the player's range of vision. It achieves this by simply reusing the `findInView` logic with swapped arguments, as the underlying operation is a set difference.
      *
      * @param newlyVisible      The bag of entities currently in range.
      * @param previouslyVisible The bag of entities that were in range on the last tick.
@@ -379,18 +440,65 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     /**
      * Builds commands for a given set of entities and adds them to a command list.
      *
-     * This utility method iterates over a bag of entity IDs, builds a command of the specified type
-     * for each entity, and appends them to the output list.
+     * This utility method iterates over a bag of entity IDs, builds a command of the specified type for each entity, and appends them to the output list.
      *
      * @param entities    The bag of entity IDs to process.
      * @param commandType The type of command to build for each entity (e.g., `EntityCreationCommand`).
      * @param commands    The list to which the generated commands will be added.
+     *
+     * @example
+     * ```java
+     * addCommandsForEntities(newlyVisiblePlayers, CommandType.EntityCreationCommand, commandList);
+     * ```
      */
     private void addCommandsForEntities(IntBag entities, CommandType commandType, List<OutCommand> commands) {
         for (int i = 0, s = entities.size(); i < s; i++) {
             int entityId = entities.get(i);
             var entityType = entityTypeMapper.get(entityId);
             commands.addAll(commandBuilder.buildCommands(commandType, world, entityId, entityType.getType()));
+        }
+    }
+
+    /**
+     * Adds a player to an entity's `VisibleByComponent`.
+     *
+     * This method is part of the reverse-visibility lookup mechanism. When a player (`observerPlayerId`)
+     * can see an entity (`entityId`), this method is called to record that relationship.
+     *
+     * @param entityId         The entity being observed.
+     * @param observerPlayerId The player who can now see the entity.
+     *
+     * @example
+     * ```java
+     * addObserver(npcId, viewingPlayerId);
+     * ```
+     */
+    private void addObserver(int entityId, int observerPlayerId) {
+        if (visibleByMapper.has(entityId)) {
+            visibleByMapper.get(entityId).getPlayers().add(observerPlayerId);
+        }
+    }
+
+    /**
+     * Removes a player from an entity's `VisibleByComponent`.
+     *
+     * This method updates the reverse-visibility lookup when a player (`observerPlayerId`)
+     * can no longer see an entity (`entityId`).
+     *
+     * @param entityId         The entity that is no longer observed.
+     * @param observerPlayerId The player who can no longer see the entity.
+     *
+     * @example ```java
+     * removeObserver(npcId, playerWhoLeft);
+     * ```
+     */
+    private void removeObserver(int entityId, int observerPlayerId) {
+        if (visibleByMapper.has(entityId)) {
+            var observers = visibleByMapper.get(entityId).getPlayers();
+            // IntBag.removeValue is slow, so we do it manually
+            for (int i = 0, s = observers.size(); i < s; i++) {
+                if (observers.get(i) == observerPlayerId) observers.removeIndex(i);
+            }
         }
     }
 }

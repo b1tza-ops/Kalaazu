@@ -146,7 +146,7 @@ public class MapService implements Logger {
                             id = ThreadLocalRandom.current().nextInt(Integer.MIN_VALUE, 0);
                         } while (npcIds.contains(id));
 
-                        gameLoopService.addNpc(mapId, npc.getNpcsByNpcsId(), position, id);
+                        gameLoopService.addNpc(map, npc.getNpcsByNpcsId(), position, id);
 
                         npcIds.add(id);
                     }
