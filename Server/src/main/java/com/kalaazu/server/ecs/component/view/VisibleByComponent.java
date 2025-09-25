@@ -1,4 +1,4 @@
-package com.kalaazu.server.ecs.component;
+package com.kalaazu.server.ecs.component.view;
 
 import com.artemis.PooledComponent;
 import com.artemis.utils.IntBag;
@@ -37,7 +37,7 @@ import lombok.experimental.Accessors;
  * @see com.artemis.PooledComponent
  * @see com.artemis.utils.IntBag
  * @see com.kalaazu.server.ecs.system.VisibilitySystem
- * @see com.kalaazu.server.ecs.component.ViewComponent
+ * @see ViewComponent
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -6,7 +6,15 @@ import com.artemis.EntitySubscription;
 import com.artemis.systems.IntervalIteratingSystem;
 import com.artemis.utils.IntBag;
 import com.kalaazu.KalaazuConfig;
-import com.kalaazu.server.ecs.component.*;
+import com.kalaazu.server.ecs.component.EntityTypeComponent;
+import com.kalaazu.server.ecs.component.PlayerComponent;
+import com.kalaazu.server.ecs.component.attack.TargetComponent;
+import com.kalaazu.server.ecs.component.attack.TargetedByComponent;
+import com.kalaazu.server.ecs.component.map.CollectableComponent;
+import com.kalaazu.server.ecs.component.map.PositionComponent;
+import com.kalaazu.server.ecs.component.npc.NpcComponent;
+import com.kalaazu.server.ecs.component.view.ViewComponent;
+import com.kalaazu.server.ecs.component.view.VisibleByComponent;
 import com.kalaazu.server.event.SendCommandToSessions;
 import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.CommandBuilder;
@@ -51,8 +59,8 @@ import java.util.Set;
  * ```
  *
  * @see com.artemis.systems.IntervalIteratingSystem
- * @see com.kalaazu.server.ecs.component.ViewComponent
- * @see com.kalaazu.server.ecs.component.PositionComponent
+ * @see ViewComponent
+ * @see PositionComponent
  */
 @Component
 @Scope("prototype")

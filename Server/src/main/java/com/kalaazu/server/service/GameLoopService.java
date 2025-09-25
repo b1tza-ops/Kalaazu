@@ -7,7 +7,18 @@ import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.*;
 import com.kalaazu.server.ecs.GameLoop;
 import com.kalaazu.server.ecs.WorldAction;
-import com.kalaazu.server.ecs.component.*;
+import com.kalaazu.server.ecs.component.EntityTypeComponent;
+import com.kalaazu.server.ecs.component.IdComponent;
+import com.kalaazu.server.ecs.component.PlayerComponent;
+import com.kalaazu.server.ecs.component.attack.HealthComponent;
+import com.kalaazu.server.ecs.component.attack.TargetedByComponent;
+import com.kalaazu.server.ecs.component.map.*;
+import com.kalaazu.server.ecs.component.movement.MovementComponent;
+import com.kalaazu.server.ecs.component.movement.SpeedComponent;
+import com.kalaazu.server.ecs.component.npc.NpcAiComponent;
+import com.kalaazu.server.ecs.component.npc.NpcComponent;
+import com.kalaazu.server.ecs.component.view.ViewComponent;
+import com.kalaazu.server.ecs.component.view.VisibleByComponent;
 import com.kalaazu.server.ecs.entity.EntityType;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.util.Logger;
@@ -359,7 +370,7 @@ public class GameLoopService implements Logger {
      * }
      * ```
      * @see #getEntities(short, com.artemis.Aspect.Builder)
-     * @see com.kalaazu.server.ecs.component.NpcComponent
+     * @see NpcComponent
      */
     public IntBag getNpcs(short mapId) {
         return getEntities(mapId, Aspect.all(NpcComponent.class));
@@ -399,7 +410,7 @@ public class GameLoopService implements Logger {
      * IntBag collectables = gameLoopService.getCollectables(mapId);
      * ```
      * @see #getEntities(short, com.artemis.Aspect.Builder)
-     * @see com.kalaazu.server.ecs.component.CollectableComponent
+     * @see CollectableComponent
      */
     public IntBag getCollectables(short mapId) {
         return getEntities(mapId, Aspect.all(CollectableComponent.class));
@@ -417,7 +428,7 @@ public class GameLoopService implements Logger {
      * IntBag stations = gameLoopService.getStations(mapId);
      * ```
      * @see #getEntities(short, com.artemis.Aspect.Builder)
-     * @see com.kalaazu.server.ecs.component.StationComponent
+     * @see StationComponent
      */
     public IntBag getStations(short mapId) {
         return getEntities(mapId, Aspect.all(StationComponent.class));
@@ -435,7 +446,7 @@ public class GameLoopService implements Logger {
      * IntBag portals = gameLoopService.getPortals(mapId);
      * ```
      * @see #getEntities(short, com.artemis.Aspect.Builder)
-     * @see com.kalaazu.server.ecs.component.PortalComponent
+     * @see PortalComponent
      */
     public IntBag getPortals(short mapId) {
         return getEntities(mapId, Aspect.all(PortalComponent.class));

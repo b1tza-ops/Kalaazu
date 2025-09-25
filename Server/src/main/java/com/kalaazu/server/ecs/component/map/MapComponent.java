@@ -1,4 +1,4 @@
-package com.kalaazu.server.ecs.component;
+package com.kalaazu.server.ecs.component.map;
 
 import com.artemis.PooledComponent;
 import com.kalaazu.math.VectorRegion;

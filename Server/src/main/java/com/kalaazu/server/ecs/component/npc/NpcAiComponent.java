@@ -1,4 +1,4 @@
-package com.kalaazu.server.ecs.component;
+package com.kalaazu.server.ecs.component.npc;
 
 import com.artemis.PooledComponent;
 import lombok.Data;

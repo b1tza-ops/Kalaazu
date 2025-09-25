@@ -1,4 +1,4 @@
-package com.kalaazu.server.ecs.component;
+package com.kalaazu.server.ecs.component.attack;
 
 import com.artemis.Component;
 import lombok.Data;

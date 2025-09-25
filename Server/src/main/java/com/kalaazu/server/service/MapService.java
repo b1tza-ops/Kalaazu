@@ -7,7 +7,7 @@ import com.kalaazu.math.Vector;
 import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.persistence.service.MapsService;
 import com.kalaazu.server.ecs.component.EntityTypeComponent;
-import com.kalaazu.server.ecs.component.PositionComponent;
+import com.kalaazu.server.ecs.component.map.PositionComponent;
 import com.kalaazu.server.event.SendCommands;
 import com.kalaazu.server.game.commands.CommandBuilder;
 import com.kalaazu.server.game.commands.CommandType;

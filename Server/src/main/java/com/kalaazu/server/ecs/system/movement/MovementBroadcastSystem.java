@@ -1,13 +1,13 @@
-package com.kalaazu.server.ecs.system;
+package com.kalaazu.server.ecs.system.movement;
 
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IteratingSystem;
 import com.kalaazu.server.ecs.component.EntityTypeComponent;
-import com.kalaazu.server.ecs.component.MovementComponent;
 import com.kalaazu.server.ecs.component.PlayerComponent;
-import com.kalaazu.server.ecs.component.VisibleByComponent;
+import com.kalaazu.server.ecs.component.movement.MovementComponent;
+import com.kalaazu.server.ecs.component.view.VisibleByComponent;
 import com.kalaazu.server.event.SendCommandToSessions;
 import com.kalaazu.server.game.commands.CommandBuilder;
 import com.kalaazu.server.game.commands.CommandType;
@@ -103,7 +103,7 @@ public class MovementBroadcastSystem extends IteratingSystem implements Logger {
      *
      * // On the next world.process(), this system will execute for movingPlayerId.
      * ```
-     * @see com.kalaazu.server.ecs.component.MovementComponent#isJustStarted()
+     * @see MovementComponent#isJustStarted()
      * @see com.kalaazu.server.event.SendCommandToSessions
      */
     @Override

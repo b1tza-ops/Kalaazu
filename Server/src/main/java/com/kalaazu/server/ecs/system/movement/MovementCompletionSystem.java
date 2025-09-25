@@ -1,10 +1,10 @@
-package com.kalaazu.server.ecs.system;
+package com.kalaazu.server.ecs.system.movement;
 
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.systems.IntervalIteratingSystem;
-import com.kalaazu.server.ecs.component.MovementComponent;
-import com.kalaazu.server.ecs.component.PositionComponent;
+import com.kalaazu.server.ecs.component.map.PositionComponent;
+import com.kalaazu.server.ecs.component.movement.MovementComponent;
 import com.kalaazu.util.Logger;
 import com.kalaazu.util.LoggingCategory;
 import lombok.Getter;
@@ -33,8 +33,8 @@ import org.springframework.stereotype.Component;
  * World world = new World(config);
  * ```
  * @see com.artemis.systems.IntervalIteratingSystem
- * @see com.kalaazu.server.ecs.component.MovementComponent
- * @see com.kalaazu.server.ecs.component.PositionComponent
+ * @see MovementComponent
+ * @see PositionComponent
  */
 @Component
 @Scope("prototype")

@@ -1,7 +1,7 @@
 package com.kalaazu.server.game.v4.handler;
 
 import com.kalaazu.model.Version;
-import com.kalaazu.server.ecs.component.MovementIntentComponent;
+import com.kalaazu.server.ecs.component.movement.MovementIntentComponent;
 import com.kalaazu.server.game.Packet;
 import com.kalaazu.server.game.netty.GameSession;
 import com.kalaazu.server.game.util.Handler;
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
  * ```
  *
  * @see com.kalaazu.server.game.v4.commands.in.MoveHeroCommand
- * @see com.kalaazu.server.ecs.component.MovementIntentComponent
+ * @see MovementIntentComponent
  * @see com.kalaazu.server.service.GameLoopService
  * @see com.kalaazu.server.game.util.Handler
  *
@@ -83,7 +83,7 @@ public class MoveHeroHandler extends Handler<MoveHeroCommand> {
      * ```
      *
      * @see com.kalaazu.server.service.GameLoopService#addAction(short, com.kalaazu.server.ecs.WorldAction)
-     * @see com.kalaazu.server.ecs.component.MovementIntentComponent
+     * @see MovementIntentComponent
      */
     @Override
     public void handle(MoveHeroCommand packet, GameSession session) {

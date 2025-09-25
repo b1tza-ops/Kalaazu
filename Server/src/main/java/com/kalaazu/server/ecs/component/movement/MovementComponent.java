@@ -1,7 +1,10 @@
-package com.kalaazu.server.ecs.component;
+package com.kalaazu.server.ecs.component.movement;
 
 import com.artemis.PooledComponent;
 import com.kalaazu.math.Vector;
+import com.kalaazu.server.ecs.system.movement.MovementBroadcastSystem;
+import com.kalaazu.server.ecs.system.movement.MovementCompletionSystem;
+import com.kalaazu.server.ecs.system.movement.MovementIntentSystem;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -39,9 +42,9 @@ import lombok.experimental.Accessors;
  * }
  * ```
  * @see com.artemis.PooledComponent
- * @see com.kalaazu.server.ecs.system.MovementBroadcastSystem
- * @see com.kalaazu.server.ecs.system.MovementCompletionSystem
- * @see com.kalaazu.server.ecs.system.MovementIntentSystem
+ * @see MovementBroadcastSystem
+ * @see MovementCompletionSystem
+ * @see MovementIntentSystem
  * @see com.kalaazu.math.Vector
  */
 @Data

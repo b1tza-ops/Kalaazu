@@ -1,4 +1,4 @@
-package com.kalaazu.server.ecs.component;
+package com.kalaazu.server.ecs.component.view;
 
 import com.artemis.PooledComponent;
 import com.artemis.utils.IntBag;

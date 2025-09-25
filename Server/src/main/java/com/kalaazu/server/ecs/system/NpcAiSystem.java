@@ -6,7 +6,14 @@ import com.artemis.EntitySubscription;
 import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
 import com.kalaazu.math.Vector;
-import com.kalaazu.server.ecs.component.*;
+import com.kalaazu.server.ecs.component.PlayerComponent;
+import com.kalaazu.server.ecs.component.map.MapComponent;
+import com.kalaazu.server.ecs.component.map.PositionComponent;
+import com.kalaazu.server.ecs.component.movement.MovementComponent;
+import com.kalaazu.server.ecs.component.movement.MovementIntentComponent;
+import com.kalaazu.server.ecs.component.npc.NpcAiComponent;
+import com.kalaazu.server.ecs.component.npc.NpcComponent;
+import com.kalaazu.server.ecs.component.view.ViewComponent;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +40,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * .build();
  * World world = new World(config);
  * ```
- * @see com.kalaazu.server.ecs.component.NpcAiComponent
- * @see com.kalaazu.server.ecs.component.MovementIntentComponent
+ * @see NpcAiComponent
+ * @see MovementIntentComponent
  */
 @Component
 @Scope("prototype")
@@ -98,8 +105,8 @@ public class NpcAiSystem extends IteratingSystem {
      * // This method is invoked by the Artemis-odb framework during its processing loop
      * // for each entity that matches the system's aspect. It is not meant to be called directly.
      * ```
-     * @see com.kalaazu.server.ecs.component.NpcAiComponent#isFrozen()
-     * @see com.kalaazu.server.ecs.component.MovementIntentComponent
+     * @see NpcAiComponent#isFrozen()
+     * @see MovementIntentComponent
      */
     @Override
     protected void process(int entityId) {

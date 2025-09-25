@@ -1,7 +1,8 @@
-package com.kalaazu.server.ecs.component;
+package com.kalaazu.server.ecs.component.movement;
 
 import com.artemis.PooledComponent;
 import com.kalaazu.math.Vector;
+import com.kalaazu.server.ecs.system.movement.MovementIntentSystem;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -30,8 +31,8 @@ import lombok.experimental.Accessors;
  * // A system will later process this intent.
  * ```
  * @see com.artemis.PooledComponent
- * @see com.kalaazu.server.ecs.component.MovementComponent
- * @see com.kalaazu.server.ecs.system.MovementIntentSystem
+ * @see MovementComponent
+ * @see MovementIntentSystem
  * @see com.kalaazu.math.Vector
  */
 @Data

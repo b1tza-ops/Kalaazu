@@ -3,7 +3,7 @@ package com.kalaazu.server.game.v4.commands.builder;
 import com.artemis.World;
 import com.kalaazu.model.Version;
 import com.kalaazu.server.ecs.component.IdComponent;
-import com.kalaazu.server.ecs.component.MovementComponent;
+import com.kalaazu.server.ecs.component.movement.MovementComponent;
 import com.kalaazu.server.game.commands.CommandBuilderInterface;
 import com.kalaazu.server.game.commands.CommandType;
 import com.kalaazu.server.game.commands.OutCommand;
@@ -52,7 +52,7 @@ public class MoveEntityCommandBuilder implements CommandBuilderInterface {
      * Builds a {@link com.kalaazu.server.game.v4.commands.out.map.ShipMovementCommand} for a specific entity.
      *
      * This method extracts the entity's unique ID from its {@link com.kalaazu.server.ecs.component.IdComponent} and its
-     * destination coordinates and total movement time from its {@link com.kalaazu.server.ecs.component.MovementComponent}.
+     * destination coordinates and total movement time from its {@link MovementComponent}.
      * It then uses this data to create a new {@link com.kalaazu.server.game.v4.commands.out.map.ShipMovementCommand}.
      *
      * @param arguments An array of objects where `arguments[0]` is the {@link com.artemis.World} instance
