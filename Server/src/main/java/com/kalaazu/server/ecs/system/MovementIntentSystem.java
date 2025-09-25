@@ -85,9 +85,6 @@ public class MovementIntentSystem extends IteratingSystem {
         var speed = speedMapper.get(entityId);
         var intent = movementIntentMapper.get(entityId);
 
-        // create() will get the component if it exists, or create a new one if it doesn't.
-        var movement = movementMapper.create(entityId);
-
         var from = position.getPosition();
         var to = intent.getDestination();
 
@@ -95,12 +92,14 @@ public class MovementIntentSystem extends IteratingSystem {
         if (distance > 0) {
             var duration = (long) ((distance / speed.getSpeed()) * 1000);
 
-            movement.setDestination(to);
-            movement.setEndMovementTime(System.currentTimeMillis() + duration);
-            movement.setTotalMovementTime((int) duration);
-            movement.setJustStarted(true);
-            movement.setInitialPosition(from);
-            movement.setMoving(true);
+            // create() will get the component if it exists, or create a new one if it doesn't.
+            movementMapper.create(entityId)
+                    .setDestination(to)
+                    .setEndMovementTime(System.currentTimeMillis() + duration)
+                    .setTotalMovementTime((int) duration)
+                    .setJustStarted(true)
+                    .setInitialPosition(from)
+                    .setMoving(true);
         }
 
         // The intent has been processed, remove the component.

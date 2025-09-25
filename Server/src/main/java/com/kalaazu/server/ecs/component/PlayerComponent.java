@@ -8,6 +8,7 @@ import com.kalaazu.persistence.entity.MapsEntity;
 import com.kalaazu.server.game.netty.GameSession;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Player Component.
@@ -44,6 +45,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class PlayerComponent extends PooledComponent {
     private GameSession session;
     private AccountsEntity account;

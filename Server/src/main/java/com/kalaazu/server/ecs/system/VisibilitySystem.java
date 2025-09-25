@@ -74,6 +74,8 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     private ComponentMapper<ViewComponent> viewMapper;
     private ComponentMapper<PlayerComponent> playerMapper;
     private ComponentMapper<EntityTypeComponent> entityTypeMapper;
+    private ComponentMapper<TargetComponent> targetMapper;
+    private ComponentMapper<TargetedByComponent> targetedByMapper;
 
     // Subscriptions to entity groups, managed by Artemis
     private EntitySubscription allPlayersSubscription;
@@ -179,7 +181,7 @@ public class VisibilitySystem extends IntervalIteratingSystem {
         // Process players
         processEntityType(allPlayers, newlyVisiblePlayers, view.getPlayers(), playersInView, playersOutOfView, position, renderDistanceSq, true, entity, commands);
         // Process NPCs
-        processEntityType(allNpcs, newlyVisibleNpcs, view.getNpcs(), npcsInView, npcsOutOfView, position, renderDistanceSq, false, -1, commands);
+        processEntityType(allNpcs, newlyVisibleNpcs, view.getNpcs(), npcsInView, npcsOutOfView, position, renderDistanceSq, false, entity, commands);
         // Process collectables
         processEntityType(allCollectables, newlyVisibleCollectables, view.getCollectables(), collectablesInView, collectablesOutOfView, position, renderDistanceSq, false, -1, commands);
 
@@ -274,10 +276,12 @@ public class VisibilitySystem extends IntervalIteratingSystem {
     }
 
     /**
-     * Finds all entities from a given set that are within the player's render distance.
+     * Finds all entities from a given set that are within the player's render distance,
+     * or are targeted by the player, or are targeting the player.
      *
      * It iterates through a collection of entities, performs a distance check against the player's position,
-     * and adds any entity within range to the result bag.
+     * and adds any entity within range to the result bag. It also adds entities that are either
+     * the player's current target or are targeting the player, regardless of distance.
      *
      * @param allEntities        The bag of all entities to check.
      * @param newlyVisibleResult The bag to populate with entities that are in range.
@@ -288,15 +292,38 @@ public class VisibilitySystem extends IntervalIteratingSystem {
      */
     private void findNewlyVisibleEntities(IntBag allEntities, IntBag newlyVisibleResult, PositionComponent playerPosition, long renderDistanceSq, boolean excludeSelf, int selfEntityId) {
         newlyVisibleResult.clear();
-        for (int i = 0, s = allEntities.size(); i < s; i++) {
-            int entity = allEntities.get(i);
 
-            if (excludeSelf && selfEntityId == entity) {
+        // Get the player's target (if any)
+        int playerTargetId = -1;
+        if (selfEntityId != -1 && targetMapper.has(selfEntityId)) {
+            playerTargetId = targetMapper.get(selfEntityId).getTargetId();
+        }
+
+        for (int i = 0, s = allEntities.size(); i < s; i++) {
+            int otherEntityId = allEntities.get(i);
+
+            if (excludeSelf && selfEntityId == otherEntityId) {
                 continue;
             }
 
-            if (positionMapper.get(entity).getPosition().dst2(playerPosition.getPosition()) <= renderDistanceSq) {
-                newlyVisibleResult.add(entity);
+            boolean isTargetedByPlayer = (playerTargetId == otherEntityId);
+            boolean isTargetingPlayer = false;
+            if (targetedByMapper.has(otherEntityId)) {
+                IntBag targetedBy = targetedByMapper.get(otherEntityId).getTargetedBy();
+                if (targetedBy.contains(selfEntityId)) {
+                    isTargetingPlayer = true;
+                }
+            }
+
+            // Keep entity visible if it's targeted by the player or targeting the player
+            if (isTargetedByPlayer || isTargetingPlayer) {
+                newlyVisibleResult.add(otherEntityId);
+                continue; // No need for distance check
+            }
+
+            // Original distance check
+            if (positionMapper.has(otherEntityId) && positionMapper.get(otherEntityId).getPosition().dst2(playerPosition.getPosition()) <= renderDistanceSq) {
+                newlyVisibleResult.add(otherEntityId);
             }
         }
     }

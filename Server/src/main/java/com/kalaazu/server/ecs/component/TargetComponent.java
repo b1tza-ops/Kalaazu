@@ -2,6 +2,7 @@ package com.kalaazu.server.ecs.component;
 
 import com.artemis.Component;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * Represents the entity's current target.
@@ -26,6 +27,7 @@ import lombok.Data;
  * @see com.kalaazu.server.game.v4.handler.SelectShipHandler
  */
 @Data
+@Accessors(chain = true)
 public class TargetComponent extends Component {
     /**
      * The ID of the targeted entity.

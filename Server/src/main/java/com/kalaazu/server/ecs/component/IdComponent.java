@@ -3,6 +3,7 @@ package com.kalaazu.server.ecs.component;
 import com.artemis.Component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Id Component.
@@ -28,6 +29,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class IdComponent extends Component {
     private int id;
 }

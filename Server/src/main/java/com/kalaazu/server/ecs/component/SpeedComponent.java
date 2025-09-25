@@ -3,6 +3,7 @@ package com.kalaazu.server.ecs.component;
 import com.artemis.Component;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Speed component.
@@ -28,6 +29,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class SpeedComponent extends Component {
     private short speed;
 }

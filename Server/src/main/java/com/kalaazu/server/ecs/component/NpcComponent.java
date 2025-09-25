@@ -4,6 +4,7 @@ import com.artemis.PooledComponent;
 import com.kalaazu.persistence.entity.NpcsEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * NPC Component.
@@ -37,6 +38,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class NpcComponent extends PooledComponent {
     private NpcsEntity npc;
 

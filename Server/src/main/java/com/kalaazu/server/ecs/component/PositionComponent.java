@@ -4,6 +4,7 @@ import com.artemis.Component;
 import com.kalaazu.math.Vector;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Position component.
@@ -33,6 +34,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class PositionComponent extends Component {
     private volatile Vector position;
 }

@@ -3,6 +3,7 @@ package com.kalaazu.server.ecs.component;
 import com.artemis.Component;
 import com.kalaazu.server.ecs.entity.EntityType;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * Entity Type component.
@@ -26,6 +27,7 @@ import lombok.Data;
  * @see com.artemis.Component
  */
 @Data
+@Accessors(chain = true)
 public class EntityTypeComponent extends Component {
     /**
      * The type of the entity.

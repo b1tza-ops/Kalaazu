@@ -4,6 +4,7 @@ import com.artemis.PooledComponent;
 import com.artemis.utils.IntBag;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * View Component.
@@ -36,6 +37,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class ViewComponent extends PooledComponent {
     private IntBag players = new IntBag();
     private IntBag npcs = new IntBag();

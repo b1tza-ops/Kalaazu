@@ -2,6 +2,7 @@ package com.kalaazu.server.ecs.component;
 
 import com.artemis.Component;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * Represents the health and shield attributes of an entity.
@@ -27,6 +28,7 @@ import lombok.Data;
  * @see com.kalaazu.server.game.v4.commands.out.map.ShipSelectedCommand
  */
 @Data
+@Accessors(chain = true)
 public class HealthComponent extends Component {
     private int health;
     private int maxHealth;

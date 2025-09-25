@@ -4,6 +4,7 @@ import com.artemis.PooledComponent;
 import com.kalaazu.math.Vector;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Movement Intent Component.
@@ -35,6 +36,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class MovementIntentComponent extends PooledComponent {
     private Vector destination;
 

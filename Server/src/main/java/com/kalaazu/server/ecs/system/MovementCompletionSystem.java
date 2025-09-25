@@ -84,8 +84,9 @@ public class MovementCompletionSystem extends IntervalIteratingSystem implements
         }
 
         if (System.currentTimeMillis() >= movement.getEndMovementTime()) {
-            var position = positionMapper.get(entityId);
-            position.setPosition(movement.getDestination().cpy());
+            positionMapper.get(entityId)
+                    .setPosition(movement.getDestination().cpy());
+
             movementMapper.remove(entityId);
         }
     }

@@ -4,6 +4,7 @@ import com.artemis.PooledComponent;
 import com.kalaazu.persistence.entity.MapsStationsEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Station component.
@@ -35,6 +36,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class StationComponent extends PooledComponent {
     private MapsStationsEntity station;
 

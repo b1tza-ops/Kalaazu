@@ -158,8 +158,8 @@ public class SelectShipHandler extends Handler<SelectShipCommand> {
         }
 
         var targetMapper = world.getMapper(TargetComponent.class);
-        var target = targetMapper.create(playerId);
-        target.setTargetId(targetEntityId);
+        targetMapper.create(playerId)
+                .setTargetId(targetEntityId);
 
         return new ShipSelectedCommand(
                 shipId,

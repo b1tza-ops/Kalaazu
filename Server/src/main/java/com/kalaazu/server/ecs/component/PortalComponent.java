@@ -4,6 +4,7 @@ import com.artemis.PooledComponent;
 import com.kalaazu.persistence.entity.MapsPortalsEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Portal Component.
@@ -36,6 +37,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class PortalComponent extends PooledComponent {
     private MapsPortalsEntity portal;
 

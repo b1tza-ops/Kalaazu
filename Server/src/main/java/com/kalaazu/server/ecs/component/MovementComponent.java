@@ -4,6 +4,7 @@ import com.artemis.PooledComponent;
 import com.kalaazu.math.Vector;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * Movement Component.
@@ -45,6 +46,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
 public class MovementComponent extends PooledComponent {
     private volatile boolean moving;
     private volatile long endMovementTime;

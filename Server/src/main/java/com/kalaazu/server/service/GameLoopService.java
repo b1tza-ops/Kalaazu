@@ -167,18 +167,20 @@ public class GameLoopService implements Logger {
             edit.create(SpeedComponent.class)
                     .setSpeed(config.getSpeed());
 
-            var health = edit.create(HealthComponent.class);
-            health.setHealth(ship.getHealth());
-            health.setMaxHealth(config.getHealth());
-            health.setShield(ship.getShield());
-            health.setMaxShield(ship.getShield());
+            edit.create(TargetedByComponent.class);
 
-            var playerComponent = edit.create(PlayerComponent.class);
-            playerComponent.setSession(session);
-            playerComponent.setAccount(account);
-            playerComponent.setShip(ship);
-            playerComponent.setConfig(config);
-            playerComponent.setMap(map);
+            edit.create(HealthComponent.class)
+                    .setHealth(ship.getHealth())
+                    .setMaxHealth(config.getHealth())
+                    .setShield(ship.getShield())
+                    .setMaxShield(ship.getShield());
+
+            edit.create(PlayerComponent.class)
+                    .setSession(session)
+                    .setAccount(account)
+                    .setShip(ship)
+                    .setConfig(config)
+                    .setMap(map);
 
             edit.create(IdComponent.class)
                     .setId(account.getId());
@@ -207,48 +209,12 @@ public class GameLoopService implements Logger {
         int entityId = world.create();
         var edit = world.edit(entityId);
 
-        var type = edit.create(EntityTypeComponent.class);
-        type.setType(entityType);
+        edit.create(EntityTypeComponent.class)
+                .setType(entityType);
 
         componentAdder.accept(edit);
 
         return entityId;
-    }
-
-    /**
-     * Creates a new NPC entity in the specified map's ECS world.
-     * This method instantiates a new entity and populates it with components required
-     * for an NPC, such as `SpeedComponent`, `PositionComponent`, `IdComponent`, and `NpcComponent`.
-     *
-     * @param mapId    The ID of the map where the NPC will be added.
-     * @param npc      The `NpcsEntity` containing the base stats and information for this NPC.
-     * @param position The initial `Vector` position of the NPC on the map.
-     * @param id       The unique ID to assign to this NPC entity.
-     *
-     * @example ```java
-     * gameLoopService.addNpc(map.getId(), streunerNpc, new Vector(1000, 1000), 256);
-     * ```
-     */
-    public void addNpc(short mapId, NpcsEntity npc, Vector position, int id) {
-        createEntity(mapId, id, EntityType.NPC, (edit) -> {
-            edit.create(SpeedComponent.class)
-                    .setSpeed(npc.getSpeed());
-
-            edit.create(PositionComponent.class)
-                    .setPosition(position);
-
-            edit.create(IdComponent.class)
-                    .setId(id);
-
-            edit.create(NpcComponent.class)
-                    .setNpc(npc);
-
-            var health = edit.create(HealthComponent.class);
-            health.setHealth(npc.getHealth());
-            health.setMaxHealth(npc.getHealth());
-            health.setShield(npc.getShield());
-            health.setMaxShield(npc.getShield());
-        });
     }
 
     /**
@@ -327,6 +293,42 @@ public class GameLoopService implements Logger {
 
             edit.create(PortalComponent.class)
                     .setPortal(portal);
+        });
+    }
+
+    /**
+     * Creates a new NPC entity in the specified map's ECS world.
+     * This method instantiates a new entity and populates it with components required
+     * for an NPC, such as `SpeedComponent`, `PositionComponent`, `IdComponent`, and `NpcComponent`.
+     *
+     * @param mapId    The ID of the map where the NPC will be added.
+     * @param npc      The `NpcsEntity` containing the base stats and information for this NPC.
+     * @param position The initial `Vector` position of the NPC on the map.
+     * @param id       The unique ID to assign to this NPC entity.
+     *
+     * @example ```java
+     * gameLoopService.addNpc(map.getId(), streunerNpc, new Vector(1000, 1000), 256);
+     * ```
+     */
+    public void addNpc(short mapId, NpcsEntity npc, Vector position, int id) {
+        createEntity(mapId, id, EntityType.NPC, (edit) -> {
+            edit.create(SpeedComponent.class)
+                    .setSpeed(npc.getSpeed());
+
+            edit.create(PositionComponent.class)
+                    .setPosition(position);
+
+            edit.create(IdComponent.class)
+                    .setId(id);
+
+            edit.create(NpcComponent.class)
+                    .setNpc(npc);
+
+            edit.create(HealthComponent.class)
+                    .setHealth(npc.getHealth())
+                    .setMaxHealth(npc.getHealth())
+                    .setShield(npc.getShield())
+                    .setMaxShield(npc.getShield());
         });
     }
 
