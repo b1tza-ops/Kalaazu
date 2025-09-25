@@ -301,7 +301,8 @@ public class GameLoopService implements Logger {
      * Creates a new NPC entity in the specified map's ECS world.
      * This method instantiates a new entity and populates it with components required
      * for an NPC, such as `SpeedComponent`, `PositionComponent`, `IdComponent`, and `NpcComponent`.
-     *  @param map      The map entity where the NPC is being added.
+     *
+     * @param map      The map entity where the NPC is being added.
      * @param npc      The `NpcsEntity` containing the base stats and information for this NPC.
      * @param position The initial `Vector` position of the NPC on the map.
      * @param id       The unique ID to assign to this NPC entity.
@@ -327,12 +328,12 @@ public class GameLoopService implements Logger {
             edit.create(MapComponent.class)
                     .setLimits(map.getLimits());
 
-            //edit.create(NpcAiComponent.class)
-            //.setAi(npc.getAi());
+            edit.create(NpcAiComponent.class)
+                    .setAi(npc.getAi());
 
             edit.create(VisibleByComponent.class);
 
-            //edit.create(MovementComponent.class);
+            edit.create(MovementComponent.class);
 
             edit.create(HealthComponent.class)
                     .setHealth(npc.getHealth())
