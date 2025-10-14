@@ -22,7 +22,7 @@ app:
   autoStart: ${AUTO_START:true}
   game:
     version: ${GAME_VERSION:V4} # Game server version, see com.kalaazu.model.Version
-    renderDistance: ${RENDER_DISTANCE:2000}
+    renderDistance: ${RENDER_DISTANCE:24000}
     tickRate: ${TICK_RATE:100}
     packets:
       printOut: true

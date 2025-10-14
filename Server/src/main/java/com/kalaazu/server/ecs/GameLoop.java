@@ -3,6 +3,7 @@ package com.kalaazu.server.ecs;
 import com.artemis.World;
 import com.kalaazu.util.Logger;
 import com.kalaazu.util.LoggingCategory;
+import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -43,6 +44,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * @see java.lang.Runnable
  */
 @RequiredArgsConstructor
+@Data
 public class GameLoop implements Runnable, Logger {
     @Getter
     private final LoggingCategory category = LoggingCategory.GAME_LOOP;

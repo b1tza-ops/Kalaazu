@@ -74,17 +74,12 @@ import java.util.function.Consumer;
 @Service
 @RequiredArgsConstructor
 public class GameLoopService implements Logger {
-    private final Map<Short, World> worlds = new HashMap<>();
     private final Map<Short, GameLoop> gameLoops = new HashMap<>();
     private final TaskScheduler taskScheduler;
     private final KalaazuConfig config;
     private final ApplicationContext ctx;
     @Getter
     private final LoggingCategory category = LoggingCategory.GAME_LOOP;
-
-    public World getEngine(short mapId) {
-        return worlds.get(mapId);
-    }
 
     /**
      * Initializes the ECS engine for a given map.
@@ -112,16 +107,41 @@ public class GameLoopService implements Logger {
 
         var config = builder.build();
 
-        var world = new World(config);
-        worlds.put(map.getId(), world);
-
         // Create and schedule the game loop on the shared scheduler
-        var gameLoop = new GameLoop(map.getId(), world);
+        var gameLoop = new GameLoop(map.getId(), new World(config));
         taskScheduler.scheduleAtFixedRate(gameLoop, Duration.ofMillis(this.config.getGame().getTickRate())); // 20 ticks/sec
 
         gameLoops.put(map.getId(), gameLoop);
 
         info("Initialized and started game loop for map {} ({})", map.getName(), map.getId());
+    }
+
+    /**
+     * A private helper method to encapsulate the boilerplate logic of creating an entity.
+     *
+     * @param mapId          The ID of the map where the entity will be created.
+     * @param entityIdForLog The ID used for logging purposes.
+     * @param entityType     The type of the entity.
+     * @param componentAdder A consumer that receives an `EntityEdit` to add the specific components.
+     *
+     * @return The integer ID of the newly created entity, or -1 on failure.
+     */
+    private int createEntity(short mapId, int entityIdForLog, EntityType entityType, Consumer<EntityEdit> componentAdder) {
+        var world = this.getEngine(mapId);
+        if (world == null) {
+            error("Could not add {} {} to map {}: Engine not found.", entityType.name().toLowerCase(), entityIdForLog, mapId);
+            return -1;
+        }
+
+        int entityId = world.create();
+        var edit = world.edit(entityId);
+
+        edit.create(EntityTypeComponent.class)
+                .setType(entityType);
+
+        componentAdder.accept(edit);
+
+        return entityId;
     }
 
     /**
@@ -201,32 +221,8 @@ public class GameLoopService implements Logger {
         });
     }
 
-    /**
-     * A private helper method to encapsulate the boilerplate logic of creating an entity.
-     *
-     * @param mapId          The ID of the map where the entity will be created.
-     * @param entityIdForLog The ID used for logging purposes.
-     * @param entityType     The type of the entity.
-     * @param componentAdder A consumer that receives an `EntityEdit` to add the specific components.
-     *
-     * @return The integer ID of the newly created entity, or -1 on failure.
-     */
-    private int createEntity(short mapId, int entityIdForLog, EntityType entityType, Consumer<EntityEdit> componentAdder) {
-        var world = worlds.get(mapId);
-        if (world == null) {
-            error("Could not add {} {} to map {}: Engine not found.", entityType.name().toLowerCase(), entityIdForLog, mapId);
-            return -1;
-        }
-
-        int entityId = world.create();
-        var edit = world.edit(entityId);
-
-        edit.create(EntityTypeComponent.class)
-                .setType(entityType);
-
-        componentAdder.accept(edit);
-
-        return entityId;
+    public World getEngine(short mapId) {
+        return gameLoops.get(mapId).getWorld();
     }
 
     /**
@@ -390,7 +386,7 @@ public class GameLoopService implements Logger {
      * ```
      */
     public IntBag getEntities(short mapId, Aspect.Builder aspect) {
-        var world = worlds.get(mapId);
+        var world = this.getEngine(mapId);
         if (world == null) {
             return new IntBag();
         }
