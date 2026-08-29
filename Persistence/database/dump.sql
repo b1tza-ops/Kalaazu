@@ -249,7 +249,7 @@ CREATE TABLE `accounts_galaxygates`
         COMMENT 'Primary Key.',
     `galaxygates_id` tinyint  NOT NULL,
     `accounts_id`    int      NOT NULL,
-    `parts`          tinyint  NOT NULL DEFAULT 0
+    `parts`          smallint NOT NULL DEFAULT 0
         COMMENT 'Collected parts.',
     `lifes`          tinyint  NOT NULL DEFAULT -1
         COMMENT 'Available lives (-1 not build yet)',
@@ -1598,7 +1598,7 @@ CREATE TABLE `galaxygates`
     `name`                 varchar(255) NOT NULL DEFAULT 'GG-A',
     `galaxygates_waves_id` tinyint      NULL     DEFAULT NULL
         COMMENT 'Starting wave.',
-    `parts`                tinyint      NOT NULL DEFAULT 0
+    `parts`                smallint     NOT NULL DEFAULT 0
         COMMENT 'Necessary parts to build the gate.',
 
     CONSTRAINT `galaxygates_pk` PRIMARY KEY (`id`)
