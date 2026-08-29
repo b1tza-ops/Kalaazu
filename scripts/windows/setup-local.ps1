@@ -13,7 +13,8 @@ function Assert-Command {
     }
 }
 
-Assert-Command "java"
+. (Join-Path $PSScriptRoot "Import-DotEnv.ps1")
+Use-Java25
 Assert-Command "docker"
 
 $javaVersion = (& java -version 2>&1 | Out-String)
@@ -36,7 +37,6 @@ if (-not (Test-Path -LiteralPath $envFile)) {
     Write-Host "Created .env with random local database passwords."
 }
 
-. (Join-Path $PSScriptRoot "Import-DotEnv.ps1")
 Import-DotEnv -Path $envFile
 
 Push-Location $repoRoot
