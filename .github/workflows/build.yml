@@ -19,6 +19,19 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Validate Wolf CMS bridge
+        shell: bash
+        env:
+          MYSQL_PASSWORD: test-app-password
+          MARIADB_ROOT_PASSWORD: test-root-password
+        run: |
+          docker compose -f docker-compose.wolf-cms.yml config >/dev/null
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE/integrations/wolf-cms:/bridge:ro" \
+            php:8.2-cli \
+            sh -c 'find /bridge -name "*.php" -print0 | xargs -0 -n1 php -l'
+          node --check integrations/wolf-cms/bridge/bridge.js
+
       - name: Import database dump
         shell: bash
         run: |
@@ -83,7 +96,9 @@ jobs:
           $scripts = @(
             "scripts/windows/Import-DotEnv.ps1",
             "scripts/windows/setup-local.ps1",
-            "scripts/windows/run-local.ps1"
+            "scripts/windows/run-local.ps1",
+            "scripts/windows/setup-wolf-cms.ps1",
+            "scripts/windows/run-wolf-cms.ps1"
           )
 
           $parseErrors = @()
