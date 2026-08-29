@@ -19,6 +19,31 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Validate PowerShell scripts
+        shell: pwsh
+        run: |
+          $scripts = @(
+            "scripts/windows/Import-DotEnv.ps1",
+            "scripts/windows/setup-local.ps1",
+            "scripts/windows/run-local.ps1"
+          )
+
+          $parseErrors = @()
+          foreach ($script in $scripts) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              $script,
+              [ref]$null,
+              [ref]$errors
+            ) | Out-Null
+            $parseErrors += $errors
+          }
+
+          if ($parseErrors.Count -gt 0) {
+            $parseErrors | ForEach-Object { Write-Error $_ }
+            exit 1
+          }
+
       - name: Set up Java 25
         uses: actions/setup-java@v4
         with:
