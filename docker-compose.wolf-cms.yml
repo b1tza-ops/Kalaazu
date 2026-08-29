@@ -1,0 +1,45 @@
+services:
+  wolf-cms-db:
+    image: mariadb:10.11
+    container_name: kalaazu-wolf-cms-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: darkorbit
+      MARIADB_USER: kalaazu_cms
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - kalaazu-wolf-cms-data:/var/lib/mysql
+      - ./integrations/wolf-cms/source/server.sql:/docker-entrypoint-initdb.d/01-wolf-cms.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  wolf-cms:
+    build:
+      context: ./integrations/wolf-cms
+    container_name: kalaazu-wolf-cms
+    restart: unless-stopped
+    environment:
+      WOLF_CMS_DB_HOST: wolf-cms-db
+      WOLF_CMS_DB_NAME: darkorbit
+      WOLF_CMS_DB_USER: kalaazu_cms
+      WOLF_CMS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      KALAAZU_PUBLIC_URL: http://127.0.0.1:8081
+    ports:
+      - "127.0.0.1:8082:80"
+    depends_on:
+      wolf-cms-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "php -r 'exit(@file_get_contents(\"http://127.0.0.1/\") === false ? 1 : 0);'"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+volumes:
+  kalaazu-wolf-cms-data:
