@@ -222,7 +222,8 @@ public class GameLoopService implements Logger {
     }
 
     public World getEngine(short mapId) {
-        return gameLoops.get(mapId).getWorld();
+        var gameLoop = gameLoops.get(mapId);
+        return gameLoop == null ? null : gameLoop.getWorld();
     }
 
     /**

@@ -78,7 +78,7 @@ public abstract class GameServer implements Runnable, Logger {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             // Bind server and wait until closed
-            serverChannel = bootstrap.bind(port).sync().channel();
+            serverChannel = bootstrap.bind(getConfig().getBindAddress(), port).sync().channel();
             serverChannel.closeFuture().sync();
 
         } catch (InterruptedException e) {

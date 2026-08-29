@@ -1,0 +1,24 @@
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: kalaazu-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${MYSQL_DATABASE:-kalaazu}
+      MARIADB_USER: ${MYSQL_USERNAME:-kalaazu}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - kalaazu-mariadb-data:/var/lib/mysql
+      - ./Persistence/database/dump.sql:/docker-entrypoint-initdb.d/01-kalaazu.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+volumes:
+  kalaazu-mariadb-data:
