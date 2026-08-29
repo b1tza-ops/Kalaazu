@@ -6,8 +6,8 @@ the local network or the internet.
 ## What this proves
 
 The local milestone verifies that the database initializes, the Java project builds, the JavaFX launcher opens, and the
-web and game servers listen on their configured ports. Kalaazu does not include a complete redistributable DarkOrbit
-game client, so a successful server start does not yet mean the game is playable.
+web and game servers listen on their configured ports. The included clean HTML5 test client uses original code-drawn
+graphics and connects to the real V4 game simulation through a loopback WebSocket gateway.
 
 ## Prerequisites
 
@@ -29,12 +29,11 @@ docker version
 
 ## First setup
 
-Clone your fork and switch to the setup branch:
+Clone the `develop` branch from your fork:
 
 ```powershell
-git clone https://github.com/b1tza-ops/Kalaazu.git
+git clone --branch develop --single-branch https://github.com/b1tza-ops/Kalaazu.git
 cd Kalaazu
-git switch setup/windows-local
 ```
 
 Allow scripts only for the current PowerShell process, then run setup:
@@ -63,6 +62,7 @@ The JavaFX server dashboard should open. With `AUTO_START=true`, the backend sta
 | MariaDB | `127.0.0.1:3306` |
 | Game server | `127.0.0.1:8080` |
 | Web API | `http://127.0.0.1:8081` |
+| Browser game gateway | `ws://127.0.0.1:8083/game` |
 | Flash policy server | `127.0.0.1:843` |
 | Chat server | Port `8082` is reserved but not implemented yet |
 
@@ -75,6 +75,9 @@ Test-NetConnection 127.0.0.1 -Port 8080
 
 The health response should contain `status: UP`, and the game-server TCP test should succeed.
 
+Open `http://127.0.0.1:8081` in a modern browser. Create a pilot or log in, then click the map to move. The browser
+client, API, database, raw game port, and WebSocket gateway all bind to `127.0.0.1` in the local configuration.
+
 ## Reset the local database
 
 This permanently removes only Kalaazu's Docker database volume. The next setup recreates and reimports it:
@@ -84,13 +87,8 @@ docker compose --env-file .env -f docker-compose.local.yml down -v
 .\scripts\windows\setup-local.ps1
 ```
 
-## Frontend development
+## Client scope
 
-The legacy CMS is a separate Vue 2 application and is not required for the initial backend proof. Its local API default
-is `http://localhost:8081`, and its development server uses port `3000`.
-
-## Client limitation
-
-The repository contains server packet implementations and reverse-engineering notes, but it does not include a complete
-game client. Do not download or redistribute leaked proprietary client files. The next milestone is either connecting a
-compatible client that you are legally entitled to use or creating a clean replacement client and original assets.
+The HTML5 client is an original minimal test client. It currently supports registration, login, V4 session
+authentication, map/entity rendering, ship status, and movement. It deliberately contains no copied DarkOrbit client
+files, SWFs, artwork, sounds, or other proprietary assets.

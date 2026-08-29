@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07111f">
+    <title>Kalaazu // Local Sector</title>
+    <link rel="stylesheet" href="/client.css">
+</head>
+<body>
+<main class="shell">
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">KALAAZU NETWORK</p>
+            <h1>Local Sector</h1>
+        </div>
+        <div class="connection"><span id="connection-dot"></span><span id="connection-label">OFFLINE</span></div>
+    </header>
+
+    <section id="auth-view" class="auth-layout">
+        <div class="intro-panel">
+            <div class="orbit orbit-one"></div>
+            <div class="orbit orbit-two"></div>
+            <div class="planet"></div>
+            <div class="intro-copy">
+                <p class="eyebrow">PRIVATE TEST BUILD</p>
+                <h2>Your sector.<br>Your rules.</h2>
+                <p>A clean HTML5 client connected to Kalaazu's real V4 simulation.</p>
+            </div>
+        </div>
+
+        <div class="auth-panel">
+            <div class="tabs">
+                <button class="tab active" data-mode="login">Log in</button>
+                <button class="tab" data-mode="register">Create pilot</button>
+            </div>
+            <form id="auth-form">
+                <label>Callsign<input id="username" autocomplete="username" minlength="3" required></label>
+                <label id="email-field" hidden>Email<input id="email" type="email" autocomplete="email"></label>
+                <label>Access key<input id="password" type="password" autocomplete="current-password" minlength="4" required></label>
+                <button id="auth-submit" class="primary" type="submit">Enter sector</button>
+                <p id="auth-message" class="message" role="alert"></p>
+            </form>
+            <p class="local-note">Local-only test server · No proprietary game assets</p>
+        </div>
+    </section>
+
+    <section id="game-view" class="game-layout" hidden>
+        <aside class="hud left-hud">
+            <p class="eyebrow">PILOT</p>
+            <h2 id="pilot-name">—</h2>
+            <dl>
+                <div><dt>Level</dt><dd id="level">—</dd></div>
+                <div><dt>Credits</dt><dd id="credits">—</dd></div>
+                <div><dt>Uridium</dt><dd id="uridium">—</dd></div>
+                <div><dt>Map</dt><dd id="map-id">—</dd></div>
+            </dl>
+            <button id="disconnect" class="secondary">Disconnect</button>
+        </aside>
+
+        <div class="viewport-wrap">
+            <canvas id="space" aria-label="Kalaazu space map"></canvas>
+            <div class="crosshair"></div>
+            <p id="game-message" class="game-message">Connecting to sector…</p>
+        </div>
+
+        <aside class="hud right-hud">
+            <p class="eyebrow">SHIP</p>
+            <div class="meter"><span>Hull</span><strong id="health-label">—</strong><i><b id="health-bar"></b></i></div>
+            <div class="meter shield"><span>Shield</span><strong id="shield-label">—</strong><i><b id="shield-bar"></b></i></div>
+            <p class="coordinates">X <span id="coord-x">0</span><br>Y <span id="coord-y">0</span></p>
+            <p class="hint">Click anywhere on the map to move.</p>
+        </aside>
+    </section>
+</main>
+<script src="/client.js" defer></script>
+</body>
+</html>

@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class Account {
     private int id;
+    private int usersId;
     private String sessionId;
     private String name;
     private String banDate;

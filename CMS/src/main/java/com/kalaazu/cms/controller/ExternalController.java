@@ -97,6 +97,7 @@ public class ExternalController implements Logger {
     private Account buildAccount(AccountsEntity account) {
         var a = new Account();
         this.mapper.map(account, a);
+        a.setUsersId(account.getUsersByUsersId().getId());
 
         account.getAccountsItems()
                 .forEach(i -> {
