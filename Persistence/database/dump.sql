@@ -527,7 +527,7 @@ CREATE TABLE `accounts_ships`
         COMMENT 'Current shield points',
     `nanohull`    int      NOT NULL DEFAULT 0
         COMMENT 'Current nanohull points',
-    `gfx`         tinyint  NOT NULL DEFAULT 0
+    `gfx`         smallint NOT NULL DEFAULT 0
         COMMENT 'Ship graphic (for WIZ-X).',
 
     CONSTRAINT `accounts_ships_pk` PRIMARY KEY (`id`)
@@ -4784,7 +4784,7 @@ CREATE TABLE `maps_portals`
         COMMENT 'Target position.',
     `is_visible`      boolean      NOT NULL DEFAULT true,
     `is_working`      boolean      NOT NULL DEFAULT true,
-    `gfx`             tinyint      NOT NULL DEFAULT 1,
+    `gfx`             smallint     NOT NULL DEFAULT 1,
 
     CONSTRAINT `maps_portals_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB
@@ -5104,7 +5104,7 @@ CREATE TABLE `npcs`
     `shield_absorption` tinyint      NOT NULL DEFAULT 0.0,
     `damage`            int          NOT NULL DEFAULT 0,
     `speed`             smallint     NOT NULL DEFAULT 300,
-    `gfx`               tinyint      NOT NULL DEFAULT 0,
+    `gfx`               smallint     NOT NULL DEFAULT 0,
     `ship_type`         varchar(255) NOT NULL DEFAULT '',
     `ai`                tinyint      NOT NULL DEFAULT 1,
 
@@ -7856,7 +7856,7 @@ CREATE TABLE `ships`
         COMMENT 'Generator slots.',
     `extras`     tinyint  NOT NULL DEFAULT 1
         COMMENT 'Extras slots.',
-    `gfx`        tinyint  NOT NULL DEFAULT 0,
+    `gfx`        smallint NOT NULL DEFAULT 0,
 
     CONSTRAINT `ships_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB
