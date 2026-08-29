@@ -249,7 +249,7 @@ CREATE TABLE `accounts_galaxygates`
         COMMENT 'Primary Key.',
     `galaxygates_id` tinyint  NOT NULL,
     `accounts_id`    int      NOT NULL,
-    `parts`          tinyint  NOT NULL DEFAULT 0
+    `parts`          smallint NOT NULL DEFAULT 0
         COMMENT 'Collected parts.',
     `lifes`          tinyint  NOT NULL DEFAULT -1
         COMMENT 'Available lives (-1 not build yet)',
@@ -527,7 +527,7 @@ CREATE TABLE `accounts_ships`
         COMMENT 'Current shield points',
     `nanohull`    int      NOT NULL DEFAULT 0
         COMMENT 'Current nanohull points',
-    `gfx`         tinyint  NOT NULL DEFAULT 0
+    `gfx`         smallint NOT NULL DEFAULT 0
         COMMENT 'Ship graphic (for WIZ-X).',
 
     CONSTRAINT `accounts_ships_pk` PRIMARY KEY (`id`)
@@ -1061,7 +1061,7 @@ CREATE TABLE `collectables`
 (
     `id`   tinyint      NOT NULL AUTO_INCREMENT
         COMMENT 'Primary Key.',
-    `gfx`  tinyint      NOT NULL DEFAULT 0,
+    `gfx`  smallint     NOT NULL DEFAULT 0,
     `type` tinyint      NOT NULL DEFAULT 0
         COMMENT '0 = box, 1 = ore, 2 = beacon, 3 = firework',
     `name` varchar(255) NOT NULL DEFAULT '',
@@ -1598,7 +1598,7 @@ CREATE TABLE `galaxygates`
     `name`                 varchar(255) NOT NULL DEFAULT 'GG-A',
     `galaxygates_waves_id` tinyint      NULL     DEFAULT NULL
         COMMENT 'Starting wave.',
-    `parts`                tinyint      NOT NULL DEFAULT 0
+    `parts`                smallint     NOT NULL DEFAULT 0
         COMMENT 'Necessary parts to build the gate.',
 
     CONSTRAINT `galaxygates_pk` PRIMARY KEY (`id`)
@@ -4784,7 +4784,7 @@ CREATE TABLE `maps_portals`
         COMMENT 'Target position.',
     `is_visible`      boolean      NOT NULL DEFAULT true,
     `is_working`      boolean      NOT NULL DEFAULT true,
-    `gfx`             tinyint      NOT NULL DEFAULT 1,
+    `gfx`             smallint     NOT NULL DEFAULT 1,
 
     CONSTRAINT `maps_portals_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB
@@ -5104,7 +5104,7 @@ CREATE TABLE `npcs`
     `shield_absorption` tinyint      NOT NULL DEFAULT 0.0,
     `damage`            int          NOT NULL DEFAULT 0,
     `speed`             smallint     NOT NULL DEFAULT 300,
-    `gfx`               tinyint      NOT NULL DEFAULT 0,
+    `gfx`               smallint     NOT NULL DEFAULT 0,
     `ship_type`         varchar(255) NOT NULL DEFAULT '',
     `ai`                tinyint      NOT NULL DEFAULT 1,
 
@@ -7856,7 +7856,7 @@ CREATE TABLE `ships`
         COMMENT 'Generator slots.',
     `extras`     tinyint  NOT NULL DEFAULT 1
         COMMENT 'Extras slots.',
-    `gfx`        tinyint  NOT NULL DEFAULT 0,
+    `gfx`        smallint NOT NULL DEFAULT 0,
 
     CONSTRAINT `ships_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB

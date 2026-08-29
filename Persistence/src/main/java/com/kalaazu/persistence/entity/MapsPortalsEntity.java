@@ -43,7 +43,7 @@ public class MapsPortalsEntity {
 
     @Basic
     @Column(name = "gfx", nullable = false)
-    private byte gfx = 1;
+    private short gfx = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "maps_id", referencedColumnName = "id", nullable = false)

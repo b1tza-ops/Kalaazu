@@ -13,6 +13,58 @@ permissions:
   contents: read
 
 jobs:
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Import database dump
+        shell: bash
+        run: |
+          docker run --detach \
+            --name kalaazu-database-test \
+            --env MARIADB_ROOT_PASSWORD=test-root-password \
+            --env MARIADB_DATABASE=kalaazu \
+            --env MARIADB_USER=kalaazu \
+            --env MARIADB_PASSWORD=test-app-password \
+            --volume "$GITHUB_WORKSPACE/Persistence/database/dump.sql:/docker-entrypoint-initdb.d/01-kalaazu.sql:ro" \
+            mariadb:11.4
+
+          for attempt in {1..90}; do
+            if [ "$(docker inspect --format '{{.State.Running}}' kalaazu-database-test)" != "true" ]; then
+              docker logs kalaazu-database-test
+              exit 1
+            fi
+
+            table_count=$(docker exec kalaazu-database-test \
+              mariadb --user=root --password=test-root-password --skip-column-names \
+              --execute="SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'kalaazu';" \
+              2>/dev/null || true)
+            ready_count=$(docker logs kalaazu-database-test 2>&1 | grep -c "ready for connections" || true)
+
+            if [ "$table_count" = "88" ] && [ "$ready_count" -ge 2 ]; then
+              break
+            fi
+
+            sleep 2
+          done
+
+          test "$table_count" = "88"
+          test "$ready_count" -ge 2
+          collectable_count=$(docker exec kalaazu-database-test \
+            mariadb --user=root --password=test-root-password --skip-column-names \
+            --execute="SELECT COUNT(*) FROM kalaazu.collectables;")
+          test "$collectable_count" = "111"
+
+      - name: Show database logs on failure
+        if: failure()
+        run: docker logs kalaazu-database-test
+
+      - name: Remove test database
+        if: always()
+        run: docker rm --force kalaazu-database-test
+
   gradle:
     runs-on: windows-latest
     steps:

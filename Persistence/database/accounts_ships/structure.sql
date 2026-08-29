@@ -17,7 +17,7 @@ CREATE TABLE `accounts_ships`
         COMMENT 'Current shield points',
     `nanohull`    int      NOT NULL DEFAULT 0
         COMMENT 'Current nanohull points',
-    `gfx`         tinyint  NOT NULL DEFAULT 0
+    `gfx`         smallint NOT NULL DEFAULT 0
         COMMENT 'Ship graphic (for WIZ-X).',
 
     CONSTRAINT `accounts_ships_pk` PRIMARY KEY (`id`)

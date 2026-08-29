@@ -25,7 +25,7 @@ CREATE TABLE `ships`
         COMMENT 'Generator slots.',
     `extras`     tinyint  NOT NULL DEFAULT 1
         COMMENT 'Extras slots.',
-    `gfx`        tinyint  NOT NULL DEFAULT 0,
+    `gfx`        smallint NOT NULL DEFAULT 0,
 
     CONSTRAINT `ships_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB
