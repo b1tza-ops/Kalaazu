@@ -60,7 +60,7 @@ public class ShipsEntity {
 
     @Basic
     @Column(name = "gfx", nullable = false)
-    private byte gfx = 0;
+    private short gfx = 0;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "items_id", referencedColumnName = "id", nullable = false)
