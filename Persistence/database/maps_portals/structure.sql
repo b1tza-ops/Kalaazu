@@ -15,7 +15,7 @@ CREATE TABLE `maps_portals`
         COMMENT 'Target position.',
     `is_visible`      boolean      NOT NULL DEFAULT true,
     `is_working`      boolean      NOT NULL DEFAULT true,
-    `gfx`             tinyint      NOT NULL DEFAULT 1,
+    `gfx`             smallint     NOT NULL DEFAULT 1,
 
     CONSTRAINT `maps_portals_pk` PRIMARY KEY (`id`)
 ) ENGINE InnoDB
