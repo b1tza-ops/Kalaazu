@@ -21,6 +21,10 @@ class ClientControllerTest {
         try (var stream = response.getBody().getInputStream()) {
             var html = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
             assertThat(html).contains("<title>Kalaazu // Local Sector</title>");
+            assertThat(html).contains("id=\"cms-view\"");
+            assertThat(html).contains("Pilot overview");
+            assertThat(html).contains("Start game");
+            assertThat(html).doesNotContain(".swf");
         }
     }
 }
