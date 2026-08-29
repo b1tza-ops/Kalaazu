@@ -38,6 +38,27 @@
     });
     canvas.addEventListener("click", moveHero);
     window.addEventListener("resize", resizeCanvas);
+    acceptCmsHandoff();
+
+    function acceptCmsHandoff() {
+        const encoded = new URLSearchParams(window.location.search).get("handoff");
+        if (!encoded) return;
+
+        try {
+            const padded = encoded.replaceAll("-", "+").replaceAll("_", "/").padEnd(Math.ceil(encoded.length / 4) * 4, "=");
+            const bytes = Uint8Array.from(atob(padded), character => character.charCodeAt(0));
+            const account = JSON.parse(new TextDecoder().decode(bytes));
+            if (!account?.usersId || !account?.sessionId || !account?.name) {
+                throw new Error("The CMS handoff is incomplete");
+            }
+
+            state.account = account;
+            window.history.replaceState({}, document.title, "/");
+            openGame();
+        } catch (error) {
+            setAuthMessage(error.message || "The CMS session could not be opened");
+        }
+    }
 
     function setMode(mode) {
         state.mode = mode;
