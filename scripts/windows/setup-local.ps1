@@ -17,7 +17,7 @@ function Assert-Command {
 Use-Java25
 Assert-Command "docker"
 
-$javaVersion = (& java -version 2>&1 | Out-String)
+$javaVersion = Get-JavaVersionOutput -JavaExecutable (Join-Path $env:JAVA_HOME "bin\java.exe")
 if ($javaVersion -notmatch 'version "25([\."])') {
     throw "Kalaazu requires JDK 25. Current Java output:`n$javaVersion"
 }
