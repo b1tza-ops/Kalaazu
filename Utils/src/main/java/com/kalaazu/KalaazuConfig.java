@@ -89,6 +89,7 @@ public class KalaazuConfig {
     @Data
     public static class Port {
         private int server;
+        private int browser;
         private int policy;
         private int chat;
     }
