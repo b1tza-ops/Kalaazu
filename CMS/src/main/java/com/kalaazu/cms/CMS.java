@@ -22,8 +22,11 @@ public class CMS implements WebMvcConfigurer {
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        // disable CORS
-        registry.addMapping("/**");
+        registry.addMapping("/external/**")
+                .allowedOrigins("http://127.0.0.1:8082", "http://localhost:8082")
+                .allowedMethods("POST", "OPTIONS")
+                .allowedHeaders("Content-Type")
+                .maxAge(3600);
     }
 
     @Override
