@@ -1,14 +1,17 @@
 plugins {
     id 'application'
     id 'java'
-    id 'org.springframework.boot' version '4.0.0-M2'
+    id 'org.springframework.boot' version '4.0.0-M2' apply false
     id 'io.spring.dependency-management' version '1.1.7'
     id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 group = 'com.kalaazu'
 version = '0.0.1-SNAPSHOT'
-mainClassName = 'com.kalaazu.Launcher'
+
+application {
+    mainClass = 'com.kalaazu.Launcher'
+}
 
 configurations {
     compileOnly {
@@ -22,7 +25,6 @@ dependencies {
 
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.openjfx.javafxplugin'
 
@@ -47,10 +49,6 @@ allprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-    }
-
-    bootJar {
-        enabled = false
     }
 
     jar {
@@ -83,6 +81,12 @@ allprojects {
         // Ikonli
         implementation("org.kordamp.ikonli:ikonli-javafx:$ikonliVersion")
         implementation("org.kordamp.ikonli:ikonli-feather-pack:$ikonliVersion")
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-dependencies:4.0.0-M2'
+        }
     }
 
     test {

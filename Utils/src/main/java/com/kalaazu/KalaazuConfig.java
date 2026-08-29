@@ -41,6 +41,7 @@ import org.springframework.stereotype.Component;
 @Data
 public class KalaazuConfig {
     private boolean autoStart;
+    private String bindAddress;
     private GameConfig game;
     private Port port;
 

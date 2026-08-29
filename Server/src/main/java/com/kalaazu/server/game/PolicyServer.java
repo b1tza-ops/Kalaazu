@@ -86,7 +86,7 @@ public class PolicyServer implements Runnable, Logger {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
-            serverChannel = bootstrap.bind(port).sync().channel();
+            serverChannel = bootstrap.bind(config.getBindAddress(), port).sync().channel();
             serverChannel.closeFuture().sync();
         } catch (InterruptedException e) {
             warn("Policy server thread interrupted.", e);

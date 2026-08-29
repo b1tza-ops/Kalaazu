@@ -37,8 +37,8 @@ contributing, please follow this event-driven pattern.
 
 To work on this project, you will need the following installed:
 
-* **JDK**: Version 26 or higher.
-* **Gradle**: Version 8.0 or higher.
+* **JDK**: Version 25.
+* **Gradle**: Use the included Gradle 9.1 wrapper.
 * **Database**: MariaDB.
 * **Node.js**: Required for frontend development (version is flexible).
 
@@ -226,7 +226,7 @@ The reward system is highly normalized:
 
 ## 7. Coding Conventions
 
-* **Language**: The primary backend language is **Java 26**.
+* **Language**: The primary backend language is **Java 25**.
 * **Code Style**: Please adhere to the default code style and conventions for the language you are working with (Java,
   Vue.js). Maintain consistency with the existing codebase.
 * **ORM Entities**: JPA entities are located in the `Persistence` module. Ensure they are kept in sync with the database
@@ -238,8 +238,8 @@ The reward system is highly normalized:
 |-----------------------------------------|-----------------------------------------------------------------|
 | Run `com.kalaazu.Launcher` from IDE     | Starts the entire application, including the JavaFX dashboard.  |
 | `./gradlew build`                       | Compiles and builds all modules.                                |
-| `./gradlew :Launcher:bootRun`           | Runs the application using Gradle.                              |
-| `cd CMS/src/main/www && npm run dev`    | Starts the frontend development server.                         |
+| `./gradlew run`                         | Runs the application using Gradle.                              |
+| `cd CMS/src/main/www && npm run serve`  | Starts the frontend development server.                         |
 | `php Persistence/database/compiler.php` | (Legacy) Compiles database schema files into a single SQL file. |
 
 ---
