@@ -3,67 +3,146 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#07111f">
+    <meta name="theme-color" content="#07090d">
     <title>Kalaazu // Local Sector</title>
     <link rel="stylesheet" href="/client.css">
 </head>
 <body>
 <main class="shell">
     <header class="topbar">
-        <div>
-            <p class="eyebrow">KALAAZU NETWORK</p>
-            <h1>Local Sector</h1>
+        <a class="brand" href="#" aria-label="Kalaazu home">
+            <span class="brand-mark" aria-hidden="true">K</span>
+            <span><strong>KALAAZU</strong><small>LOCAL SECTOR</small></span>
+        </a>
+        <div id="pilot-bar" class="pilot-bar" hidden>
+            <span><small>URIDIUM</small><strong id="bar-uridium">0</strong></span>
+            <span><small>CREDITS</small><strong id="bar-credits">0</strong></span>
+            <span><small>HONOR</small><strong id="bar-honor">0</strong></span>
         </div>
-        <div class="connection"><span id="connection-dot"></span><span id="connection-label">OFFLINE</span></div>
+        <div class="connection"><span id="connection-dot"></span><span id="connection-label">SERVER READY</span></div>
     </header>
 
     <section id="auth-view" class="auth-layout">
         <div class="intro-panel">
-            <div class="orbit orbit-one"></div>
-            <div class="orbit orbit-two"></div>
-            <div class="planet"></div>
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="planet"><span></span></div>
             <div class="intro-copy">
                 <p class="eyebrow">PRIVATE TEST BUILD</p>
-                <h2>Your sector.<br>Your rules.</h2>
-                <p>A clean HTML5 client connected to Kalaazu's real V4 simulation.</p>
+                <h1>Defend your<br><em>sector.</em></h1>
+                <p>Build your pilot, command your ship and enter Kalaazu's live V4 universe.</p>
             </div>
         </div>
-
         <div class="auth-panel">
+            <p class="eyebrow">PILOT ACCESS</p><h2>Welcome back, pilot.</h2>
             <div class="tabs">
                 <button class="tab active" data-mode="login">Log in</button>
-                <button class="tab" data-mode="register">Create pilot</button>
+                <button class="tab" data-mode="register">Register</button>
             </div>
             <form id="auth-form">
                 <label>Callsign<input id="username" autocomplete="username" minlength="3" required></label>
                 <label id="email-field" hidden>Email<input id="email" type="email" autocomplete="email"></label>
-                <label>Access key<input id="password" type="password" autocomplete="current-password" minlength="4" required></label>
-                <button id="auth-submit" class="primary" type="submit">Enter sector</button>
+                <label>Password<input id="password" type="password" autocomplete="current-password" minlength="4" required></label>
+                <button id="auth-submit" class="primary" type="submit">Log in</button>
                 <p id="auth-message" class="message" role="alert"></p>
             </form>
-            <p class="local-note">Local-only test server · No proprietary game assets</p>
+            <p class="local-note">Private loopback server · Account data stays on this PC</p>
+        </div>
+    </section>
+
+    <section id="cms-view" class="cms-layout" hidden>
+        <aside class="sidebar">
+            <div class="pilot-card">
+                <div class="pilot-avatar" aria-hidden="true"><span></span></div>
+                <div><small>PILOT</small><strong id="cms-pilot-name">—</strong><span id="cms-rank">Rank 1</span></div>
+            </div>
+            <nav aria-label="Pilot navigation">
+                <button class="nav-button active" data-panel="home"><span>⌂</span>Home</button>
+                <button class="nav-button" data-panel="hangar"><span>◇</span>Hangar</button>
+                <button class="nav-button" data-panel="equipment"><span>⊞</span>Equipment</button>
+                <button class="nav-button" data-panel="shop"><span>◈</span>Shop</button>
+                <button class="nav-button" data-panel="clan"><span>♜</span>Clan</button>
+            </nav>
+            <button id="logout" class="logout">Log out</button>
+        </aside>
+
+        <div class="cms-content">
+            <section class="cms-panel active" data-panel-content="home">
+                <div class="page-heading">
+                    <div><p class="eyebrow">COMMAND CENTRE</p><h2>Pilot overview</h2></div>
+                    <button class="start-game primary" type="button">Start game <span>›</span></button>
+                </div>
+                <div class="hero-card">
+                    <div class="ship-art" aria-hidden="true"><span></span><i></i><b></b></div>
+                    <div class="hero-copy">
+                        <small>ACTIVE HANGAR</small><h3 id="hangar-name">Hangar 1</h3>
+                        <p>Your ship is cleared for launch. Enter the sector to connect to Kalaazu's live simulation.</p>
+                        <button class="start-game launch" type="button">LAUNCH</button>
+                    </div>
+                    <dl class="quick-stats">
+                        <div><dt>Level</dt><dd id="cms-level">1</dd></div>
+                        <div><dt>Faction</dt><dd id="cms-faction">MMO</dd></div>
+                        <div><dt>Experience</dt><dd id="cms-experience">0</dd></div>
+                    </dl>
+                </div>
+                <div class="dashboard-grid">
+                    <article class="panel-card">
+                        <header><span>PROFILE</span><small>LIVE DATA</small></header>
+                        <dl class="profile-list">
+                            <div><dt>Pilot ID</dt><dd id="cms-id">—</dd></div>
+                            <div><dt>Rank</dt><dd id="cms-rank-detail">1</dd></div>
+                            <div><dt>Clan</dt><dd id="cms-clan">Free agent</dd></div>
+                            <div><dt>Skill points</dt><dd id="cms-skills">0</dd></div>
+                        </dl>
+                    </article>
+                    <article class="panel-card mission-card">
+                        <header><span>SECTOR STATUS</span><small class="status-ok">ONLINE</small></header>
+                        <div class="radar" aria-hidden="true"><i></i><b></b><span></span></div>
+                        <p>Local gateway ready on port 8083.</p>
+                    </article>
+                    <article class="panel-card currency-card">
+                        <header><span>RESOURCES</span><small>ACCOUNT</small></header>
+                        <div><span>Credits</span><strong id="cms-credits">0</strong></div>
+                        <div><span>Uridium</span><strong id="cms-uridium">0</strong></div>
+                        <div><span>Honor</span><strong id="cms-honor">0</strong></div>
+                        <div><span>Jackpot</span><strong id="cms-jackpot">0</strong></div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="cms-panel placeholder-panel" data-panel-content="hangar">
+                <p class="eyebrow">HANGAR</p><h2>Ship management</h2>
+                <div class="placeholder-card"><span class="placeholder-icon">◇</span><h3>Active hangar connected</h3><p id="hangar-summary">Kalaazu hangar data is ready for the next equipment integration.</p><button class="start-game primary">Launch active ship</button></div>
+            </section>
+            <section class="cms-panel placeholder-panel" data-panel-content="equipment">
+                <p class="eyebrow">EQUIPMENT</p><h2>Ship loadout</h2>
+                <div class="placeholder-card"><span class="placeholder-icon">⊞</span><h3>Equipment bridge next</h3><p>This area will use Kalaazu's normalized inventory and configuration tables.</p></div>
+            </section>
+            <section class="cms-panel placeholder-panel" data-panel-content="shop">
+                <p class="eyebrow">SHOP</p><h2>Marketplace</h2>
+                <div class="placeholder-card"><span class="placeholder-icon">◈</span><h3>Marketplace bridge next</h3><p>Purchases will be validated by Kalaazu rather than the legacy PHP database.</p></div>
+            </section>
+            <section class="cms-panel placeholder-panel" data-panel-content="clan">
+                <p class="eyebrow">CLAN</p><h2>Clan command</h2>
+                <div class="placeholder-card"><span class="placeholder-icon">♜</span><h3 id="clan-summary">Free agent</h3><p>Clan membership and diplomacy will connect to Kalaazu's clan tables.</p></div>
+            </section>
         </div>
     </section>
 
     <section id="game-view" class="game-layout" hidden>
         <aside class="hud left-hud">
-            <p class="eyebrow">PILOT</p>
-            <h2 id="pilot-name">—</h2>
+            <p class="eyebrow">PILOT</p><h2 id="pilot-name">—</h2>
             <dl>
                 <div><dt>Level</dt><dd id="level">—</dd></div>
                 <div><dt>Credits</dt><dd id="credits">—</dd></div>
                 <div><dt>Uridium</dt><dd id="uridium">—</dd></div>
                 <div><dt>Map</dt><dd id="map-id">—</dd></div>
             </dl>
-            <button id="disconnect" class="secondary">Disconnect</button>
+            <button id="disconnect" class="secondary">Return to CMS</button>
         </aside>
-
         <div class="viewport-wrap">
             <canvas id="space" aria-label="Kalaazu space map"></canvas>
-            <div class="crosshair"></div>
-            <p id="game-message" class="game-message">Connecting to sector…</p>
+            <div class="crosshair"></div><p id="game-message" class="game-message">Connecting to sector…</p>
         </div>
-
         <aside class="hud right-hud">
             <p class="eyebrow">SHIP</p>
             <div class="meter"><span>Hull</span><strong id="health-label">—</strong><i><b id="health-bar"></b></i></div>

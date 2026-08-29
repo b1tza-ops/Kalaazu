@@ -19,6 +19,7 @@
 
     const $ = id => document.getElementById(id);
     const authView = $("auth-view");
+    const cmsView = $("cms-view");
     const gameView = $("game-view");
     const form = $("auth-form");
     const canvas = $("space");
@@ -30,6 +31,11 @@
 
     form.addEventListener("submit", authenticate);
     $("disconnect").addEventListener("click", disconnect);
+    $("logout").addEventListener("click", logout);
+    document.querySelectorAll(".start-game").forEach(button => button.addEventListener("click", openGame));
+    document.querySelectorAll(".nav-button").forEach(button => {
+        button.addEventListener("click", () => showPanel(button.dataset.panel));
+    });
     canvas.addEventListener("click", moveHero);
     window.addEventListener("resize", resizeCanvas);
 
@@ -39,7 +45,7 @@
         $("email-field").hidden = mode !== "register";
         $("email").required = mode === "register";
         $("password").autocomplete = mode === "register" ? "new-password" : "current-password";
-        $("auth-submit").textContent = mode === "register" ? "Create pilot" : "Enter sector";
+        $("auth-submit").textContent = mode === "register" ? "Create pilot" : "Log in";
         setAuthMessage("");
     }
 
@@ -67,7 +73,7 @@
             }
 
             state.account = payload.data.account;
-            openGame();
+            openCms();
         } catch (error) {
             setAuthMessage(error.message || "Could not reach the local server");
         } finally {
@@ -75,8 +81,55 @@
         }
     }
 
+    function openCms() {
+        authView.hidden = true;
+        gameView.hidden = true;
+        gameView.style.display = "none";
+        cmsView.hidden = false;
+        $("pilot-bar").hidden = false;
+        populateCms();
+        showPanel("home");
+        setConnection("SERVER READY", true);
+    }
+
+    function populateCms() {
+        const account = state.account;
+        const factionNames = {1: "MMO", 2: "EIC", 3: "VRU"};
+        const clan = account.clansId ? `Clan #${account.clansId}` : "Free agent";
+
+        $("cms-pilot-name").textContent = account.name;
+        $("cms-rank").textContent = `Rank ${account.ranksId || 1}`;
+        $("cms-level").textContent = account.levelsId || 1;
+        $("cms-faction").textContent = factionNames[account.factionsId] || `Faction ${account.factionsId || "—"}`;
+        $("cms-experience").textContent = formatNumber(account.experience);
+        $("cms-id").textContent = account.id;
+        $("cms-rank-detail").textContent = account.ranksId || 1;
+        $("cms-clan").textContent = clan;
+        $("cms-skills").textContent = `${account.skillPointsFree || 0} free / ${account.skillPointsTotal || 0} total`;
+        $("cms-credits").textContent = formatNumber(account.credits);
+        $("cms-uridium").textContent = formatNumber(account.uridium);
+        $("cms-honor").textContent = formatNumber(account.honor);
+        $("cms-jackpot").textContent = formatNumber(account.jackpot);
+        $("bar-credits").textContent = formatNumber(account.credits);
+        $("bar-uridium").textContent = formatNumber(account.uridium);
+        $("bar-honor").textContent = formatNumber(account.honor);
+        $("hangar-name").textContent = `Hangar ${account.accountsHangarsId || 1}`;
+        $("hangar-summary").textContent = `Active Kalaazu hangar #${account.accountsHangarsId || 1} is ready to launch.`;
+        $("clan-summary").textContent = clan;
+    }
+
+    function showPanel(panel) {
+        document.querySelectorAll(".nav-button").forEach(button => {
+            button.classList.toggle("active", button.dataset.panel === panel);
+        });
+        document.querySelectorAll(".cms-panel").forEach(content => {
+            content.classList.toggle("active", content.dataset.panelContent === panel);
+        });
+    }
+
     function openGame() {
         authView.hidden = true;
+        cmsView.hidden = true;
         gameView.hidden = false;
         gameView.style.display = "grid";
         $("pilot-name").textContent = state.account.name;
@@ -326,8 +379,26 @@
         state.readySent = false;
         gameView.hidden = true;
         gameView.style.display = "none";
+        cmsView.hidden = false;
+        setConnection("SERVER READY", true);
+    }
+
+    function logout() {
+        state.socket?.close();
+        state.socket = null;
+        state.account = null;
+        state.entities.clear();
+        state.hero = null;
+        state.heroId = null;
+        state.readySent = false;
+        cmsView.hidden = true;
+        gameView.hidden = true;
+        gameView.style.display = "none";
+        $("pilot-bar").hidden = true;
         authView.hidden = false;
-        setConnection("OFFLINE", false);
+        form.reset();
+        setAuthMessage("");
+        setConnection("SERVER READY", false);
     }
 
     function setConnection(label, online) {
