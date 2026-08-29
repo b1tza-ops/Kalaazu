@@ -1,6 +1,7 @@
 package com.kalaazu.cms.controller;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -25,6 +26,18 @@ class ClientControllerTest {
             assertThat(html).contains("Pilot overview");
             assertThat(html).contains("Start game");
             assertThat(html).doesNotContain(".swf");
+        }
+    }
+
+    @Test
+    void acceptsTheLocalWolfCmsSessionHandoff() throws Exception {
+        var script = new ClassPathResource("static/client.js");
+
+        try (var stream = script.getInputStream()) {
+            var javascript = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+            assertThat(javascript).contains("acceptCmsHandoff()");
+            assertThat(javascript).contains("new URLSearchParams(window.location.search).get(\"handoff\")");
+            assertThat(javascript).doesNotContain(".swf");
         }
     }
 }
